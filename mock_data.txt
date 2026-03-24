@@ -1,0 +1,52 @@
+-- 1. Додаємо типи конекторів (згідно з вашим Enum)
+INSERT INTO connector_type (name) VALUES 
+('TYPE_2'), 
+('CCS_2'), 
+('CHADEMO'), 
+('TESLA_SUPERCHARGER');
+
+-- 2. Додаємо користувачів (Адмін та звичайний юзер)
+INSERT INTO ev_user (name, surname, email, phone_number, password_hash, role) VALUES 
+('Олександр', 'Адмінченко', 'admin@ev.com', '+380671112233', 'hashed_password_1', 'ADMIN'),
+('Марія', 'Користувач', 'maria@mail.com', '+380934445566', 'hashed_password_2', 'USER');
+
+-- 3. Додаємо локації (координати POINT в форматі '(x,y)')
+INSERT INTO location (coordinates, city, street, house_number) VALUES 
+('(49.8397, 24.0297)', 'Львів', 'Степана Бандери', '12'),
+('(50.4501, 30.5234)', 'Київ', 'Хрещатик', '1');
+
+-- 4. Додаємо станції
+INSERT INTO station (location_id, name, status) VALUES 
+(1, 'Lviv Polytechnic Hub', 'WORK'),
+(2, 'Kyiv Central Plaza', 'WORK');
+
+-- 5. Додаємо порти до станцій
+-- Припустимо: id 1 - TYPE_2, id 2 - CCS_2
+INSERT INTO port (station_id, port_number, max_power, connector_type_id, status) VALUES 
+(1, 1, 22.0, 1, 'FREE'),
+(1, 2, 50.0, 2, 'FREE'),
+(2, 1, 150.0, 4, 'FREE'); -- Tesla Supercharger у Києві
+
+-- 6. Додаємо авто для Марії (user_id = 2)
+INSERT INTO vehicle (user_id, license_plate, brand, model, battery_capacity, power_rate, current_battery_level) VALUES 
+(2, 'BC1234HX', 'Tesla', 'Model 3', 75.0, 11.0, 25);
+
+-- 7. Додаємо тарифи (Денний та Нічний)
+INSERT INTO tariff (tariff_type, price_per_kwh) VALUES 
+('DAY', 12.50),
+('NIGHT', 7.20);
+
+-- 8. Створюємо тестове бронювання (Марія бронює порт у Львові)
+INSERT INTO booking (user_id, vehicle_id, port_id, start_time, end_time, status, estimate_cost) VALUES 
+(2, 1, 2, NOW(), NOW() + INTERVAL '1 hour', 'BOOKED', 250.00);
+
+-- 9. Створюємо активну сесію на основі бронювання
+INSERT INTO session (user_id, vehicle_id, port_id, tariff_id, booking_id, meter_start_kwh, status) VALUES 
+(2, 1, 2, 1, 1, 120.5, 'ACTIVE');
+
+-- 10. Додаємо приклад оплати для завершеної сесії (спочатку додамо завершену сесію)
+INSERT INTO session (user_id, vehicle_id, port_id, tariff_id, meter_start_kwh, meter_end_kwh, status, total_cost) VALUES 
+(2, 1, 1, 2, 50.0, 75.5, 'COMPLETED', 183.60);
+
+INSERT INTO payment (session_id, amount, method, status, paid_at) VALUES 
+(2, 183.60, 'APPLE_PAY', 'SUCCESS', NOW());
