@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import { stationRouter } from "./http/stationRoutes.js";
-import { errorMiddleware } from "./http/errorMiddleware.js";
+import { stationRouter } from "./routes/stationRoutes.js";
+import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 
 const defaultOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
 

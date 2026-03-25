@@ -1,0 +1,28 @@
+import { Router } from "express";
+import { getUser, updateUser, getVehicles, getVehicle, updateVehicle, addVehicle, getBookings, getBooking, createBooking, updateBooking, deleteBooking, getSessions, getSession, createSession, updateSession, getPayments, getPayment, updatePayment } from "../../controllers/user/userController.js";
+
+export const evUserRouter = Router();
+
+evUserRouter.get("/:userId", getUser);
+evUserRouter.put("/:userId", updateUser);
+
+evUserRouter.get("/:userId/vehicles", getVehicles);
+evUserRouter.get("/:userId/vehicle/:vehicleId", getVehicle);
+evUserRouter.put("/:userId/vehicle/:vehicleId", updateVehicle);
+evUserRouter.post("/:userId/vehicle", addVehicle);
+
+evUserRouter.get("/:userId/bookings", getBookings);
+evUserRouter.get("/:userId/bookings/:bookingId", getBooking);
+evUserRouter.post("/:userId/bookings", createBooking);
+evUserRouter.put("/:userId/bookings/:bookingId", updateBooking);
+evUserRouter.delete("/:userId/bookings/:bookingId", deleteBooking);
+
+
+evUserRouter.get("/:userId/sessions", getSessions);
+evUserRouter.get("/:userId/sessions/:sessionId", getSession);
+evUserRouter.post("/:userId/sessions", createSession);
+evUserRouter.put("/:userId/sessions/:sessionId", updateSession);
+
+evUserRouter.get("/:userId/payments", getPayments);
+evUserRouter.get("/:userId/payments/:paymentId", getPayment);
+evUserRouter.put("/:userId/payments/:paymentId", updatePayment);

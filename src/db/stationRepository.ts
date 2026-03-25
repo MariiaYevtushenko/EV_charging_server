@@ -1,5 +1,6 @@
 import prisma from "../prisma.config.js";
-import type { PrismaClient } from "../../generated/prisma/index.js";
+import type { PrismaClient, Station, StationStatus } from "../../generated/prisma/index.js";
+
 
 const db = prisma as unknown as PrismaClient;
 
@@ -32,4 +33,39 @@ export const stationRepository = {
       orderBy: { id: "asc" },
     });
   },
+
+  async createStation(station: Station): Promise<Station> {
+    return await db.station.create({
+      data: station,
+    });
+  },
+
+  async updateStation(stationId: number, station: Station): Promise<Station> {
+    return await db.station.update({
+      where: { id: stationId },
+      data: station,
+    });
+  },
+  
+  async archiveStation(stationId: number): Promise<Station> {
+    return await db.station.update({
+      where: { id: stationId }, 
+      data: { status: "NO_CONNECTION" },
+    });
+  },  
+  
+  async unarchiveStation(stationId: number): Promise<Station> {
+    return await db.station.update({
+      where: { id: stationId },
+      data: { status: "WORK" },
+    });
+  },
+  
+  async updateStationStatus(stationId: number, status: StationStatus): Promise<Station> {
+    return await db.station.update({
+      where: { id: stationId }, 
+      data: { status: status },
+    });
+  },
+
 };

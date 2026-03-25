@@ -1,5 +1,5 @@
 import { stationRepository } from "../db/stationRepository.js";
-import type { Prisma } from "../../generated/prisma/index.js";
+import type { Prisma, Station, StationStatus } from "../../generated/prisma/index.js";
 
 /** DTO для REST — відповідає таблицям station + location + port (DB_script.MD) */
 export type StationDashboardDto = {
@@ -64,4 +64,25 @@ export const stationService = {
     const stations = await stationRepository.findAll();
     return stations.map(toDashboardDto);
   },
+
+
+  async createStation(station: Station): Promise<Station> {
+    return await stationRepository.createStation(station);
+  },
+
+  async updateStation(stationId: number, station: Station): Promise<Station> {
+    return await stationRepository.updateStation(stationId, station);
+  },
+
+  async archiveStation(stationId: number): Promise<Station> {
+    return await stationRepository.archiveStation(stationId);
+  },
+
+  async unarchiveStation(stationId: number): Promise<Station> {
+    return await stationRepository.unarchiveStation(stationId);
+  },
+
+  async updateStationStatus(stationId: number, status: StationStatus): Promise<Station> {
+    return await stationRepository.updateStationStatus(stationId, status);
+  },  
 };

@@ -17,6 +17,7 @@ enum UserRole {
 
 enum StationStatus {
   WORK
+  ARCHIVED
   NO_CONNECTION
   FIX
 }
