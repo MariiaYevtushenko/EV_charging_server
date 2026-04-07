@@ -1,4 +1,4 @@
-// Узгоджено з DB_script.MD (PostgreSQL, SERIAL id, ev_user, location POINT, session)
+// Узгоджено з DB_script.MD (PostgreSQL)
 
 generator client {
   provider = "prisma-client-js"
@@ -13,6 +13,8 @@ enum UserRole {
   ADMIN
   STATION_ADMIN
   USER
+
+  @@map("user_role")
 }
 
 enum StationStatus {
@@ -20,6 +22,8 @@ enum StationStatus {
   ARCHIVED
   NO_CONNECTION
   FIX
+
+  @@map("station_status")
 }
 
 enum PortStatus {
@@ -27,41 +31,46 @@ enum PortStatus {
   BOOKED
   USED
   REPAIRED
-}
 
-enum ConnectorCategory {
-  TYPE_2
-  CCS_2
-  CHADEMO
-  TESLA_SUPERCHARGER
+  @@map("port_status")
 }
 
 enum TariffPeriod {
   DAY
   NIGHT
+
+  @@map("tariff_period")
 }
 
 enum BookingStatus {
   BOOKED
   PAID
   CANCELLED
+
+  @@map("booking_status")
 }
 
 enum BookingType {
   CALC
   DEPOSIT
+
+  @@map("booking_type")
 }
 
 enum SessionStatus {
   ACTIVE
   COMPLETED
   FAILED
+
+  @@map("session_status")
 }
 
 enum PaymentMethod {
   CARD
   APPLE_PAY
   GOOGLE_PAY
+
+  @@map("payment_method")
 }
 
 enum PaymentStatus {
@@ -69,6 +78,8 @@ enum PaymentStatus {
   SUCCESS
   FAILED
   REFUNDED
+
+  @@map("payment_status")
 }
 
 model EvUser {
@@ -114,41 +125,39 @@ model Station {
 }
 
 model ConnectorType {
-  id    Int               @id @default(autoincrement())
-  name  ConnectorCategory @unique
+  id    Int    @id @default(autoincrement())
+  name  String @unique @db.VarChar(64)
   ports Port[]
 
   @@map("connector_type")
 }
 
 model Port {
-  id              Int        @id @default(autoincrement())
-  stationId       Int        @map("station_id")
-  portNumber      Int        @map("port_number")
-  maxPower        Decimal    @map("max_power") @db.Decimal(5, 2)
-  connectorTypeId Int?       @map("connector_type_id")
-  status          PortStatus @default(FREE)
-  createdAt       DateTime   @default(now()) @map("created_at")
-  updatedAt       DateTime   @default(now()) @updatedAt @map("updated_at")
+  stationId       Int            @map("station_id")
+  portNumber      Int            @map("port_number")
+  maxPower        Decimal        @map("max_power") @db.Decimal(5, 2)
+  connectorTypeId Int?           @map("connector_type_id")
+  status          PortStatus     @default(FREE)
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @default(now()) @updatedAt @map("updated_at")
 
   station       Station        @relation(fields: [stationId], references: [id], onDelete: Cascade)
   connectorType ConnectorType? @relation(fields: [connectorTypeId], references: [id])
   bookings      Booking[]
   sessions      Session[]
 
-  @@unique([stationId, portNumber])
+  @@id([stationId, portNumber])
   @@map("port")
 }
 
 model Vehicle {
-  id                  Int      @id @default(autoincrement())
-  userId              Int      @map("user_id")
-  licensePlate        String   @unique @map("license_plate") @db.VarChar(20)
-  brand               String   @db.VarChar(50)
-  vehicleModel        String   @map("model") @db.VarChar(50)
-  batteryCapacity     Decimal  @map("battery_capacity") @db.Decimal(5, 2)
-  powerRate           Decimal  @map("power_rate") @db.Decimal(5, 2)
-  currentBatteryLevel Int?     @map("current_battery_level")
+  id              Int      @id @default(autoincrement())
+  userId          Int      @map("user_id")
+  licensePlate    String   @unique @map("license_plate") @db.VarChar(20)
+  brand           String   @db.VarChar(50)
+  vehicleModel    String   @map("model") @db.VarChar(50)
+  batteryCapacity Decimal  @map("battery_capacity") @db.Decimal(5, 2)
+  powerRate       Decimal  @map("power_rate") @db.Decimal(5, 2)
 
   user     EvUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
   bookings Booking[]
@@ -162,67 +171,86 @@ model Tariff {
   tariffType    TariffPeriod @map("tariff_type")
   pricePerKwh   Decimal      @map("price_per_kwh") @db.Decimal(10, 2)
   effectiveDate DateTime     @default(now()) @map("effective_date") @db.Date
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @default(now()) @updatedAt @map("updated_at")
 
-  sessions Session[]
-
+  @@unique([tariffType, effectiveDate])
   @@map("tariff")
 }
 
-model Booking {
-  id           Int           @id @default(autoincrement())
-  userId       Int?          @map("user_id")
-  vehicleId    Int?          @map("vehicle_id")
-  portId       Int?          @map("port_id")
-  startTime    DateTime      @map("start_time")
-  endTime      DateTime      @map("end_time")
-  status       BookingStatus @default(BOOKED)
-  estimateCost Decimal?      @map("estimate_cost") @db.Decimal(10, 2)
-  type         BookingType   @default(CALC)
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at")
+model TariffPrediction {
+  id             Int          @id @default(autoincrement())
+  targetDate     DateTime     @map("target_date") @db.Date
+  tariffType     TariffPeriod @map("tariff_type")
+  predictedPrice Decimal      @map("predicted_price") @db.Decimal(10, 2)
+  createdAt      DateTime     @default(now()) @map("created_at")
 
-  user    EvUser?  @relation(fields: [userId], references: [id])
-  vehicle Vehicle? @relation(fields: [vehicleId], references: [id])
-  port    Port?    @relation(fields: [portId], references: [id])
+  @@unique([targetDate, tariffType])
+  @@map("tariff_prediction")
+}
+
+model ForecastBias {
+  id         Int          @id @default(autoincrement())
+  tariffType TariffPeriod @unique @map("tariff_type")
+  biasValue  Decimal      @map("bias_value") @db.Decimal(10, 4)
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+
+  @@map("forecast_bias")
+}
+
+model Booking {
+  id               Int           @id @default(autoincrement())
+  userId           Int?          @map("user_id")
+  vehicleId        Int?          @map("vehicle_id")
+  stationId        Int           @map("station_id")
+  portNumber       Int           @map("port_number")
+  startTime        DateTime      @map("start_time")
+  endTime          DateTime      @map("end_time")
+  status           BookingStatus @default(BOOKED)
+  bookingType      BookingType   @default(CALC) @map("booking_type")
+  prepaymentAmount Decimal       @default(0) @map("prepayment_amount") @db.Decimal(10, 2)
+  createdAt        DateTime      @default(now()) @map("created_at")
+
+  user     EvUser?  @relation(fields: [userId], references: [id])
+  vehicle  Vehicle? @relation(fields: [vehicleId], references: [id])
+  port     Port     @relation(fields: [stationId, portNumber], references: [stationId, portNumber])
   sessions Session[]
 
   @@map("booking")
 }
 
 model Session {
-  id            Int           @id @default(autoincrement())
-  userId        Int?          @map("user_id")
-  vehicleId     Int?          @map("vehicle_id")
-  portId        Int?          @map("port_id")
-  tariffId      Int?          @map("tariff_id")
-  bookingId     Int?          @map("booking_id")
-  startTime     DateTime      @default(now()) @map("start_time")
-  endTime       DateTime?     @map("end_time")
-  meterStartKwh Decimal       @map("meter_start_kwh") @db.Decimal(10, 3)
-  meterEndKwh   Decimal?      @map("meter_end_kwh") @db.Decimal(10, 3)
-  status        SessionStatus @default(ACTIVE)
-  totalCost     Decimal?      @map("total_cost") @db.Decimal(10, 2)
+  id          Int           @id @default(autoincrement())
+  userId      Int?          @map("user_id")
+  vehicleId   Int?          @map("vehicle_id")
+  stationId   Int           @map("station_id")
+  portNumber  Int           @map("port_number")
+  bookingId   Int?          @map("booking_id")
+  startTime   DateTime      @default(now()) @map("start_time")
+  endTime     DateTime?     @map("end_time")
+  kwhConsumed Decimal       @default(0) @map("kwh_consumed") @db.Decimal(10, 3)
+  status      SessionStatus @default(ACTIVE)
 
   user    EvUser?  @relation(fields: [userId], references: [id])
   vehicle Vehicle? @relation(fields: [vehicleId], references: [id])
-  port    Port?    @relation(fields: [portId], references: [id])
-  tariff  Tariff?  @relation(fields: [tariffId], references: [id])
+  port    Port     @relation(fields: [stationId, portNumber], references: [stationId, portNumber])
   booking Booking? @relation(fields: [bookingId], references: [id])
-  payments Payment[]
+  bill    Bill?
 
   @@map("session")
 }
 
-model Payment {
-  id        Int           @id @default(autoincrement())
-  sessionId Int           @map("session_id")
-  amount    Decimal       @db.Decimal(10, 2)
-  method    PaymentMethod
-  status    PaymentStatus @default(PENDING)
-  createdAt DateTime      @default(now()) @map("created_at")
-  paidAt    DateTime?     @map("paid_at")
+model Bill {
+  id                Int           @id @default(autoincrement())
+  sessionId         Int           @unique @map("session_id")
+  calculatedAmount  Decimal       @map("calculated_amount") @db.Decimal(10, 2)
+  pricePerKwhAtTime Decimal?      @map("price_per_kwh_at_time") @db.Decimal(10, 2)
+  paymentMethod     PaymentMethod @map("payment_method")
+  paymentStatus     PaymentStatus @default(PENDING) @map("payment_status")
+  paidAt            DateTime?     @map("paid_at")
+  createdAt         DateTime      @default(now()) @map("created_at")
 
   session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
-  @@map("payment")
+  @@map("bill")
 }

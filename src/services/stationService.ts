@@ -9,6 +9,8 @@ export type StationDashboardDto = {
   locationId: number;
   city: string;
   addressLine: string;
+  lat: number | null;
+  lng: number | null;
   createdAt: string;
   updatedAt: string;
   ports: Array<{
@@ -29,7 +31,10 @@ type StationWithLocationPorts = Prisma.StationGetPayload<{
   };
 }>;
 
-function toDashboardDto(station: StationWithLocationPorts): StationDashboardDto {
+function toDashboardDto(
+  station: StationWithLocationPorts,
+  coords: { lat: number; lng: number } | null | undefined
+): StationDashboardDto {
   const loc = station.location;
   const addressLine = `${loc.street} ${loc.houseNumber}`.trim();
   return {
@@ -39,10 +44,13 @@ function toDashboardDto(station: StationWithLocationPorts): StationDashboardDto 
     locationId: loc.id,
     city: loc.city,
     addressLine,
+    lat: coords ? coords.lat : null,
+    lng: coords ? coords.lng : null,
     createdAt: station.createdAt.toISOString(),
     updatedAt: station.updatedAt.toISOString(),
     ports: station.ports.map((p) => ({
-      id: p.id,
+      // Стабільний числовий id для API: stationId * 10000 + port_number (порт ідентифікується парою station_id + port_number у БД)
+      id: station.id * 10000 + p.portNumber,
       portNumber: p.portNumber,
       maxPower: Number(p.maxPower),
       connectorCategory: p.connectorType?.name ?? null,
@@ -57,12 +65,16 @@ export const stationService = {
     if (!station) {
       return null;
     }
-    return toDashboardDto(station);
+    const coords = await stationRepository.getLocationCoords(station.locationId);
+    return toDashboardDto(station, coords);
   },
 
   async getAllStations(): Promise<StationDashboardDto[]> {
     const stations = await stationRepository.findAll();
-    return stations.map(toDashboardDto);
+    const coordMap = await stationRepository.getLocationCoordsBatch(
+      stations.map((s) => s.locationId)
+    );
+    return stations.map((s) => toDashboardDto(s, coordMap.get(s.locationId) ?? null));
   },
 
 

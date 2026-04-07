@@ -1,25 +1,34 @@
 import prisma from "../prisma.config.js";
 import type { Port, PrismaClient } from "../../generated/prisma/index.js";
+import type { Prisma } from "../../generated/prisma/index.js";
 
 const db = prisma as unknown as PrismaClient;
 
 export const portRepository = {
-    async createPort(port: Port): Promise<Port> {
-        return await db.port.create({
-            data: port,
-        });
-    },
+  async createPort(data: Prisma.PortCreateInput): Promise<Port> {
+    return await db.port.create({
+      data,
+    });
+  },
 
-    async updatePort(portId: number, port: Port): Promise<Port> {
-        return await db.port.update({
-            where: { id: portId },
-            data: port,
-        });
-    },
+  async updatePort(
+    stationId: number,
+    portNumber: number,
+    data: Prisma.PortUpdateInput
+  ): Promise<Port> {
+    return await db.port.update({
+      where: {
+        stationId_portNumber: { stationId, portNumber },
+      },
+      data,
+    });
+  },
 
-    async deletePort(portId: number): Promise<Port> {
-        return await db.port.delete({
-            where: { id: portId },
-        });
-    },
-}
+  async deletePort(stationId: number, portNumber: number): Promise<Port> {
+    return await db.port.delete({
+      where: {
+        stationId_portNumber: { stationId, portNumber },
+      },
+    });
+  },
+};

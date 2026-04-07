@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { getUser, updateUser, deleteUser, login, logout, register } from "../controllers/userController.js";
+import { getUser, updateUser, deleteUser, login, logout, register } from "../controllers/EvUsersController.js";
 
 
-export const usersRouter = Router();
+export const EvUsersRouter = Router();
 
 
-usersRouter.get("/:userId", getUser);
-usersRouter.put("/:userId", updateUser);
-usersRouter.delete("/:userId", deleteUser);
+EvUsersRouter.get("/:userId", getUser);
+EvUsersRouter.put("/:userId", updateUser);
+EvUsersRouter.delete("/:userId", deleteUser);
 
-usersRouter.post("/login", login);
-usersRouter.post("/logout", logout);
-usersRouter.post("/register", register);
+EvUsersRouter.post("/login", login);
+EvUsersRouter.post("/logout", logout);
+EvUsersRouter.post("/register", register);

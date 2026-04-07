@@ -1,10 +1,10 @@
 import type { Request, RequestHandler } from "express";
-import { userService } from "../services/userService.js";
-
+import { adminService } from "../../services/admin/adminService.js";
+import { toEvUserPublic } from "../../utils/evUserPublic.js";
 
 export const getUsers: RequestHandler = async (req, res, next) => {
     try {
-        const users = await userService.getUsers();
+        const users = await adminService.getUsers();
         res.json(users);
     }
     catch (e) {
@@ -15,7 +15,7 @@ export const getUsers: RequestHandler = async (req, res, next) => {
 export const getUser: RequestHandler = async (req, res, next) => {
     try {
         const userId = Number(req.params["userId"]);
-        const user = await userService.getUser(userId);
+        const user = await adminService.getUser(userId);
         res.json(user);
     }
     catch (e) {
@@ -26,8 +26,8 @@ export const getUser: RequestHandler = async (req, res, next) => {
 export const updateUser: RequestHandler = async (req, res, next) => {
     try {
         const userId = Number(req.params["userId"]);
-        const user = await userService.updateUser(userId, req.body);
-        res.json(user);
+        const user = await adminService.updateUser(userId, req.body);
+        res.json(toEvUserPublic(user));
     }
     catch (e) {
         next(e);

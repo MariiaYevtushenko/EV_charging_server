@@ -1,5 +1,6 @@
 import prisma from "../prisma.config.js";
 import type { PrismaClient, EvUser } from "../../generated/prisma/index.js";
+import type { Prisma } from "../../generated/prisma/index.js";
 
 const db = prisma as unknown as PrismaClient;
 
@@ -9,10 +10,10 @@ export const EvUsersRepository = {
                 where: { id: userId },
         });
     },
-    async updateUser(userId: number, user: EvUser): Promise<EvUser> {
+    async updateUser(userId: number, data: Prisma.EvUserUpdateInput): Promise<EvUser> {
         return await db.evUser.update({
             where: { id: userId },
-            data: user,
+            data,
         });
     },
     async deleteUser(userId: number): Promise<EvUser> {
@@ -21,9 +22,9 @@ export const EvUsersRepository = {
         }); 
 
     },
-    async login(email: string, password: string): Promise<EvUser> {
-        return await db.evUser.findUniqueOrThrow({
-            where: { email: email },
+    async findByEmail(email: string): Promise<EvUser | null> {
+        return await db.evUser.findUnique({
+            where: { email: email.trim() },
         });
     },
     async logout(userId: number): Promise<EvUser> {

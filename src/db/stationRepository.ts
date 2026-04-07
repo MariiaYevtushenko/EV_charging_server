@@ -34,6 +34,32 @@ export const stationRepository = {
     });
   },
 
+  /** Координати з `point` (lat, lng у тому ж порядку, що й у INSERT). */
+  async getLocationCoords(locationId: number): Promise<{ lat: number; lng: number } | null> {
+    const rows = await db.$queryRawUnsafe<Array<{ lat: number; lng: number }>>(
+      `SELECT (coordinates)[0]::float8 AS lat, (coordinates)[1]::float8 AS lng FROM location WHERE id = $1`,
+      locationId
+    );
+    const r = rows[0];
+    if (!r) return null;
+    return { lat: Number(r.lat), lng: Number(r.lng) };
+  },
+
+  async getLocationCoordsBatch(
+    locationIds: number[]
+  ): Promise<Map<number, { lat: number; lng: number }>> {
+    const ids = [...new Set(locationIds)].filter((id) => Number.isFinite(id));
+    if (ids.length === 0) return new Map();
+    const rows = await db.$queryRawUnsafe<Array<{ id: number; lat: number; lng: number }>>(
+      `SELECT id, (coordinates)[0]::float8 AS lat, (coordinates)[1]::float8 AS lng FROM location WHERE id IN (${ids.join(",")})`
+    );
+    const m = new Map<number, { lat: number; lng: number }>();
+    for (const r of rows) {
+      m.set(r.id, { lat: Number(r.lat), lng: Number(r.lng) });
+    }
+    return m;
+  },
+
   async createStation(station: Station): Promise<Station> {
     return await db.station.create({
       data: station,
@@ -49,11 +75,11 @@ export const stationRepository = {
   
   async archiveStation(stationId: number): Promise<Station> {
     return await db.station.update({
-      where: { id: stationId }, 
-      data: { status: "NO_CONNECTION" },
+      where: { id: stationId },
+      data: { status: "ARCHIVED" },
     });
-  },  
-  
+  },
+
   async unarchiveStation(stationId: number): Promise<Station> {
     return await db.station.update({
       where: { id: stationId },

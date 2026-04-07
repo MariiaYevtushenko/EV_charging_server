@@ -9,14 +9,13 @@ import { createPort, updatePort, deletePort } from "../controllers/portControlle
 export const stationRouter = Router();
 
 stationRouter.get("/", getAllStations);
+stationRouter.post("/", createStation);
 stationRouter.get("/:stationId/dashboard", getStation);
 
-
-stationRouter.post("/station", createStation);
-stationRouter.put("/:stationId/dashboard", updateStation);
-stationRouter.put("/:stationId/dashboard", archiveStation);
-stationRouter.put("/:stationId/dashboard", unarchiveStation);
-stationRouter.put("/:stationId/dashboard", updateStationStatus);
+stationRouter.put("/:stationId", updateStation);
+stationRouter.post("/:stationId/archive", archiveStation);
+stationRouter.post("/:stationId/unarchive", unarchiveStation);
+stationRouter.patch("/:stationId/status", updateStationStatus);
 
 stationRouter.post("/:stationId/ports", createPort);
 stationRouter.put("/:stationId/ports/:portId", updatePort);

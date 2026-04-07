@@ -6,6 +6,11 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
+    "seed": "node scripts/seed-from-csv.mjs",
+    "seed:fresh": "node scripts/seed-from-csv.mjs --truncate",
+    "seed:all": "node scripts/run-all-seeds.mjs",
+    "seed:all:fresh": "node scripts/run-all-seeds.mjs --truncate",
+    "seed:tariffs": "tsx scripts/seed-tariffs-from-api.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -26,7 +31,8 @@
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
+    "csv-parse": "^6.2.1",
+    "dotenv": "^17.4.0",
     "pg": "^8.20.0"
   }
 }
