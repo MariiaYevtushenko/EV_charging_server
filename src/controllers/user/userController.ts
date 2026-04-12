@@ -92,18 +92,12 @@ export const addVehicle: RequestHandler = async (req, res, next) => {
         const brand = String(b["brand"] ?? "").trim();
         const vehicleModel = String(b["vehicleModel"] ?? b["model"] ?? "").trim();
         const batteryCapacity = Number(b["batteryCapacity"]);
-        const powerRate = Number(b["powerRate"]);
         if (!licensePlate || !brand || !vehicleModel) {
             res.status(400).json({ error: "Потрібні licensePlate, brand та vehicleModel (або model)" });
             return;
         }
-        if (
-            !Number.isFinite(batteryCapacity) ||
-            !Number.isFinite(powerRate) ||
-            batteryCapacity <= 0 ||
-            powerRate <= 0
-        ) {
-            res.status(400).json({ error: "batteryCapacity та powerRate мають бути додатними числами" });
+        if (!Number.isFinite(batteryCapacity) || batteryCapacity <= 0) {
+            res.status(400).json({ error: "batteryCapacity має бути додатним числом" });
             return;
         }
         const data: Prisma.VehicleCreateInput = {
@@ -112,7 +106,6 @@ export const addVehicle: RequestHandler = async (req, res, next) => {
             brand,
             vehicleModel,
             batteryCapacity,
-            powerRate,
         };
         const vehicle = await userService.addVehicle(userId, data);
         res.status(201).json(vehicle);

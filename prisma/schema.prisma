@@ -102,6 +102,7 @@ model EvUser {
 model Location {
   id           Int                    @id @default(autoincrement())
   coordinates  Unsupported("point")
+  country      String                 @db.VarChar(100)
   city         String                 @db.VarChar(100)
   street       String                 @db.VarChar(100)
   houseNumber  String                 @map("house_number") @db.VarChar(10)
@@ -157,7 +158,6 @@ model Vehicle {
   brand           String   @db.VarChar(50)
   vehicleModel    String   @map("model") @db.VarChar(50)
   batteryCapacity Decimal  @map("battery_capacity") @db.Decimal(5, 2)
-  powerRate       Decimal  @map("power_rate") @db.Decimal(5, 2)
 
   user     EvUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
   bookings Booking[]

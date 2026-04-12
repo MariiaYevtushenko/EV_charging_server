@@ -7,6 +7,7 @@ export type StationDashboardDto = {
   name: string;
   status: string;
   locationId: number;
+  country: string;
   city: string;
   addressLine: string;
   lat: number | null;
@@ -25,7 +26,7 @@ export type StationDashboardDto = {
 type StationWithLocationPorts = Prisma.StationGetPayload<{
   include: {
     location: {
-      select: { id: true; city: true; street: true; houseNumber: true };
+      select: { id: true; country: true; city: true; street: true; houseNumber: true };
     };
     ports: { include: { connectorType: true } };
   };
@@ -42,6 +43,7 @@ function toDashboardDto(
     name: station.name,
     status: station.status,
     locationId: loc.id,
+    country: loc.country,
     city: loc.city,
     addressLine,
     lat: coords ? coords.lat : null,

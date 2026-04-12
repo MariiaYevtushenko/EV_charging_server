@@ -1,5 +1,5 @@
 -- Відповідає DB_script.MD (port: PK (station_id, port_number), bill замість payment)
--- Ідемпотентні процедури: ../db/Seed_procedures.sql, ../db/Random_seed_mock3_transactions.sql (3 обов’язкові акаунти + random booking/session/bill)
+-- Ідемпотентні процедури: ../db/Seed_procedures.sql (SeedMassiveUsers — масовий ev_user; seed_sql_phase2 — демо booking/session/bill)
 -- 1. ОЧИЩЕННЯ
 TRUNCATE bill, session, booking, vehicle, tariff, tariff_prediction, forecast_bias, port, station, location, ev_user, connector_type RESTART IDENTITY CASCADE;
 
@@ -21,11 +21,11 @@ INSERT INTO tariff (tariff_type, price_per_kwh, effective_date) VALUES
 ('NIGHT', 9.20, CURRENT_DATE);
 
 -- 5. ЛОКАЦІЇ
-INSERT INTO location (coordinates, city, street, house_number) VALUES
-('(50.4501, 30.5234)', 'Київ', 'вул. Хрещатик', '1'),
-('(49.8397, 24.0297)', 'Львів', 'вул. Городоцька', '15'),
-('(46.4825, 30.7233)', 'Одеса', 'Приморський бул.', '7'),
-('(48.4647, 35.0462)', 'Дніпро', 'пр. Яворницького', '10');
+INSERT INTO location (coordinates, country, city, street, house_number) VALUES
+('(50.4501, 30.5234)', 'UA', 'Київ', 'вул. Хрещатик', '1'),
+('(49.8397, 24.0297)', 'UA', 'Львів', 'вул. Городоцька', '15'),
+('(46.4825, 30.7233)', 'UA', 'Одеса', 'Приморський бул.', '7'),
+('(48.4647, 35.0462)', 'UA', 'Дніпро', 'пр. Яворницького', '10');
 
 -- 6. СТАНЦІЇ
 INSERT INTO station (location_id, name, status) VALUES
@@ -44,11 +44,11 @@ INSERT INTO port (station_id, port_number, max_power, connector_type_id, status)
 (3, 1, 22.0, 1, 'REPAIRED');
 
 -- 8. АВТОМОБІЛІ (без current_battery_level — за DB_script.MD)
-INSERT INTO vehicle (user_id, license_plate, brand, model, battery_capacity, power_rate) VALUES
-(3, 'AA1111BB', 'Nissan', 'Leaf', 40.0, 6.6),
-(4, 'BC2222CC', 'Tesla', 'Model 3', 75.0, 11.0),
-(5, 'AE3333EE', 'Hyundai', 'Ioniq 5', 77.0, 10.5),
-(3, 'AA4444BB', 'Renault', 'Zoe', 52.0, 22.0);
+INSERT INTO vehicle (user_id, license_plate, brand, model, battery_capacity) VALUES
+(3, 'AA1111BB', 'Nissan', 'Leaf', 40.0),
+(4, 'BC2222CC', 'Tesla', 'Model 3', 75.0),
+(5, 'AE3333EE', 'Hyundai', 'Ioniq 5', 77.0),
+(3, 'AA4444BB', 'Renault', 'Zoe', 52.0);
 
 -- 9. БРОНЮВАННЯ (prepayment_amount)
 INSERT INTO booking (user_id, vehicle_id, station_id, port_number, start_time, end_time, status, booking_type, prepayment_amount) VALUES

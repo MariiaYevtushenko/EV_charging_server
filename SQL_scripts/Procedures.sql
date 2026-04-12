@@ -52,6 +52,54 @@ BEGIN
 END;
 $$;
 
+--------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE StopSession(
+  p_session_id INT,
+  p_final_kwh DECIMAL(10,3)
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+  -- 1. Перевірка чи сесія існує і чи вона активна
+  IF NOT EXISTS (SELECT 1 FROM session WHERE id = p_session_id AND status = 'ACTIVE') THEN
+    RAISE EXCEPTION 'Сесія не знайдена або вже завершена';
+  END IF;
+
+  -- 2. Оновлення даних сесії
+  UPDATE session
+  SET 
+    end_time = CURRENT_TIMESTAMP,
+    kwh_consumed = p_final_kwh,
+    status = 'COMPLETED'
+  WHERE id = p_session_id;
+
+  -- Примітка: Після UPDATE спрацює тригер trigger_GenerateBill, 
+  -- який автоматично викличе CreateFinalBill.
+END;
+$$;
+
+--------------------------------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE ProcessPayment(
+  p_bill_id INT,
+  p_payment_method payment_method
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+  UPDATE bill
+  SET 
+    payment_status = 'SUCCESS',
+    payment_method = p_payment_method,
+    paid_at = CURRENT_TIMESTAMP
+  WHERE id = p_bill_id;
+
+  -- Додатково: можна оновити статус бронювання на 'PAID', якщо воно було прив'язане
+  UPDATE booking
+  SET status = 'PAID'
+  WHERE id = (SELECT b.id FROM booking b JOIN session s ON b.id = s.booking_id JOIN bill bl ON s.id = bl.session_id WHERE bl.id = p_bill_id);
+END;
+$$;
+
 -- -----------------------------------------------------------------------------
 -- StartSession — INSERT session (ACTIVE)
 -- -----------------------------------------------------------------------------

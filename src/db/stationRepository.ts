@@ -8,6 +8,7 @@ const stationInclude = {
   location: {
     select: {
       id: true,
+      country: true,
       city: true,
       street: true,
       houseNumber: true,

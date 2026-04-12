@@ -39,18 +39,16 @@ BEGIN
 
   IF v_booking_type IS NOT NULL AND v_booking_type = 'CALC'::booking_type THEN
     v_tariff_price := v_prepayment;
-    v_prepayment := NULL;
+   
   ELSE
     v_tariff_type := GetTariffType(v_start_time);
     v_tariff_price := GetTariffPricePerKwhAt(v_start_time, v_tariff_type);
-    IF v_booking_id IS NULL THEN
-      v_prepayment := NULL;
-    ELSE
-      v_prepayment := v_prepayment;
+    IF v_booking_id IS NOT NULL THEN
+       v_prepayment := v_prepayment;    
     END IF;
   END IF;
 
-  v_final := ROUND((v_kwh_consumed * v_tariff_price) - COALESCE(v_prepayment, 0), 2);
+  v_final := ROUND((v_kwh_consumed * v_tariff_price) + COALESCE(v_prepayment, 0), 2);
 
   RETURN QUERY SELECT v_final, v_tariff_price;
 END;

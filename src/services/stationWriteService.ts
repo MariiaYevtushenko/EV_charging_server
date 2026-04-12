@@ -14,6 +14,7 @@ export type PortInput = {
 
 export type CreateStationInput = {
   name: string;
+  country: string;
   city: string;
   street: string;
   houseNumber: string;
@@ -25,6 +26,7 @@ export type CreateStationInput = {
 
 export type UpdateStationInput = {
   name: string;
+  country: string;
   city: string;
   street: string;
   houseNumber: string;
@@ -43,16 +45,18 @@ async function insertLocation(
   tx: Tx,
   lat: number,
   lng: number,
+  country: string,
   city: string,
   street: string,
   houseNumber: string
 ): Promise<number> {
   const rows = await tx.$queryRawUnsafe<Array<{ id: number }>>(
-    `INSERT INTO location (coordinates, city, street, house_number)
-     VALUES (point($1::float8, $2::float8), $3, $4, $5)
+    `INSERT INTO location (coordinates, country, city, street, house_number)
+     VALUES (point($1::float8, $2::float8), $3, $4, $5, $6)
      RETURNING id`,
     lat,
     lng,
+    country,
     city,
     street,
     houseNumber
@@ -67,14 +71,16 @@ async function updateLocation(
   locationId: number,
   lat: number,
   lng: number,
+  country: string,
   city: string,
   street: string,
   houseNumber: string
 ): Promise<void> {
   await tx.$executeRawUnsafe(
-    `UPDATE location SET coordinates = point($1::float8, $2::float8), city = $3, street = $4, house_number = $5 WHERE id = $6`,
+    `UPDATE location SET coordinates = point($1::float8, $2::float8), country = $3, city = $4, street = $5, house_number = $6 WHERE id = $7`,
     lat,
     lng,
+    country,
     city,
     street,
     houseNumber,
@@ -128,6 +134,7 @@ export const stationWriteService = {
         tx,
         input.lat,
         input.lng,
+        input.country,
         input.city,
         input.street,
         input.houseNumber
@@ -157,6 +164,7 @@ export const stationWriteService = {
         row.locationId,
         input.lat,
         input.lng,
+        input.country,
         input.city,
         input.street,
         input.houseNumber
@@ -177,6 +185,7 @@ export const stationWriteService = {
 /** Розбір тіла POST / PUT з клієнта */
 export function parseCreateStationBody(body: Record<string, unknown>): CreateStationInput {
   const name = String(body["name"] ?? "").trim();
+  const country = String(body["country"] ?? "UA").trim() || "UA";
   const city = String(body["city"] ?? "").trim();
   const street = String(body["street"] ?? "").trim();
   const houseNumber = String(body["houseNumber"] ?? "").trim() || "1";
@@ -203,11 +212,12 @@ export function parseCreateStationBody(body: Record<string, unknown>): CreateSta
   if (!street) throw new Error("street is required");
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) throw new Error("lat and lng must be numbers");
 
-  return { name, city, street, houseNumber, lat, lng, status, ports };
+  return { name, country, city, street, houseNumber, lat, lng, status, ports };
 }
 
 export function parseUpdateStationBody(body: Record<string, unknown>): UpdateStationInput {
   const name = String(body["name"] ?? "").trim();
+  const country = String(body["country"] ?? "UA").trim() || "UA";
   const city = String(body["city"] ?? "").trim();
   const street = String(body["street"] ?? "").trim();
   const houseNumber = String(body["houseNumber"] ?? "").trim() || "1";
@@ -238,6 +248,6 @@ export function parseUpdateStationBody(body: Record<string, unknown>): UpdateSta
   }
 
   return ports !== undefined
-    ? { name, city, street, houseNumber, lat, lng, status, ports }
-    : { name, city, street, houseNumber, lat, lng, status };
+    ? { name, country, city, street, houseNumber, lat, lng, status, ports }
+    : { name, country, city, street, houseNumber, lat, lng, status };
 }

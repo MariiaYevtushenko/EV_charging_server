@@ -158,6 +158,18 @@ function envFallbackDayNight(): { day: number; night: number } {
 
 export type TariffSeedRangeAnchor = "start" | "end";
 
+/** Режим сиду тарифів (з чого брались ціни). */
+export type TariffSeedMode =
+  | "no_api"
+  | "api_per_day"
+  | "api_single"
+  | "api_series";
+
+export type SeedTariffsFromApiResult = {
+  daysWritten: number;
+  mode: TariffSeedMode;
+};
+
 /**
  * Запис у `tariff` на кожен календарний день: денний (07:00–23:00) та нічний (23:00–07:00)
  * відповідають TariffPeriod DAY/NIGHT у додатку (див. NIGHT_TARIFF_START_HOUR / NIGHT_TARIFF_END_HOUR).
@@ -170,11 +182,11 @@ export type TariffSeedRangeAnchor = "start" | "end";
  * - один запит до API: об'єкт { day, night } — та сама пара на всі дні; масив по датах — ціна на день з мапи, інакше fallback з env;
  * - `TARIFF_API_PER_DAY=true` — для кожного дня GET `TARIFF_API_URL?date=YYYY-MM-DD` (очікується один об'єкт day/night).
  */
-export async function seedTariffsFromApiForDays(
+export async function SeedTariffsFromApi(
   days: number = 60,
   rangeDate: Date = new Date(),
   options?: { anchor?: TariffSeedRangeAnchor }
-): Promise<{ daysWritten: number }> {
+): Promise<SeedTariffsFromApiResult> {
   const anchor: TariffSeedRangeAnchor = options?.anchor ?? "start";
   const url = process.env["TARIFF_API_URL"];
   const endOrStart = localDateAtNoon(rangeDate);
@@ -199,7 +211,7 @@ export async function seedTariffsFromApiForDays(
       await saveHistoricalTariff(d, fb.day, fb.night);
       written++;
     }
-    return { daysWritten: written };
+    return { daysWritten: written, mode: "no_api" };
   }
 
   if (process.env["TARIFF_API_PER_DAY"] === "true") {
@@ -221,7 +233,7 @@ export async function seedTariffsFromApiForDays(
       await saveHistoricalTariff(d, p.day, p.night);
       written++;
     }
-    return { daysWritten: written };
+    return { daysWritten: written, mode: "api_per_day" };
   }
 
   const res = await fetch(url, { signal: AbortSignal.timeout(60_000) });
@@ -238,7 +250,7 @@ export async function seedTariffsFromApiForDays(
       await saveHistoricalTariff(d, parsed.day, parsed.night);
       written++;
     }
-    return { daysWritten: written };
+    return { daysWritten: written, mode: "api_single" };
   }
 
   let written = 0;
@@ -251,7 +263,7 @@ export async function seedTariffsFromApiForDays(
     await saveHistoricalTariff(d, dayP, nightP);
     written++;
   }
-  return { daysWritten: written };
+  return { daysWritten: written, mode: "api_series" };
 }
 
 /**

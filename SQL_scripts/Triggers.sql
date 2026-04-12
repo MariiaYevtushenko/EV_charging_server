@@ -30,7 +30,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_booking_02_overlap
+CREATE TRIGGER trigger_CheckBookingOverlap
 BEFORE INSERT OR UPDATE ON booking
 FOR EACH ROW EXECUTE FUNCTION CheckBookingOverlap();
 
@@ -69,6 +69,16 @@ FOR EACH ROW EXECUTE FUNCTION GenerateBill();
 -- порт на ремонті (REPAIRED). Скасовані бронювання (CANCELLED) не блокуються.
 -- Коли: BEFORE INSERT OR UPDATE на таблиці booking (новий слот або зміна порту/часу).
 -- -----------------------------------------------------------------------------
+-- Порада: У тебе в таблиці station є статус FIX (ремонт). Можливо, варто змінити 
+-- умову перевірки станції на таку:
+-- code
+-- SQL
+-- IF EXISTS (
+--     SELECT 1 FROM station 
+--     WHERE id = NEW.station_id AND status IN ('FIX', 'NO_CONNECTION', 'ARCHIVED')
+-- ) THEN 
+--     RAISE EXCEPTION 'Станція недоступна для бронювання (ремонт або відсутній зв’язок)';
+-- END IF;
 CREATE OR REPLACE FUNCTION CheckStationPortAvailability()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -99,7 +109,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_booking_03_station_port
+CREATE TRIGGER trigger_CheckStationPortAvailability
 BEFORE INSERT OR UPDATE ON booking
 FOR EACH ROW EXECUTE FUNCTION CheckStationPortAvailability();
 
@@ -110,6 +120,9 @@ FOR EACH ROW EXECUTE FUNCTION CheckStationPortAvailability();
 -- на цьому ж порту є активна сесія зарядки (session.status = ACTIVE).
 -- Коли: BEFORE UPDATE OF status на таблиці port (дії адміністратора).
 -- -----------------------------------------------------------------------------
+-- Порада: Переконайся, що в коді програми start_time завжди менше за 4
+-- end_time (хоча PostgreSQL OVERLAPS зазвичай справляється, краще мати 
+--CHECK (end_time > start_time) у схемі таблиці).
 CREATE OR REPLACE FUNCTION IsStatusChangeAllowed()
 RETURNS TRIGGER AS $$
 BEGIN

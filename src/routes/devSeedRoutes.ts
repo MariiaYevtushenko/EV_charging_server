@@ -10,7 +10,7 @@ const SERVER_ROOT = path.join(__dirname, "..", "..");
 let seedAlreadyRunThisProcess = false;
 
 function runSeedScript(): Promise<void> {
-  const script = path.join(SERVER_ROOT, "scripts", "run-all-seeds.mjs");
+  const script = path.join(SERVER_ROOT, "scripts", "seed-all-data.mjs");
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [script], {
       cwd: SERVER_ROOT,
@@ -20,7 +20,7 @@ function runSeedScript(): Promise<void> {
     child.on("error", reject);
     child.on("close", (code) => {
       if (code === 0) resolve();
-      else reject(new Error(`run-all-seeds exited with code ${code}`));
+      else reject(new Error(`seed-all-data exited with code ${code}`));
     });
   });
 }
@@ -57,7 +57,7 @@ devSeedRouter.post("/seed-from-csv", requireDevSeed, async (_req, res, next) => 
     res.json({
       ok: true,
       message:
-        "Демо-дані (CSV + тарифи за останні 60 днів) успішно завантажено.",
+        "Демо-дані (CSV станції, тарифи, SeedMassiveUsers, RandomizeAfterCsv) успішно завантажено.",
     });
   } catch (e) {
     next(e);
