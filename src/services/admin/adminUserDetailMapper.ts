@@ -35,6 +35,8 @@ export type AdminEndUserDto = {
   }[];
   payments: {
     id: string;
+    /** Сесія, до якої прив’язаний рахунок (bill). */
+    sessionId: string;
     amount: number;
     currency: string;
     method: string;
@@ -198,6 +200,7 @@ export function mapEvUserDetailToDto(user: EvUserDetailPayload): AdminEndUserDto
       const bill = s.bill!;
       return {
         id: String(bill.id),
+        sessionId: String(s.id),
         amount: Number(bill.calculatedAmount),
         currency: "UAH",
         method: paymentMethodLabel(bill.paymentMethod),

@@ -1,4 +1,8 @@
 import { adminRepository, type EvUserPublicRow } from "../../db/admin/adminRepository.js";
+import {
+    queryAllAnalyticsViews,
+    type AdminAnalyticsViewsPayload,
+} from "../../db/admin/adminAnalyticsRepository.js";
 import type {
     BookingType,
     EvUser,
@@ -70,6 +74,20 @@ export type AdminNetworkSessionRow = {
     endedAt: string | null;
     kwh: number;
     cost: number | null;
+};
+
+/** Рядок для списку платежів (bill) — узгоджено з клієнтом `PaymentRow`. */
+export type AdminNetworkPaymentRow = {
+    id: string;
+    sessionId: string;
+    amount: number;
+    currency: string;
+    method: string;
+    status: "success" | "pending" | "failed";
+    createdAt: string;
+    description: string;
+    userId: string | null;
+    userName: string;
 };
 
 export type AdminSessionDetailBillDto = {
@@ -243,6 +261,27 @@ export const adminService = {
         });
     },
 
+    async getNetworkPayments(): Promise<AdminNetworkPaymentRow[]> {
+        const rows = await adminRepository.listNetworkBills();
+        return rows.map((bill) => {
+            const s = bill.session;
+            const st = s.port.station;
+            const uid = s.userId != null ? String(s.userId) : null;
+            return {
+                id: String(bill.id),
+                sessionId: String(s.id),
+                amount: Number(bill.calculatedAmount),
+                currency: "UAH",
+                method: paymentMethodUi(bill.paymentMethod),
+                status: mapBillPaymentUi(bill.paymentStatus),
+                createdAt: bill.createdAt.toISOString(),
+                description: `Сесія #${s.id} · ${st.name}`,
+                userId: uid,
+                userName: userDisplayName(s.user),
+            };
+        });
+    },
+
     async getNetworkBookingById(bookingId: number): Promise<AdminBookingDetailDto | null> {
         const b = await adminRepository.getNetworkBookingById(bookingId);
         if (!b) return null;
@@ -340,5 +379,9 @@ export const adminService = {
         todaySuccessfulPayments: number;
     }> {
         return adminRepository.getDashboardNetworkStats();
+    },
+
+    async getAnalyticsViews(): Promise<AdminAnalyticsViewsPayload> {
+        return queryAllAnalyticsViews();
     },
 }   

@@ -1,13 +1,15 @@
 import { Router } from "express";
 import {
-  getUsers,
-  getUser,
-  updateUser,
-  getNetworkBooking,
-  getNetworkBookings,
-  getNetworkSession,
-  getNetworkSessions,
-  getDashboard,
+    getUsers,
+    getUser,
+    updateUser,
+    getNetworkBooking,
+    getNetworkBookings,
+    getNetworkSession,
+    getNetworkSessions,
+    getNetworkPayments,
+    getDashboard,
+    getAnalyticsViews,
 } from "../../controllers/admin/adminController.js";
 import {
   getForecastBias,
@@ -28,6 +30,7 @@ import { GetNbuEurUah } from "../../controllers/admin/fxController.js";
 export const adminRouter = Router();
 
 adminRouter.get("/dashboard", getDashboard);
+adminRouter.get("/analytics/views", getAnalyticsViews);
 
 adminRouter.get("/users", getUsers);
 adminRouter.get("/users/:userId", getUser);
@@ -37,6 +40,7 @@ adminRouter.get("/network/bookings/:bookingId", getNetworkBooking);
 adminRouter.get("/network/bookings", getNetworkBookings);
 adminRouter.get("/network/sessions/:sessionId", getNetworkSession);
 adminRouter.get("/network/sessions", getNetworkSessions);
+adminRouter.get("/network/payments", getNetworkPayments);
 
 adminRouter.get("/forecast/bias", getForecastBias);
 adminRouter.put("/forecast/bias", putForecastBias);

@@ -114,9 +114,29 @@ export const getNetworkSessions: RequestHandler = async (_req, res, next) => {
     }
 };
 
+/** Усі платежі (bill) у мережі — сторінка «Платежі». */
+export const getNetworkPayments: RequestHandler = async (_req, res, next) => {
+    try {
+        const data = await adminService.getNetworkPayments();
+        res.json(data);
+    } catch (e) {
+        next(e);
+    }
+};
+
 export const getDashboard: RequestHandler = async (_req, res, next) => {
     try {
         const data = await adminService.getDashboardSummary();
+        res.json(data);
+    } catch (e) {
+        next(e);
+    }
+};
+
+/** Дані з SQL VIEW (View.sql) для сторінки аналітики глобального адміна. */
+export const getAnalyticsViews: RequestHandler = async (_req, res, next) => {
+    try {
+        const data = await adminService.getAnalyticsViews();
         res.json(data);
     } catch (e) {
         next(e);

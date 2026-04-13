@@ -1,5 +1,5 @@
 -- ІНДЕКСИ
--- Кабінет: «Мої бронювання» → GET .../bookings (findMany WHERE user_id)
+
 CREATE INDEX IF NOT EXISTS index_BookingTime ON booking (start_time, end_time);
 
 CREATE INDEX IF NOT EXISTS idx_booking_user_id ON booking (user_id);

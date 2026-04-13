@@ -142,6 +142,26 @@ export const adminRepository = {
     });
   },
 
+  /** Усі рахунки (bill) у мережі — для сторінки «Платежі» глобального адміна. */
+  async listNetworkBills(take = 10000) {
+    return await db.bill.findMany({
+      take,
+      orderBy: { createdAt: "desc" },
+      include: {
+        session: {
+          include: {
+            user: { select: { id: true, name: true, surname: true } },
+            port: {
+              include: {
+                station: { select: { id: true, name: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+  },
+
   /** Агрегати за поточну календарну добу (часовий пояс процесу Node). */
   async getDashboardNetworkStats(): Promise<{
     todaySessions: number;
