@@ -8,10 +8,15 @@
     "start": "tsx src/index.ts",
     "seed": "tsx scripts/seed/seed-from-csv.ts",
     "seed:fresh": "tsx scripts/seed/seed-from-csv.ts",
-    "seed:all": "node scripts/seed-all-data.mjs",
-    "seed:all:fresh": "node scripts/seed-all-data.mjs --truncate",
+    "seed:all": "tsx scripts/seed-all-data.ts",
+    "seed:all:fresh": "tsx scripts/seed-all-data.ts --truncate",
     "seed:vehicles": "tsx scripts/seed/seed-vehicles-from-csv.ts",
     "seed:tariffs": "tsx scripts/seed/seed-tariffs-from-api.ts",
+    "seed:all:launch": "tsx scripts/seed-all-data.launch.ts",
+    "run:all-seeds": "tsx scripts/run-all-seeds.ts",
+    "inspect:booking-session": "tsx scripts/inspect-booking-session.ts",
+    "test:station-find": "tsx scripts/test-station-find.ts",
+    "entsoe:fetch": "tsx scripts/entsoe-fetch-days.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -23,6 +28,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.5.0",
+    "@types/xml2js": "^0.4.14",
     "express": "^5.2.1",
     "prisma": "^7.5.0",
     "ts-node-dev": "^2.0.0",
@@ -32,10 +38,12 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
+    "axios": "^1.15.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "csv-parse": "^6.2.1",
     "dotenv": "^17.4.0",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "xml2js": "^0.6.2"
   }
 }

@@ -10,17 +10,38 @@ const SERVER_ROOT = path.join(__dirname, "..", "..");
 let seedAlreadyRunThisProcess = false;
 
 function runSeedScript(): Promise<void> {
-  const script = path.join(SERVER_ROOT, "scripts", "seed-all-data.mjs");
+  const tsxCli = path.join(SERVER_ROOT, "node_modules", "tsx", "dist", "cli.mjs");
+  const script = path.join(SERVER_ROOT, "scripts", "seed-all-data.ts");
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [script], {
+    let stderr = "";
+    let stdout = "";
+    const child = spawn(process.execPath, [tsxCli, script], {
       cwd: SERVER_ROOT,
       env: { ...process.env },
-      stdio: ["ignore", "inherit", "inherit"],
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    child.stdout?.on("data", (chunk: Buffer) => {
+      stdout += chunk.toString();
+      process.stdout.write(chunk);
+    });
+    child.stderr?.on("data", (chunk: Buffer) => {
+      stderr += chunk.toString();
+      process.stderr.write(chunk);
     });
     child.on("error", reject);
     child.on("close", (code) => {
       if (code === 0) resolve();
-      else reject(new Error(`seed-all-data exited with code ${code}`));
+      else {
+        const combined = (stderr || stdout).trim();
+        const tail = combined
+          ? combined.split("\n").slice(-12).join("\n").trim()
+          : "";
+        reject(
+          new Error(
+            tail || `seed-all-data завершився з кодом ${code ?? "unknown"}`,
+          ),
+        );
+      }
     });
   });
 }
@@ -57,9 +78,15 @@ devSeedRouter.post("/seed-from-csv", requireDevSeed, async (_req, res, next) => 
     res.json({
       ok: true,
       message:
-        "Демо-дані (CSV станції, тарифи, SeedMassiveUsers, RandomizeAfterCsv) успішно завантажено.",
+        "SEED виконано: користувачі, авто, станції з CSV, тарифи, бронювання та сесії. Оновіть сторінку списку станцій.",
     });
   } catch (e) {
-    next(e);
+    const message =
+      e instanceof Error ? e.message : "Невідома помилка під час SEED";
+    res.status(500).json({
+      ok: false,
+      error: "seed_failed",
+      message,
+    });
   }
 });

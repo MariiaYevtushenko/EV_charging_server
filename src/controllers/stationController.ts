@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 import { stationService } from "../services/stationService.js";
+import { parsePaginationQuery } from "../lib/pagination.js";
 import {
   parseCreateStationBody,
   parseUpdateStationBody,
@@ -27,10 +28,59 @@ export const getStationDashboard: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getAllStations: RequestHandler = async (_req, res, next) => {
+const MAP_BOUNDS_DEFAULT_LIMIT = 2500;
+const MAP_BOUNDS_MAX_LIMIT = 5000;
+
+/** Станції для карти у видимому прямокутнику: minLat, maxLat, minLng, maxLng; опційно limit (1…5000). */
+export const getStationsMap: RequestHandler = async (req, res, next) => {
   try {
-    const stations = await stationService.getAllStations();
-    res.json(stations);
+    const q = req.query as Record<string, unknown>;
+    const minLat = Number(q["minLat"]);
+    const maxLat = Number(q["maxLat"]);
+    const minLng = Number(q["minLng"]);
+    const maxLng = Number(q["maxLng"]);
+    const limitRaw = q["limit"] != null ? Number(q["limit"]) : MAP_BOUNDS_DEFAULT_LIMIT;
+
+    if (
+      !Number.isFinite(minLat) ||
+      !Number.isFinite(maxLat) ||
+      !Number.isFinite(minLng) ||
+      !Number.isFinite(maxLng)
+    ) {
+      res.status(400).json({
+        error:
+          "Потрібні query-параметри minLat, maxLat, minLng, maxLng (числа) — межі видимої області карти.",
+      });
+      return;
+    }
+    if (minLat > maxLat || minLng > maxLng) {
+      res.status(400).json({ error: "Некоректний bbox: min має бути ≤ max." });
+      return;
+    }
+
+    let limit = Number.isFinite(limitRaw) ? Math.floor(limitRaw) : MAP_BOUNDS_DEFAULT_LIMIT;
+    limit = Math.min(MAP_BOUNDS_MAX_LIMIT, Math.max(1, limit));
+
+    const items = await stationService.getStationsForMapInBounds(
+      minLat,
+      maxLat,
+      minLng,
+      maxLng,
+      limit
+    );
+    res.json({ items, limit });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getAllStations: RequestHandler = async (req, res, next) => {
+  try {
+    const { page, pageSize, skip } = parsePaginationQuery(
+      req.query as Record<string, unknown>
+    );
+    const data = await stationService.getStationsPage(skip, pageSize, page, pageSize);
+    res.json(data);
   } catch (e) {
     next(e);
   }

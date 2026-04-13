@@ -79,6 +79,90 @@ export const stationService = {
     return stations.map((s) => toDashboardDto(s, coordMap.get(s.locationId) ?? null));
   },
 
+  /** Усі станції для карти (без портів) — лише для адмін-утиліт; для UI карти краще `getStationsForMapInBounds`. */
+  async getStationsForMap(): Promise<StationDashboardDto[]> {
+    const stations = await stationRepository.findAllWithLocationOnly();
+    const coordMap = await stationRepository.getLocationCoordsBatch(
+      stations.map((s) => s.locationId)
+    );
+    return stations.map((s) =>
+      toDashboardDto(
+        { ...s, ports: [] } as StationWithLocationPorts,
+        coordMap.get(s.locationId) ?? null
+      )
+    );
+  },
+
+  /** Станції у прямокутнику видимої області карти (bbox), без портів. */
+  async getStationsForMapInBounds(
+    minLat: number,
+    maxLat: number,
+    minLng: number,
+    maxLng: number,
+    limit: number
+  ): Promise<StationDashboardDto[]> {
+    const rows = await stationRepository.findIdsWithLocationInBounds(
+      minLat,
+      maxLat,
+      minLng,
+      maxLng,
+      limit
+    );
+    return rows.map((r) => {
+      const addressLine = `${r.street} ${r.house_number}`.trim();
+      const codes = r.connector_codes ?? [];
+      const ports =
+        codes.length > 0
+          ? codes.map((name, idx) => ({
+              id: r.id * 10000 + idx + 1,
+              portNumber: idx + 1,
+              maxPower: 22,
+              connectorCategory: name,
+              status: "FREE",
+            }))
+          : [];
+      return {
+        id: r.id,
+        name: r.name,
+        status: r.status,
+        locationId: r.location_id,
+        country: r.country,
+        city: r.city,
+        addressLine,
+        lat: r.lat,
+        lng: r.lng,
+        createdAt: r.created_at.toISOString(),
+        updatedAt: r.updated_at.toISOString(),
+        ports,
+      };
+    });
+  },
+
+  /** Пагінація списку станцій + унікальні міста для фільтрів. */
+  async getStationsPage(
+    skip: number,
+    take: number,
+    page: number,
+    pageSize: number
+  ): Promise<{
+    items: StationDashboardDto[];
+    total: number;
+    page: number;
+    pageSize: number;
+    cities: string[];
+  }> {
+    const [total, stations, cities] = await Promise.all([
+      stationRepository.countStations(),
+      stationRepository.findManyPaginated(skip, take),
+      stationRepository.getDistinctCitiesForStations(),
+    ]);
+    const coordMap = await stationRepository.getLocationCoordsBatch(
+      stations.map((s) => s.locationId)
+    );
+    const items = stations.map((s) => toDashboardDto(s, coordMap.get(s.locationId) ?? null));
+    return { items, total, page, pageSize, cities };
+  },
+
 
   async createStation(station: Station): Promise<Station> {
     return await stationRepository.createStation(station);

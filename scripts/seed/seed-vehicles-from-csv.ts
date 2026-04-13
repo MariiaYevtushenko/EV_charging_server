@@ -18,6 +18,7 @@ import type {
   SeedVehiclesFromCsvResult,
 } from "./types/vehicleSpecCsv.js";
 import { TruncateStr } from "./utils/stringUtils.js";
+import { resolveDataFile as resolveDataFileFromDirs } from "./resolveDataFile.js";
 
 export type { SeedVehiclesFromCsvResult } from "./types/vehicleSpecCsv.js";
 
@@ -26,7 +27,6 @@ const { Client } = pg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SERVER_ROOT = path.join(__dirname, "..", "..");
-const DATA_DIR = path.join(SERVER_ROOT, "data");
 
 const VEHICLE_SPEC_CSV_BASE_NAMES = [
   "electric_vehicles_spec_2025.csv",
@@ -77,16 +77,8 @@ function GetRandomBatteryCapacity(): number {
   return 10 + Math.floor(Math.random() * 110);
 }
 
-/** Розв'язати шлях до файлу даних. */
-/** @param {readonly string[]} baseNames - масив імен файлів */
-/** @returns {string} */
 function ResolveDataFile(baseNames: readonly string[]): string {
-  for (const name of baseNames) {
-    const p = path.join(DATA_DIR, name);
-
-    if (fs.existsSync(p)) return p;
-  }
-  throw new Error(`None of ${baseNames.join(", ")} found in ${DATA_DIR}`);
+  return resolveDataFileFromDirs(SERVER_ROOT, baseNames);
 }
 
 /** Прочитати CSV файл. */
@@ -108,7 +100,7 @@ function ReadCsv(filePath: string): CsvVehicleRow[] {
 /** Синхронізація sequence для таблиці vehicle для автоматичного збільшення id. */
 /** @param {import("pg").Client} client - клієнт PostgreSQL */
 /** @returns {Promise<void>} */
-async function SyncVehicleSequence(client: pg.Client): Promise<void> {
+export async function SyncVehicleSequence(client: pg.Client): Promise<void> {
   await client.query(`
     SELECT setval(
       pg_get_serial_sequence('public.vehicle', 'id'),
@@ -119,11 +111,21 @@ async function SyncVehicleSequence(client: pg.Client): Promise<void> {
   `);
 }
 
+export type SeedVehiclesFromCsvOptions = {
+  /**
+   * Зовнішній клієнт у відкритій транзакції: не створює з’єднання,
+   * не виконує внутрішній BEGIN/COMMIT.
+   */
+  client?: pg.Client;
+};
+
 /** Сид таблиці `vehicle` з data/electric_vehicles_spec_*.csv після того, як у БД вже є `ev_user`. */
 /** @returns {Promise<SeedVehiclesFromCsvResult>} */
-export async function SeedVehiclesFromCsv(): Promise<SeedVehiclesFromCsvResult> {
+export async function SeedVehiclesFromCsv(
+  options?: SeedVehiclesFromCsvOptions,
+): Promise<SeedVehiclesFromCsvResult> {
   const databaseUrl = process.env.DATABASE_URL;
-  if (!databaseUrl) {
+  if (!databaseUrl && options?.client == null) {
     throw new Error("[ERROR] Missing DATABASE_URL in environment (.env)");
   }
 
@@ -136,8 +138,10 @@ export async function SeedVehiclesFromCsv(): Promise<SeedVehiclesFromCsvResult> 
     return { inserted: 0, skippedUsers: 0, specRows: 0 };
   }
 
-  const client = new Client({ connectionString: databaseUrl });
-  await client.connect();
+  const ownClient = options?.client == null;
+  const client =
+    options?.client ?? new Client({ connectionString: databaseUrl! });
+  if (ownClient) await client.connect();
 
   let inserted = 0;
   let skippedUsers = 0;
@@ -152,8 +156,7 @@ export async function SeedVehiclesFromCsv(): Promise<SeedVehiclesFromCsvResult> 
     const userIds = usersRes.rows.map((r) => r.id);
     const n = rows.length;
 
-    await client.query("BEGIN");
-    try {
+    const runInserts = async () => {
       let specIdx = 0;
 
       for (const uid of userIds) {
@@ -201,12 +204,21 @@ export async function SeedVehiclesFromCsv(): Promise<SeedVehiclesFromCsvResult> 
           inserted++;
         }
       }
-      await client.query("COMMIT");
-    } catch (e) {
-      await client.query("ROLLBACK").catch(() => {
-        console.error("[ERROR] ROLLBACK failed");
-      });
-      throw e;
+    };
+
+    if (ownClient) {
+      await client.query("BEGIN");
+      try {
+        await runInserts();
+        await client.query("COMMIT");
+      } catch (e) {
+        await client.query("ROLLBACK").catch(() => {
+          console.error("[ERROR] ROLLBACK failed");
+        });
+        throw e;
+      }
+    } else {
+      await runInserts();
     }
 
     await SyncVehicleSequence(client);
@@ -215,7 +227,7 @@ export async function SeedVehiclesFromCsv(): Promise<SeedVehiclesFromCsvResult> 
     );
     return { inserted, skippedUsers, specRows: n };
   } finally {
-    await client.end();
+    if (ownClient) await client.end();
   }
 }
 
@@ -224,7 +236,7 @@ const isMain =
   argv1 !== undefined && path.resolve(argv1) === path.resolve(__filename);
 
 if (isMain) {
-  SeedVehiclesFromCsv().catch((e: unknown) => {
+  SeedVehiclesFromCsv(undefined).catch((e: unknown) => {
     console.error(e);
     process.exitCode = 1;
   });

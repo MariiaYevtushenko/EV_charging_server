@@ -1,10 +1,7 @@
--- =============================================================================
--- ПРЕДСТАВЛЕННЯ (VIEW) — аналітика, дашборди, операційні зрізи
--- Залежності: таблиці після DDL; бажано після functions/ та наявності даних у session/bill.
--- Примітка: графік «по годинах» у UI зручніше брати з GetStationHourlyReport (functions/04_reports.sql).
--- =============================================================================
+-- VIEW: аналітика та операційні зрізи. Потрібні таблиці після DDL; дані з session/bill.
+-- Годинні звіти — з GetStationHourlyReport (functions/04_reports.sql).
 
--- Для STATION_ADMIN + ADMIN: завантаженість та дохід по кожному порту за останні 30 днів
+-- Станція: сесії та виручка по кожному порту, останні 30 днів.
 CREATE OR REPLACE VIEW View_StationPerformance AS
 SELECT
     s.id AS station_id,
@@ -23,8 +20,7 @@ LEFT JOIN bill b ON sess.id = b.session_id
 GROUP BY s.id, s.name, p.port_number;
 
 
--- Порівняльна статистика користувача (тиждень / попередній тиждень / енергія з початку місяця)
--- session LEFT JOIN bill: гроші лише з рахунків, kWh з усіх сесій (у т.ч. без bill)
+-- Користувач: суми з bill за поточний і попередній 7-денний відрізок; kWh з початку місяця (усі сесії).
 CREATE OR REPLACE VIEW View_UserAnalyticsComparison AS
 WITH lined AS (
     SELECT
@@ -52,7 +48,7 @@ FROM lined
 GROUP BY user_id;
 
 
--- Статистика по кожному авто користувача
+-- Користувач: агрегати по кожному авто (усі часи + кількість зарядок за 30 днів).
 CREATE OR REPLACE VIEW View_UserVehicleStats AS
 SELECT
     v.user_id,
@@ -67,7 +63,7 @@ LEFT JOIN session s ON v.id = s.vehicle_id
 GROUP BY v.user_id, v.id, v.license_plate, v.brand, v.model;
 
 
--- Топ станцій на користувача (до 10): останні 90 днів; ранг по енергії, візитах, сумі
+-- Користувач: до 10 улюблених станцій за 90 днів (ранг за kWh, візитами, сумою; лише сесії з bill).
 CREATE OR REPLACE VIEW View_UserStationLoyalty AS
 WITH users_charges AS (
     SELECT
@@ -97,7 +93,7 @@ FROM ranked
 WHERE preference_rank <= 10;
 
 
--- Глобальний дашборд: поточні 30 днів vs попередні 30 днів
+-- Адмін: метрики останніх 30 днів і % зростання відносно попередніх 30 (лише сесії з bill).
 CREATE OR REPLACE VIEW View_AdminGlobalDashboard AS
 WITH stats_current AS (
     SELECT
@@ -132,7 +128,7 @@ FROM stats_current curr
 CROSS JOIN stats_previous prev;
 
 
--- Міста: частка робочих станцій (за кількістю станцій, не за рядками сесій), виручка, інтенсивність
+-- Адмін: по місту — частка станцій WORK, виручка, середній чек, «інтенсивність» (сесії на станцію).
 CREATE OR REPLACE VIEW view_admin_city_performance AS
 SELECT
     l.city,
@@ -152,7 +148,7 @@ LEFT JOIN bill b ON sess.id = b.session_id
 GROUP BY l.city;
 
 
--- Сегментація користувачів для адміна
+-- Адмін: користувачі з сегментом (VIP / Regular / New) і датою останньої сесії.
 CREATE OR REPLACE VIEW view_admin_user_segments AS
 SELECT
     u.id AS user_id,
@@ -172,7 +168,7 @@ LEFT JOIN bill b ON s.id = b.session_id
 GROUP BY u.id, u.name, u.surname;
 
 
--- Операційні зрізи (моніторинг)
+-- Моніторинг: активні сесії зарядки.
 CREATE OR REPLACE VIEW View_ActiveSessions AS
 SELECT
     s.id AS session_id,
@@ -188,6 +184,7 @@ JOIN station st ON st.id = s.station_id
 WHERE s.status = 'ACTIVE';
 
 
+-- Моніторинг: майбутні бронювання BOOKED (інтервал ще не закінчився).
 CREATE OR REPLACE VIEW View_UpcomingBookings AS
 SELECT
     b.id AS booking_id,

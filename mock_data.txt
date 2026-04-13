@@ -1,5 +1,5 @@
 -- Відповідає DB_script.MD (port: PK (station_id, port_number), bill замість payment)
--- Ідемпотентні процедури: ../db/Seed_procedures.sql (SeedMassiveUsers — масовий ev_user; seed_sql_phase2 — демо booking/session/bill)
+-- Ідемпотентні процедури: ../db/SEED_users.sql (SeedMassiveUsers — масовий ev_user); forecast_bias — ../db/SEED_forecast_bias.sql (SeedBias)
 -- 1. ОЧИЩЕННЯ
 TRUNCATE bill, session, booking, vehicle, tariff, tariff_prediction, forecast_bias, port, station, location, ev_user, connector_type RESTART IDENTITY CASCADE;
 

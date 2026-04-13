@@ -1,12 +1,15 @@
-import prisma from "../../prisma.config.js";
-import type { PrismaClient } from "../../../generated/prisma/index.js";
-import { TariffPeriod } from "../../../generated/prisma/index.js";
+import { tariffRepository } from "../../db/tariffRepository.js";
+import { dateKeyLocal, localDateAtNoon } from "../../utils/tariffDateUtils.js";
+import { envFallbackDayNight } from "../../utils/tariffEnv.js";
+import { buildTariffApiUrl } from "./tariffHttpUtils.js";
+import { parseTariffApiPayload } from "./tariffApiParser.js";
+import {
+  fetchEntsoeDayNightKwh,
+  isEntsoeTariffMode,
+} from "./entsoeTariffClient.js";
 
-const db = prisma as unknown as PrismaClient;
-
-function localDateAtNoon(d: Date): Date {
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0, 0);
-}
+export { parseTariffApiPayload } from "./tariffApiParser.js";
+export type { ParsedTariffPayload } from "./tariffApiParser.js";
 
 /**
  * Запис історичних тарифів за день (upsert по tariff_type + effective_date).
@@ -16,98 +19,12 @@ export async function saveHistoricalTariff(
   dayPrice: number,
   nightPrice: number
 ): Promise<void> {
-  const effectiveDate = localDateAtNoon(date);
-  await db.tariff.upsert({
-    where: {
-      tariffType_effectiveDate: {
-        tariffType: TariffPeriod.DAY,
-        effectiveDate,
-      },
-    },
-    create: {
-      tariffType: TariffPeriod.DAY,
-      pricePerKwh: dayPrice,
-      effectiveDate,
-    },
-    update: { pricePerKwh: dayPrice },
-  });
-  await db.tariff.upsert({
-    where: {
-      tariffType_effectiveDate: {
-        tariffType: TariffPeriod.NIGHT,
-        effectiveDate,
-      },
-    },
-    create: {
-      tariffType: TariffPeriod.NIGHT,
-      pricePerKwh: nightPrice,
-      effectiveDate,
-    },
-    update: { pricePerKwh: nightPrice },
-  });
+  await tariffRepository.upsertDayNightForCalendarDay(date, dayPrice, nightPrice);
 }
 
-function dateKeyLocal(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-type ParsedTariffPayload =
-  | { kind: "single"; day: number; night: number }
-  | { kind: "series"; points: Map<string, { day: number; night: number }> };
-
-/**
- * Розпізнає JSON з TARIFF_API_URL: одна пара день/ніч або масив по датах
- * (поля date / effectiveDate, dayPricePerKwh / day, nightPricePerKwh / night).
- */
-export function parseTariffApiPayload(data: unknown): ParsedTariffPayload {
-  if (data == null) {
-    throw new Error("Empty tariff API response");
-  }
-
-  if (Array.isArray(data)) {
-    const points = new Map<string, { day: number; night: number }>();
-    for (const row of data) {
-      if (!row || typeof row !== "object") continue;
-      const r = row as Record<string, unknown>;
-      const dateRaw = r["date"] ?? r["effectiveDate"] ?? r["targetDate"];
-      let ds: string | null = null;
-      if (typeof dateRaw === "string") {
-        ds = dateRaw.slice(0, 10);
-      } else if (dateRaw instanceof Date && !Number.isNaN(dateRaw.getTime())) {
-        ds = dateKeyLocal(dateRaw);
-      }
-      if (!ds) continue;
-      const day = Number(r["dayPricePerKwh"] ?? r["day"] ?? r["DAY"]);
-      const night = Number(r["nightPricePerKwh"] ?? r["night"] ?? r["NIGHT"]);
-      if (!Number.isFinite(day) || !Number.isFinite(night)) continue;
-      points.set(ds, { day, night });
-    }
-    if (points.size > 0) {
-      return { kind: "series", points };
-    }
-  }
-
-  if (typeof data === "object") {
-    const o = data as Record<string, unknown>;
-    const nested = o["series"] ?? o["prices"] ?? o["history"] ?? o["data"] ?? o["days"];
-    if (Array.isArray(nested)) {
-      return parseTariffApiPayload(nested);
-    }
-    const day = o["dayPricePerKwh"] ?? o["day"] ?? o["DAY"];
-    const night = o["nightPricePerKwh"] ?? o["night"] ?? o["NIGHT"];
-    if (day != null && night != null) {
-      const d = Number(day);
-      const n = Number(night);
-      if (Number.isFinite(d) && Number.isFinite(n)) {
-        return { kind: "single", day: d, night: n };
-      }
-    }
-  }
-
-  throw new Error("Unrecognized TARIFF_API_URL JSON shape (need day/night or array with dates)");
-}
-
-async function fetchTariffsFromApi(): Promise<{
+async function fetchTariffsFromApi(
+  forDate: Date = new Date()
+): Promise<{
   dayPricePerKwh: number | undefined;
   nightPricePerKwh: number | undefined;
 }> {
@@ -115,45 +32,51 @@ async function fetchTariffsFromApi(): Promise<{
   if (!url) {
     return { dayPricePerKwh: undefined, nightPricePerKwh: undefined };
   }
-  const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
-  if (!res.ok) {
-    throw new Error(`TARIFF_API_URL HTTP ${res.status}`);
+  if (isEntsoeTariffMode(url)) {
+    const { day, night } = await fetchEntsoeDayNightKwh(forDate);
+    return { dayPricePerKwh: day, nightPricePerKwh: night };
   }
-  const data = await res.json();
+  const response = await fetch(buildTariffApiUrl(url), {
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!response.ok) {
+    throw new Error(`TARIFF_API_URL HTTP ${response.status}`);
+  }
+  const data = await response.json();
   try {
-    const p = parseTariffApiPayload(data);
-    if (p.kind === "single") {
-      return { dayPricePerKwh: p.day, nightPricePerKwh: p.night };
+    const parsedPayload = parseTariffApiPayload(data);
+    if (parsedPayload.kind === "single") {
+      return {
+        dayPricePerKwh: parsedPayload.day,
+        nightPricePerKwh: parsedPayload.night,
+      };
     }
-    const today = dateKeyLocal(new Date());
-    const pt = p.points.get(today);
-    if (pt) {
-      return { dayPricePerKwh: pt.day, nightPricePerKwh: pt.night };
+    const todayKey = dateKeyLocal(new Date());
+    const rowForToday = parsedPayload.points.get(todayKey);
+    if (rowForToday) {
+      return {
+        dayPricePerKwh: rowForToday.day,
+        nightPricePerKwh: rowForToday.night,
+      };
     }
-    const first = [...p.points.values()][0];
-    if (first) {
-      return { dayPricePerKwh: first.day, nightPricePerKwh: first.night };
+    const firstSeriesRow = [...parsedPayload.points.values()][0];
+    if (firstSeriesRow) {
+      return {
+        dayPricePerKwh: firstSeriesRow.day,
+        nightPricePerKwh: firstSeriesRow.night,
+      };
     }
     return { dayPricePerKwh: undefined, nightPricePerKwh: undefined };
   } catch {
-    const rec = data as Record<string, unknown>;
-    const day = rec["dayPricePerKwh"] ?? rec["day"] ?? rec["DAY"];
-    const night = rec["nightPricePerKwh"] ?? rec["night"] ?? rec["NIGHT"];
+    const record = data as Record<string, unknown>;
+    const dayRaw = record["dayPricePerKwh"] ?? record["day"] ?? record["DAY"];
+    const nightRaw =
+      record["nightPricePerKwh"] ?? record["night"] ?? record["NIGHT"];
     return {
-      dayPricePerKwh: day != null ? Number(day) : undefined,
-      nightPricePerKwh: night != null ? Number(night) : undefined,
+      dayPricePerKwh: dayRaw != null ? Number(dayRaw) : undefined,
+      nightPricePerKwh: nightRaw != null ? Number(nightRaw) : undefined,
     };
   }
-}
-
-const DEFAULT_DAY_FALLBACK = 13.5;
-const DEFAULT_NIGHT_FALLBACK = 9.2;
-
-function envFallbackDayNight(): { day: number; night: number } {
-  return {
-    day: Number(process.env["TARIFF_DAY_PRICE"] ?? DEFAULT_DAY_FALLBACK),
-    night: Number(process.env["TARIFF_NIGHT_PRICE"] ?? DEFAULT_NIGHT_FALLBACK),
-  };
 }
 
 export type TariffSeedRangeAnchor = "start" | "end";
@@ -163,7 +86,8 @@ export type TariffSeedMode =
   | "no_api"
   | "api_per_day"
   | "api_single"
-  | "api_series";
+  | "api_series"
+  | "entsoe";
 
 export type SeedTariffsFromApiResult = {
   daysWritten: number;
@@ -181,89 +105,171 @@ export type SeedTariffsFromApiResult = {
  * - без `TARIFF_API_URL` — одна й та сама пара з env (TARIFF_DAY_PRICE / TARIFF_NIGHT_PRICE) на всі дні;
  * - один запит до API: об'єкт { day, night } — та сама пара на всі дні; масив по датах — ціна на день з мапи, інакше fallback з env;
  * - `TARIFF_API_PER_DAY=true` — для кожного дня GET `TARIFF_API_URL?date=YYYY-MM-DD` (очікується один об'єкт day/night).
+ * - ENTSO-E: від’ємні €/kWh за замовчуванням стають додатними (`|x|`), якщо не `ENTSOE_CLAMP_NEGATIVE_PRICES=false`.
  */
 export async function SeedTariffsFromApi(
-  days: number = 60,
+  days: number = 90,
   rangeDate: Date = new Date(),
-  options?: { anchor?: TariffSeedRangeAnchor }
+  options?: {
+    anchor?: TariffSeedRangeAnchor;
+    /** Якщо задано — запис тарифів без Prisma (наприклад, у транзакції pg.Client). */
+    persistDayNight?: (
+      calendarDay: Date,
+      dayPricePerKwh: number,
+      nightPricePerKwh: number
+    ) => Promise<void>;
+  }
 ): Promise<SeedTariffsFromApiResult> {
   const anchor: TariffSeedRangeAnchor = options?.anchor ?? "start";
+  const persist =
+    options?.persistDayNight ??
+    ((d: Date, day: number, night: number) => saveHistoricalTariff(d, day, night));
   const url = process.env["TARIFF_API_URL"];
-  const endOrStart = localDateAtNoon(rangeDate);
-  const start =
+  const rangeAnchorDate = localDateAtNoon(rangeDate);
+
+  const rangeStartDate =
     anchor === "end"
       ? new Date(
-          endOrStart.getFullYear(),
-          endOrStart.getMonth(),
-          endOrStart.getDate() - (days - 1),
+          rangeAnchorDate.getFullYear(),
+          rangeAnchorDate.getMonth(),
+          rangeAnchorDate.getDate() - (days - 1),
           12,
           0,
           0,
           0
         )
-      : endOrStart;
-  const fb = envFallbackDayNight();
+      : rangeAnchorDate;
+  const fallbackPrices = envFallbackDayNight();
 
   if (!url) {
-    let written = 0;
-    for (let i = 0; i < days; i++) {
-      const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i, 12, 0, 0, 0);
-      await saveHistoricalTariff(d, fb.day, fb.night);
-      written++;
+    let daysWritten = 0;
+    for (let dayOffset = 0; dayOffset < days; dayOffset++) {
+      const calendarDay = new Date(
+        rangeStartDate.getFullYear(),
+        rangeStartDate.getMonth(),
+        rangeStartDate.getDate() + dayOffset,
+        12,
+        0,
+        0,
+        0
+      );
+      await persist(
+        calendarDay,
+        fallbackPrices.day,
+        fallbackPrices.night
+      );
+      daysWritten++;
     }
-    return { daysWritten: written, mode: "no_api" };
+    return { daysWritten, mode: "no_api" };
+  }
+
+  if (isEntsoeTariffMode(url)) {
+    let daysWritten = 0;
+    for (let dayOffset = 0; dayOffset < days; dayOffset++) {
+      const calendarDay = new Date(
+        rangeStartDate.getFullYear(),
+        rangeStartDate.getMonth(),
+        rangeStartDate.getDate() + dayOffset,
+        12,
+        0,
+        0,
+        0
+      );
+      const { day, night } = await fetchEntsoeDayNightKwh(calendarDay);
+      await persist(calendarDay, day, night);
+      daysWritten++;
+    }
+    return { daysWritten, mode: "entsoe" };
   }
 
   if (process.env["TARIFF_API_PER_DAY"] === "true") {
-    let written = 0;
-    for (let i = 0; i < days; i++) {
-      const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i, 12, 0, 0, 0);
-      const iso = dateKeyLocal(d);
-      const sep = url.includes("?") ? "&" : "?";
-      const requestUrl = `${url}${sep}date=${iso}`;
-      const res = await fetch(requestUrl, { signal: AbortSignal.timeout(15_000) });
-      if (!res.ok) {
-        throw new Error(`TARIFF_API_URL HTTP ${res.status} (${iso})`);
+    let daysWritten = 0;
+    for (let dayOffset = 0; dayOffset < days; dayOffset++) {
+      const calendarDay = new Date(
+        rangeStartDate.getFullYear(),
+        rangeStartDate.getMonth(),
+        rangeStartDate.getDate() + dayOffset,
+        12,
+        0,
+        0,
+        0
+      );
+      const dateIso = dateKeyLocal(calendarDay);
+      const requestUrl = buildTariffApiUrl(url, { date: dateIso });
+      const response = await fetch(requestUrl, { signal: AbortSignal.timeout(15_000) });
+
+      if (!response.ok) {
+        throw new Error(`TARIFF_API_URL HTTP ${response.status} (${dateIso})`);
       }
-      const data = await res.json();
-      const p = parseTariffApiPayload(data);
-      if (p.kind !== "single") {
-        throw new Error(`Per-day tariff API must return a single day/night object (${iso})`);
+
+      const data = await response.json();
+      const perDayPayload = parseTariffApiPayload(data);
+
+      if (perDayPayload.kind !== "single") {
+        throw new Error(
+          `Per-day tariff API must return a single day/night object (${dateIso})`
+        );
       }
-      await saveHistoricalTariff(d, p.day, p.night);
-      written++;
+      await persist(
+        calendarDay,
+        perDayPayload.day,
+        perDayPayload.night
+      );
+      daysWritten++;
     }
-    return { daysWritten: written, mode: "api_per_day" };
+    return { daysWritten, mode: "api_per_day" };
   }
 
-  const res = await fetch(url, { signal: AbortSignal.timeout(60_000) });
-  if (!res.ok) {
-    throw new Error(`TARIFF_API_URL HTTP ${res.status}`);
+  const response = await fetch(buildTariffApiUrl(url), {
+    signal: AbortSignal.timeout(60_000),
+  });
+  if (!response.ok) {
+    throw new Error(`TARIFF_API_URL HTTP ${response.status}`);
   }
-  const data = await res.json();
-  const parsed = parseTariffApiPayload(data);
+  const data = await response.json();
+  const parsedPayload = parseTariffApiPayload(data);
 
-  if (parsed.kind === "single") {
-    let written = 0;
-    for (let i = 0; i < days; i++) {
-      const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i, 12, 0, 0, 0);
-      await saveHistoricalTariff(d, parsed.day, parsed.night);
-      written++;
+  if (parsedPayload.kind === "single") {
+    let daysWritten = 0;
+    for (let dayOffset = 0; dayOffset < days; dayOffset++) {
+      const calendarDay = new Date(
+        rangeStartDate.getFullYear(),
+        rangeStartDate.getMonth(),
+        rangeStartDate.getDate() + dayOffset,
+        12,
+        0,
+        0,
+        0
+      );
+      await persist(
+        calendarDay,
+        parsedPayload.day,
+        parsedPayload.night
+      );
+      daysWritten++;
     }
-    return { daysWritten: written, mode: "api_single" };
+    return { daysWritten, mode: "api_single" };
   }
 
-  let written = 0;
-  for (let i = 0; i < days; i++) {
-    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i, 12, 0, 0, 0);
-    const k = dateKeyLocal(d);
-    const pt = parsed.points.get(k);
-    const dayP = pt?.day ?? fb.day;
-    const nightP = pt?.night ?? fb.night;
-    await saveHistoricalTariff(d, dayP, nightP);
-    written++;
+  let daysWritten = 0;
+  for (let dayOffset = 0; dayOffset < days; dayOffset++) {
+    const calendarDay = new Date(
+      rangeStartDate.getFullYear(),
+      rangeStartDate.getMonth(),
+      rangeStartDate.getDate() + dayOffset,
+      12,
+      0,
+      0,
+      0
+    );
+    const dateKey = dateKeyLocal(calendarDay);
+    const seriesRow = parsedPayload.points.get(dateKey);
+    const dayPrice = seriesRow?.day ?? fallbackPrices.day;
+    const nightPrice = seriesRow?.night ?? fallbackPrices.night;
+    await persist(calendarDay, dayPrice, nightPrice);
+    daysWritten++;
   }
-  return { daysWritten: written, mode: "api_series" };
+  return { daysWritten, mode: "api_series" };
 }
 
 /**
@@ -273,12 +279,12 @@ export async function ingestDailyTariff(date: Date = new Date()): Promise<{
   day: number;
   night: number;
 }> {
-  const fromApi = await fetchTariffsFromApi();
+  const apiPrices = await fetchTariffsFromApi(date);
   const day =
-    fromApi.dayPricePerKwh ??
+    apiPrices.dayPricePerKwh ??
     Number(process.env["TARIFF_DAY_PRICE"] ?? 13.5);
   const night =
-    fromApi.nightPricePerKwh ??
+    apiPrices.nightPricePerKwh ??
     Number(process.env["TARIFF_NIGHT_PRICE"] ?? 9.2);
   await saveHistoricalTariff(date, day, night);
   return { day, night };

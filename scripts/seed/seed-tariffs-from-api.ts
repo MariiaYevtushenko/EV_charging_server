@@ -1,17 +1,20 @@
 /**
- * Заповнює таблицю `tariff` на **останні** TARIFF_SEED_DAYS календарних днів (за замовчуванням 60),
- * включно з сьогоднішнім днём (`anchor: end`).
+ * Заповнює таблицю `tariff`: на кожен календарний день **два** рядки — TariffPeriod **DAY** і **NIGHT**
+ * (денний 07:00–23:00 та нічний 23:00–07:00 у логіці застосунку).
  *
- * Після успішного запуску результат також пишеться в `SeedTariffsFromApi.txt` (поруч зі скриптом).
+ * Діапазон: останні **TARIFF_SEED_DAYS** днів (за замовчуванням **90**), `anchor: end` — включно з сьогодні.
+ * Кількість днів: env `TARIFF_SEED_DAYS` або аргумент CLI.
+ *
+ * Після запуску — звіт у `SeedTariffsFromApi.txt` (поруч зі скриптом).
  *
  * Usage (з каталогу server/):
  *   npx tsx scripts/seed/seed-tariffs-from-api.ts
  *   npx tsx scripts/seed/seed-tariffs-from-api.ts 30
  */
+import "./loadServerEnv.js";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import "dotenv/config";
 import {
   SeedTariffsFromApi,
   type SeedTariffsFromApiResult,
@@ -23,32 +26,49 @@ const REPORT_FILE = path.join(__dirname, "SeedTariffsFromApi.txt");
 
 const arg = process.argv[2];
 const fromEnv = process.env["TARIFF_SEED_DAYS"];
-const days = arg != null && arg !== "" ? Number(arg) : Number(fromEnv ?? 60);
+const days = arg != null && arg !== "" ? Number(arg) : Number(fromEnv ?? 90);
 
 if (!Number.isFinite(days) || days < 1 || days > 366) {
   console.error("Days must be between 1 and 366.");
   process.exit(1);
 }
 
+function EnvValue(key: string): string {
+  const v = process.env[key];
+  if (v == null || String(v).trim() === "") return "не задано";
+  return String(v).trim();
+}
+
 function writeSeedReport(result: SeedTariffsFromApiResult): void {
+  const daysFrom =
+    arg != null && arg !== ""
+      ? `аргумент CLI (${arg})`
+      : fromEnv != null && String(fromEnv).trim() !== ""
+        ? `TARIFF_SEED_DAYS у .env (${String(fromEnv).trim()})`
+        : "не задано TARIFF_SEED_DAYS → у скрипті береться 90";
+
   const lines = [
     `SeedTariffsFromApi — ${new Date().toISOString()}`,
     `anchor: end (останні ${days} календарних днів до сьогодні)`,
+    `скільки днів: ${days} — ${daysFrom}`,
     "",
     "Результат (об'єкт повернення SeedTariffsFromApi):",
     JSON.stringify(result, null, 2),
     "",
-    "mode: no_api — без TARIFF_API_URL, ціни з TARIFF_DAY_PRICE / TARIFF_NIGHT_PRICE;",
-    "      api_single — один запит API, одна пара день/ніч на всі дні;",
-    "      api_series — API з масивом по датах;",
-    "      api_per_day — TARIFF_API_PER_DAY=true, запит на кожну дату.",
+    "Довідка mode: no_api | entsoe | api_single | api_series | api_per_day (лише JSON-API).",
+    "На кожен день: 2 записи в tariff — DAY (денний тариф) і NIGHT (нічний), pricePerKwh у валюті схеми.",
     "",
-    "Контекст env (без значення URL):",
+    "Контекст env (URL токенів не показуємо):",
     `  TARIFF_API_URL: ${process.env["TARIFF_API_URL"] ? "задано" : "не задано"}`,
-    `  TARIFF_API_PER_DAY: ${process.env["TARIFF_API_PER_DAY"] ?? "—"}`,
-    `  TARIFF_DAY_PRICE: ${process.env["TARIFF_DAY_PRICE"] ?? "—"}`,
-    `  TARIFF_NIGHT_PRICE: ${process.env["TARIFF_NIGHT_PRICE"] ?? "—"}`,
-    `  TARIFF_SEED_DAYS (env): ${fromEnv ?? "—"}`,
+    ...(result.mode === "entsoe"
+      ? [
+          "  Примітка: entsoe = ENTSO-E XML A44, один HTTP-запит на кожен календарний день.",
+          "  TARIFF_API_PER_DAY не перемикає цей режим (потрібен лише для власного JSON API з ?date=).",
+          `  TARIFF_API_PER_DAY у .env: ${EnvValue("TARIFF_API_PER_DAY")}`,
+        ]
+      : [`  TARIFF_API_PER_DAY: ${EnvValue("TARIFF_API_PER_DAY")}`]),
+    `  TARIFF_DAY_PRICE: ${EnvValue("TARIFF_DAY_PRICE")}`,
+    `  TARIFF_NIGHT_PRICE: ${EnvValue("TARIFF_NIGHT_PRICE")}`,
     "",
   ];
   fs.writeFileSync(REPORT_FILE, lines.join("\n"), "utf8");

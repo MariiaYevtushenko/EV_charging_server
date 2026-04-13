@@ -1,5 +1,6 @@
 /**
- * Зворотна сумісність: той самий пайплайн, що й seed-all-data.ts (транзакція).
+ * Зворотна сумісність: запускає `seed-all-data.ts` через tsx.
+ * Використання: `npx tsx scripts/seed-all-data.launch.ts [аргументи як у seed-all-data.ts]`
  */
 import { spawn } from "node:child_process";
 import fs from "node:fs";
@@ -16,19 +17,17 @@ if (!fs.existsSync(tsxCli)) {
   process.exit(1);
 }
 
-const truncate = process.argv.slice(2).includes("--truncate");
+const child = spawn(process.execPath, [tsxCli, script, ...process.argv.slice(2)], {
+  cwd: SERVER_ROOT,
+  stdio: "inherit",
+  env: { ...process.env },
+});
 
-const child = spawn(
-  process.execPath,
-  [tsxCli, script, ...(truncate ? ["--truncate"] : [])],
-  { cwd: SERVER_ROOT, stdio: "inherit", env: { ...process.env } },
-);
-
-child.on("error", (e) => {
-  console.error(e);
+child.on("error", (err: Error) => {
+  console.error(err);
   process.exitCode = 1;
 });
 
-child.on("close", (code) => {
+child.on("close", (code: number | null) => {
   process.exit(code ?? 1);
 });

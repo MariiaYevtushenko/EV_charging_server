@@ -13,16 +13,17 @@ import {
   InsertLocation,
   InsertPortsForStation,
   InsertStation,
+  stationStatusForCsvSeed,
   UpsertConnectorTypesAndLoadIdMap,
 } from "./stationSeedInserts.js";
 import { SplitStreetHouse, TruncateStr } from "./utils/stringUtils.js";
+import { getDataSearchDirs, resolveDataFile as resolveDataFileFromDirs } from "./resolveDataFile.js";
 
 const { Client } = pg;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SERVER_ROOT = path.join(__dirname, "..", "..");
-const DATA_DIR = path.join(SERVER_ROOT, "data");
 
 const STATIONS_CSV_BASE_NAMES = ["ev_stations_2025.csv"] as const;
 
@@ -92,7 +93,9 @@ function GetLocationDataFromRow( row: EvStationCsvRow,): StationLocationDataFrom
   const address = String(row.address ?? row.town ?? "—").trim() || "—";
   const lat = Number(row.lat);
   const lon = Number(row.lon);
-  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) 
+    return null;
 
   const { street, houseNumber } = SplitStreetHouse(address);
   const country = TruncateStr(row.country ?? "UA", 100);
@@ -122,22 +125,19 @@ function ReadFileCsv(filePath: string): EvStationCsvRow[] {
   }) as EvStationCsvRow[];
 }
 
-/** Розв'язати шлях до файлу даних. */
-/** @param {readonly string[]} baseNames - масив імен файлів */
-/** @returns {string} */
 function ResolveDataFile(baseNames: readonly string[]): string {
-  for (const name of baseNames) {
-    const p = path.join(DATA_DIR, name);
-    if (fs.existsSync(p)) 
-      return p;
-  }
-  throw new Error(`None of ${baseNames.join(", ")} found in ${DATA_DIR}`);
+  return resolveDataFileFromDirs(SERVER_ROOT, baseNames);
 }
 
 /** Синхронізація sequence для таблиці. */
 /** @param {import("pg").Client} client - клієнт PostgreSQL */
 /** @param {SeqTable} table - назва таблиці */
 /** @returns {Promise<void>} */
+export async function SyncLocationStationSequences(client: pg.Client): Promise<void> {
+  await SyncSequence(client, "location");
+  await SyncSequence(client, "station");
+}
+
 async function SyncSequence(client: pg.Client, table: SeqTable): Promise<void> {
   await client.query(`
     SELECT setval(
@@ -149,6 +149,86 @@ async function SyncSequence(client: pg.Client, table: SeqTable): Promise<void> {
   `);
 }
 
+/** Рядки CSV за шляхом за замовчуванням (ev_stations_2025.csv у server/data або server/CSV_data). */
+export function loadDefaultEvStationCsvRows(): {
+  rows: EvStationCsvRow[];
+  filePath: string;
+} {
+  const stationsPath = ResolveDataFile(STATIONS_CSV_BASE_NAMES);
+  const stationRows = ReadFileCsv(stationsPath);
+  return { rows: stationRows, filePath: stationsPath };
+}
+
+/**
+ * Вставка location / station / port / connector_type з уже прочитаного CSV.
+ * Без BEGIN/COMMIT — викликати всередині транзакції батька.
+ */
+export async function SeedEvStationsFromCsv(
+  client: pg.Client,
+  stationRows: EvStationCsvRow[],
+): Promise<{ stationDone: number }> {
+  const connectorCodes = CollectConnectorCodes(stationRows);
+  if (connectorCodes.length === 0) {
+    throw new Error(
+      "connector_type: немає жодного коду з ev_stations CSV (connector_types).",
+    );
+  }
+
+  const connectorIdByCode =
+    await UpsertConnectorTypesAndLoadIdMap(client, connectorCodes);
+
+  console.log(
+    "connector_type (з унікальних значень connector_types у CSV → коди):",
+    Object.keys(connectorIdByCode).join(", "),
+  );
+
+  let stationDone = 0;
+
+  for (const row of stationRows) {
+    const loc = GetLocationDataFromRow(row);
+
+    if (loc == null) continue;
+
+    const locationId = await InsertLocation(client, {
+      lon: loc.lon,
+      lat: loc.lat,
+      country: loc.country,
+      city: loc.town,
+      street: loc.street,
+      houseNumber: loc.houseNumber,
+    });
+
+    if (locationId == null) continue;
+
+    await InsertStation(client, {
+      stationId: loc.extId,
+      locationId,
+      name: loc.title,
+      status: stationStatusForCsvSeed(loc.extId),
+    });
+
+    const numPorts = Math.max(1, parseInt(String(row.num_connectors ?? "1"), 10) || 1);
+    const rowConnectorCodes = GetConnectorCodes(row);
+
+    await InsertPortsForStation(client, {
+      stationId: loc.extId,
+      numPorts,
+      connectorCodes: rowConnectorCodes,
+      connectorIdByCode,
+    });
+
+    stationDone++;
+    if (stationDone % 500 === 0) {
+      console.log(`Stations seeded: ${stationDone}/${stationRows.length}`);
+    }
+  }
+
+  console.log(
+    `[LOG] Stations seeded: ${stationDone}/${stationRows.length} (ports created per num_connectors).`,
+  );
+  return { stationDone };
+}
+
 async function main(): Promise<void> {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
@@ -156,12 +236,10 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const stationsPath = ResolveDataFile(STATIONS_CSV_BASE_NAMES);
+  const { rows: stationRows, filePath: stationsPath } = loadDefaultEvStationCsvRows();
 
-  console.log("[LOG] Data directory:", DATA_DIR);
-  console.log("  stations:", path.basename(stationsPath));
-
-  const stationRows = ReadFileCsv(stationsPath);
+  console.log("[LOG] stations CSV:", stationsPath);
+  console.log("[LOG] search dirs:", getDataSearchDirs(SERVER_ROOT).join(", "));
 
   console.log(`[LOG] Loaded ${stationRows.length} station rows.`);
 
@@ -169,77 +247,15 @@ async function main(): Promise<void> {
   await client.connect();
 
   try {
-    // Отримати унікальні коди `connector_type.name` з колонки `connector_types` усіх рядків CSV
-    const connectorCodes = CollectConnectorCodes(stationRows);
-    if (connectorCodes.length === 0) {
-      throw new Error(
-        "connector_type: немає жодного коду з ev_stations CSV (connector_types).",
-      );
-    }
-
-    // Вставити унікальні коди `connector_type.name` в таблицю `connector_type`
-    const connectorIdByCode =
-      await UpsertConnectorTypesAndLoadIdMap(client, connectorCodes);
-
-    console.log(
-      "connector_type (з унікальних значень connector_types у CSV → коди):",
-      Object.keys(connectorIdByCode).join(", "),
-    );
-
-    let stationDone = 0;
-
     await client.query("BEGIN");
-    for (const row of stationRows) {
-      const loc = GetLocationDataFromRow(row);
-      if (loc == null) continue;
-
-      const locationId = await InsertLocation(client, {
-        lon: loc.lon,
-        lat: loc.lat,
-        country: loc.country,
-        city: loc.town,
-        street: loc.street,
-        houseNumber: loc.houseNumber,
-      });
-      if (locationId == null) continue;
-
-      await InsertStation(client, {
-        stationId: loc.extId,
-        locationId,
-        name: loc.title,
-      });
-
-      const numPorts = Math.max(
-        1,
-        parseInt(String(row.num_connectors ?? "1"), 10) || 1,
-      );
-      const rowConnectorCodes = GetConnectorCodes(row);
-
-      await InsertPortsForStation(client, {
-        stationId: loc.extId,
-        numPorts,
-        connectorCodes: rowConnectorCodes,
-        connectorIdByCode,
-      });
-
-      stationDone++;
-      if (stationDone % 500 === 0) {
-        console.log(`  Stations seeded: ${stationDone}/${stationRows.length}`);
-      }
-    }
+    await SeedEvStationsFromCsv(client, stationRows);
     await client.query("COMMIT");
-    await SyncSequence(client, "location");
-    await SyncSequence(client, "station");
-    console.log(
-      `Stations seeded: ${stationDone}/${stationRows.length} (ports created per num_connectors).`,
-    );
+    await SyncLocationStationSequences(client);
 
-    console.log(
-      "Done. Повний порядок користувачів/авто — npm run seed:all (seed-all-data.mjs).",
-    );
+    console.log("[LOG] Done. Повний порядок користувачів/авто — npm run seed:all (seed-all-data.ts).");
   } catch (e) {
     await client.query("ROLLBACK").catch(() => {});
-    console.error(e);
+    console.error(`[ERROR] ${e}`);
     process.exitCode = 1;
   } finally {
     await client.end();

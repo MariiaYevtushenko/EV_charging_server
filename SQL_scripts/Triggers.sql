@@ -1,15 +1,7 @@
--- =============================================================================
--- ТРИГЕРИ (бізнес-правила на рівні БД)
--- =============================================================================
+-- Тригери: обмеження та побічні ефекти на рівні БД (узгоджено з Procedures.sql).
 
--- -----------------------------------------------------------------------------
--- 1) trigger_booking_02_overlap — неможливість перетину інтервалів бронювання
--- -----------------------------------------------------------------------------
--- Правило: на один порт у статусі BOOKED не може бути двох перетинних за часом
--- бронювань (новий рядок або зміна часу/порту).
--- Коли: BEFORE INSERT OR UPDATE на таблиці booking.
--- Виняток: якщо статус бронювання не BOOKED, перевірка перетину не виконується.
--- -----------------------------------------------------------------------------
+-- CheckBookingOverlap — немає двох BOOKED-броней на один порт з перетином часу.
+--    BEFORE INSERT/UPDATE booking; якщо status ≠ BOOKED — перевірка не виконується.
 CREATE OR REPLACE FUNCTION CheckBookingOverlap()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -34,15 +26,8 @@ CREATE TRIGGER trigger_CheckBookingOverlap
 BEFORE INSERT OR UPDATE ON booking
 FOR EACH ROW EXECUTE FUNCTION CheckBookingOverlap();
 
--- -----------------------------------------------------------------------------
--- 2) trigger_GenerateBill — автоматичне створення рахунку після зарядки
--- -----------------------------------------------------------------------------
--- Правило: коли сесія зарядки завершена (статус ACTIVE → COMPLETED), у БД
--- має з’явитися відповідний рядок bill із розрахованою сумою (через CreateFinalBill).
--- Тригер лише створює рахунок; CARD + PENDING — початкові значення (payment_method NOT NULL).
--- Реальний спосіб оплати та підтвердження користувач задає в UI, API оновлює bill.
--- Коли: AFTER UPDATE OF status на таблиці session.
--- -----------------------------------------------------------------------------
+-- GenerateBill — після завершення сесії (ACTIVE → COMPLETED) викликає CreateFinalBill (рахунок bill).
+--    Початкові payment_method/payment_status — заглушка; деталі оплати — у додатку.
 CREATE OR REPLACE FUNCTION GenerateBill()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -62,23 +47,8 @@ CREATE TRIGGER trigger_GenerateBill
 AFTER UPDATE OF status ON session
 FOR EACH ROW EXECUTE FUNCTION GenerateBill();
 
--- -----------------------------------------------------------------------------
--- 3) trigger_booking_03_station_port — бронювання лише на доступну інфраструктуру
--- -----------------------------------------------------------------------------
--- Правило: не приймати бронювання, якщо станція не в робочому стані (WORK) або
--- порт на ремонті (REPAIRED). Скасовані бронювання (CANCELLED) не блокуються.
--- Коли: BEFORE INSERT OR UPDATE на таблиці booking (новий слот або зміна порту/часу).
--- -----------------------------------------------------------------------------
--- Порада: У тебе в таблиці station є статус FIX (ремонт). Можливо, варто змінити 
--- умову перевірки станції на таку:
--- code
--- SQL
--- IF EXISTS (
---     SELECT 1 FROM station 
---     WHERE id = NEW.station_id AND status IN ('FIX', 'NO_CONNECTION', 'ARCHIVED')
--- ) THEN 
---     RAISE EXCEPTION 'Станція недоступна для бронювання (ремонт або відсутній зв’язок)';
--- END IF;
+-- CheckStationPortAvailability — бронювання лише на станцію WORK і порт не REPAIRED.
+--    CANCELLED не перевіряється. BEFORE INSERT/UPDATE booking.
 CREATE OR REPLACE FUNCTION CheckStationPortAvailability()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -86,7 +56,6 @@ BEGIN
         RETURN NEW;
     END IF;
 
-    -- Перевірка станції
     IF NOT EXISTS (
         SELECT 1 
         FROM station 
@@ -95,7 +64,6 @@ BEGIN
         RAISE EXCEPTION 'Станція наразі не працює або в архіві';
     END IF;
 
-    -- Перевірка порту
     IF EXISTS (
         SELECT 1 
         FROM port 
@@ -113,20 +81,13 @@ CREATE TRIGGER trigger_CheckStationPortAvailability
 BEFORE INSERT OR UPDATE ON booking
 FOR EACH ROW EXECUTE FUNCTION CheckStationPortAvailability();
 
--- -----------------------------------------------------------------------------
--- 4) trigger_IsStatusChangeAllowed — заборона «вимкнути» порт під час зарядки
--- -----------------------------------------------------------------------------
--- Правило: не можна перевести порт у стан FIX, ARCHIVED або NO_CONNECTION, якщо
--- на цьому ж порту є активна сесія зарядки (session.status = ACTIVE).
--- Коли: BEFORE UPDATE OF status на таблиці port (дії адміністратора).
--- -----------------------------------------------------------------------------
--- Порада: Переконайся, що в коді програми start_time завжди менше за 4
--- end_time (хоча PostgreSQL OVERLAPS зазвичай справляється, краще мати 
---CHECK (end_time > start_time) у схемі таблиці).
+--  IsStatusChangeAllowed — не переводити порт у REPAIRED (ремонт / недоступний для зарядки),
+--    якщо на цьому порту є session зі статусом ACTIVE. BEFORE UPDATE status на port.
+--  Увага: port_status — лише FREE | BOOKED | USED | REPAIRED (див. EV_Charging_DB.sql).
 CREATE OR REPLACE FUNCTION IsStatusChangeAllowed()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF (NEW.status IN ('FIX', 'ARCHIVED', 'NO_CONNECTION')) THEN
+    IF (NEW.status = 'REPAIRED'::port_status) THEN
 
         IF EXISTS (
             SELECT 1 

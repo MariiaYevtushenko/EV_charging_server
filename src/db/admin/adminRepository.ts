@@ -16,7 +16,11 @@ export type EvUserPublicRow = {
 };
 
 export const adminRepository = {
-  async getUsers(): Promise<EvUserPublicRow[]> {
+  async countUsers(): Promise<number> {
+    return db.evUser.count();
+  },
+
+  async getUsersPage(skip: number, take: number): Promise<EvUserPublicRow[]> {
     return await db.evUser.findMany({
       select: {
         id: true,
@@ -28,6 +32,8 @@ export const adminRepository = {
         createdAt: true,
       },
       orderBy: { id: "asc" },
+      skip,
+      take,
     });
   },
 
@@ -35,6 +41,84 @@ export const adminRepository = {
     return await db.evUser.findUniqueOrThrow({
       where: { id: userId },
       include: adminUserDetailInclude,
+    });
+  },
+
+  async listNetworkBookings(take = 5000) {
+    return await db.booking.findMany({
+      take,
+      orderBy: { startTime: "desc" },
+      include: {
+        user: { select: { id: true, name: true, surname: true } },
+        port: {
+          include: {
+            station: { select: { id: true, name: true } },
+          },
+        },
+      },
+    });
+  },
+
+  async getNetworkBookingById(bookingId: number) {
+    return await db.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        user: { select: { id: true, name: true, surname: true, email: true } },
+        vehicle: {
+          select: { id: true, licensePlate: true, brand: true, vehicleModel: true },
+        },
+        port: {
+          include: {
+            station: { select: { id: true, name: true } },
+          },
+        },
+        sessions: {
+          orderBy: { startTime: "desc" },
+          include: {
+            bill: true,
+            port: {
+              include: {
+                station: { select: { id: true, name: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+  },
+
+  async listNetworkSessions(take = 5000) {
+    return await db.session.findMany({
+      take,
+      orderBy: { startTime: "desc" },
+      include: {
+        user: { select: { id: true, name: true, surname: true } },
+        bill: true,
+        port: {
+          include: {
+            station: { select: { id: true, name: true } },
+          },
+        },
+      },
+    });
+  },
+
+  async getNetworkSessionById(sessionId: number) {
+    return await db.session.findUnique({
+      where: { id: sessionId },
+      include: {
+        user: { select: { id: true, name: true, surname: true, email: true } },
+        vehicle: {
+          select: { id: true, licensePlate: true, brand: true, vehicleModel: true },
+        },
+        bill: true,
+        booking: true,
+        port: {
+          include: {
+            station: { select: { id: true, name: true } },
+          },
+        },
+      },
     });
   },
 };

@@ -1,0 +1,19 @@
+SeedTariffsFromApi — 2026-04-12T11:25:26.295Z
+anchor: end (останні 10 календарних днів до сьогодні)
+скільки днів: 10 — TARIFF_SEED_DAYS у .env (10)
+
+Результат (об'єкт повернення SeedTariffsFromApi):
+{
+  "daysWritten": 10,
+  "mode": "entsoe"
+}
+
+Довідка mode: no_api | entsoe | api_single | api_series | api_per_day (лише JSON-API).
+
+Контекст env (URL токенів не показуємо):
+  TARIFF_API_URL: задано
+  Примітка: entsoe = ENTSO-E XML A44, один HTTP-запит на кожен календарний день.
+  TARIFF_API_PER_DAY не перемикає цей режим (потрібен лише для власного JSON API з ?date=).
+  TARIFF_API_PER_DAY у .env: не задано
+  TARIFF_DAY_PRICE: не задано
+  TARIFF_NIGHT_PRICE: не задано

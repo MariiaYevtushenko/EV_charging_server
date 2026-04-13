@@ -1,17 +1,17 @@
 **Таблиці**
 
 - `ev_user`  + рандомно SQL
-- `location`
-- `station`
-- `connector_type`
-- `port`
+- `location` csv ev_stations_2025.csv
+- `station` csv ev_stations_2025.csv
+- `connector_type` csv ev_stations_2025.csv
+- `port` + csv ev_stations_2025.csv
 - `vehicle` + csv file  "electric_vehicles_spec_2025.csv.csv",
-- `tariff`
-- `booking`
-- `session`
-- `bill`
-- `tariff_prediction`
-- `forecast_bias`
+- `tariff` - бере з апішки 
+- `booking` — демо: `db/Seed_demo_bookings_sessions_bills.sql` → `SeedBookings(n)` або повний пайплайн `SeedBookingsSessionsBills(n)` (після CSV/тарифів)
+- `session` — `SeedSessions()` (після booking)
+- `bill` — `SeedBills()` (після session)
+- `tariff_prediction` - буде в процесі 
+- `forecast_bias` - буде в процесі
 
 ---
 

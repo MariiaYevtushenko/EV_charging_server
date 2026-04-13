@@ -1,5 +1,6 @@
 /**
- * Зворотна сумісність: той самий пайплайн, що й seed-all-data.ts (транзакція).
+ * Запуск повного сиду (той самий пайплайн, що й `seed-all-data.ts`).
+ * З опцією `--truncate` — очистити демо-таблиці перед сидом.
  */
 import { spawn } from "node:child_process";
 import fs from "node:fs";
@@ -24,11 +25,11 @@ const child = spawn(
   { cwd: SERVER_ROOT, stdio: "inherit", env: { ...process.env } },
 );
 
-child.on("error", (e) => {
+child.on("error", (e: Error) => {
   console.error(e);
   process.exitCode = 1;
 });
 
-child.on("close", (code) => {
+child.on("close", (code: number | null) => {
   process.exit(code ?? 1);
 });

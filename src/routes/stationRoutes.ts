@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getAllStations, getStationDashboard as getStation } from "../controllers/stationController.js";
+import {
+  getAllStations,
+  getStationDashboard as getStation,
+  getStationsMap,
+} from "../controllers/stationController.js";
 import { createStation, updateStation, archiveStation, unarchiveStation, updateStationStatus } from "../controllers/stationController.js";
 import { createPort, updatePort, deletePort } from "../controllers/portController.js";
 /**
@@ -8,6 +12,7 @@ import { createPort, updatePort, deletePort } from "../controllers/portControlle
  */
 export const stationRouter = Router();
 
+stationRouter.get("/map", getStationsMap);
 stationRouter.get("/", getAllStations);
 stationRouter.post("/", createStation);
 stationRouter.get("/:stationId/dashboard", getStation);

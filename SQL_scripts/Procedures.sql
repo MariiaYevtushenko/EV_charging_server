@@ -1,15 +1,3 @@
--- =============================================================================
--- PROCEDURES + мутаційні функції (INSERT / UPDATE у БД)
--- Розрахунок суми залишено у functions/02_session_billing.sql (GetFinalSessionAmount).
---
--- Порядок деплою після DDL:
---   1) functions/01_tariff.sql
---   2) functions/02_session_billing.sql
---   3) functions/03_booking_slots.sql
---   4) functions/04_reports.sql
---   5) Procedures.sql (цей файл)
---   6) Triggers.sql, Indexes.sql, View.sql — за потреби
--- =============================================================================
 
 -- -----------------------------------------------------------------------------
 -- UpsertBillForSession — INSERT / ON CONFLICT bill
@@ -60,12 +48,14 @@ CREATE OR REPLACE PROCEDURE StopSession(
 )
 LANGUAGE plpgsql AS $$
 BEGIN
-  -- 1. Перевірка чи сесія існує і чи вона активна
-  IF NOT EXISTS (SELECT 1 FROM session WHERE id = p_session_id AND status = 'ACTIVE') THEN
+   IF NOT EXISTS (
+    SELECT 1 
+   FROM session 
+   WHERE id = p_session_id AND status = 'ACTIVE') THEN
     RAISE EXCEPTION 'Сесія не знайдена або вже завершена';
   END IF;
 
-  -- 2. Оновлення даних сесії
+ 
   UPDATE session
   SET 
     end_time = CURRENT_TIMESTAMP,
@@ -73,8 +63,6 @@ BEGIN
     status = 'COMPLETED'
   WHERE id = p_session_id;
 
-  -- Примітка: Після UPDATE спрацює тригер trigger_GenerateBill, 
-  -- який автоматично викличе CreateFinalBill.
 END;
 $$;
 
@@ -93,8 +81,7 @@ BEGIN
     paid_at = CURRENT_TIMESTAMP
   WHERE id = p_bill_id;
 
-  -- Додатково: можна оновити статус бронювання на 'PAID', якщо воно було прив'язане
-  UPDATE booking
+   UPDATE booking
   SET status = 'PAID'
   WHERE id = (SELECT b.id FROM booking b JOIN session s ON b.id = s.booking_id JOIN bill bl ON s.id = bl.session_id WHERE bl.id = p_bill_id);
 END;
@@ -102,9 +89,6 @@ $$;
 
 -- -----------------------------------------------------------------------------
 -- StartSession — INSERT session (ACTIVE)
--- -----------------------------------------------------------------------------
--- Перевірки: немає іншої ACTIVE на порту; станція WORK; порт не REPAIRED;
--- без бронювання — порт FREE; з бронюванням — відповідність booking (BOOKED/PAID).
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION StartSession(
   p_user_id INT,
