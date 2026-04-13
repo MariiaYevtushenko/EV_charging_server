@@ -824,7 +824,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 461588,La Confitera,Estepa,Estepa,,,ES,37.29074114000659,-4.888234413480632,(Business Owner at Location),Operational,1,Type 2 (Socket Only),2025-09-27 18:13:00+00:00
 461587,Repsol La Molinera,Doña Mencía,Doña Mencía,,,ES,37.552702239774646,-4.361740570835877,Repsol - Ibil (ES),Operational,3,CCS (Type 2)|CHAdeMO|Type 2 (Tethered Connector) ,2025-09-27 18:09:00+00:00
 461586,Residencia ,Azucenas #157 ,Lázaro Cárdenas ,Michoacán ,60950,MX,17.977155527507875,-102.22517157919111,(Unknown Operator),Operational,1,GB-T DC - GB/T 20234.3,2025-09-27 18:08:00+00:00
-461585,Чибис,Чибис ,Мамадыш,Татарстан,422190,RU,55.64928007250762,51.383885734058225,ЭЗС СК,Operational,3,CCS (Type 2)|CHAdeMO|GB-T DC - GB/T 20234.3,2025-09-27 17:25:00+00:00
 461583,Ayunt. Jimena,Jimena,Jimena,,,ES,36.43240181906201,-5.448430165831951,Zunder,Planned For Future Date,1,Type 2 (Socket Only),2025-09-27 14:13:00+00:00
 461582,Ayunt. Casares. Parking,casares,Casares,,,ES,36.44371880858394,-5.27084092364791,(Unknown Operator),Operational,1,CEE 7/4 - Schuko - Type F,2025-09-27 14:01:00+00:00
 461581,Ayunt. Alcalá Del Valle,Alcalá Del Valle,Alcalá Del Valle,,,ES,36.90035528228792,-5.168079751454371,(Unknown Operator),Operational,1,CCS (Type 2),2025-09-27 13:48:00+00:00
@@ -943,8 +942,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 461447,Lindenweg,Lindenweg 2,Grabs,St. Gallen,9472,CH,47.1826925087874,9.44476943979646,MOVE (CH),Operational,3,CCS (Type 2)|CHAdeMO|Type 2 (Tethered Connector) ,2025-09-24 13:14:00+00:00
 461446,EVN Public Charging Station (AC).,Polizzeiinspektion.,Marchegg am March.,,,AT,48.27975669536639,16.907030398466873,EVN (Bulgaria),Operational,2,Type 2 (Socket Only)|CEE 7/4 - Schuko - Type F,2025-09-24 12:54:00+00:00
 461445,EVN Public Charging Station (AC).,Schloss-square.,Marchegg am March.,,,AT,48.28106964085015,16.90530510670567,EVN (Bulgaria),Operational,1,Type 2 (Socket Only),2025-09-24 12:41:00+00:00
-461444,Газпром Юриово,Юртовское Сельское Поселение,Юртово,Татарстан,423700,RU,55.71050376074004,53.05921241852411,ЭЗС СК,Operational,3,CCS (Type 2)|CHAdeMO|GB-T DC - GB/T 20234.3,2025-09-24 12:39:00+00:00
-461443,Газпром Юриово,Юртовское Сельское Поселение,Юртово,Татарстан,423700,RU,55.71050376074004,53.05921241852411,ЭЗС СК,Operational,3,CCS (Type 2)|CHAdeMO|GB-T DC - GB/T 20234.3,2025-09-24 12:38:00+00:00
 461442,EVN Public Charging Station.,On The Motel's Parking Lot.,Marchegg am March.,,,AT,48.26197749510632,16.911003025166224,EVN (Bulgaria),Operational,1,Type 2 (Socket Only),2025-09-24 12:36:00+00:00
 461441,Public Charging Station With Full Credit Card Terminal-direct Payment (AC).,In The Fence Of A Company.,Marchegg am March.,,,AT,48.259661901829304,16.91210405719005,EVN (Bulgaria),Operational,1,Type 2 (Socket Only),2025-09-24 12:30:00+00:00
 461440,ÖBB Public Charging Station-Charge+Ride(AC).,@ Railroad Station-@ Its Parking Lot.,Marchegg am March.,,,AT,48.250030408553584,16.917254953991915,EVN (Bulgaria),Operational,1,Type 2 (Socket Only),2025-09-24 12:21:00+00:00
@@ -959,7 +956,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 461431,E.On Public Charging Station (8xAC).,Olympia Brno.,Brno.,Jihomoravský kraj.,,CZ,49.13993218590241,16.632484659496754,E.ON (CZ),Operational,1,Type 2 (Tethered Connector) ,2025-09-24 08:34:00+00:00
 461430,Public Charging Station ČEZ(AC+DC).,Between Židenice Railroad Station & Kaufland.,Brno.,Jihomoravský kraj.,,CZ,49.20201936935314,16.63589293495238,ČEZ,Operational,3,CCS (Type 2)|CHAdeMO|Type 2 (Socket Only),2025-09-24 08:13:00+00:00
 461429,Ayunt. Manzanilla,manzanilla,Manzanilla,,,ES,37.3878897575276,-6.429554379865749,Endesa,Operational,1,Type 2 (Socket Only),2025-09-24 06:27:00+00:00
-461428,Верхние Татышлы,Ленина 49,Верхние Татышлы,Башкирия,452830,RU,56.287645016484845,55.85733590240898,Sitronics Electro (RU),Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CHAdeMO,2025-09-23 21:47:00+00:00
 461426,Marktplatzgarage,Aeulestrasse 70,Vaduz,,9490,LI,47.13816294907957,9.521369691511268,LKW - Liechtensteiner Kraftwerke (LI),Operational,3,CCS (Type 2)|Type 2 (Tethered Connector) |CHAdeMO,2025-09-23 17:01:00+00:00
 461425,Ayunt. Almonaster la Real,Almonaster la Real,Almonaster la Real,,,ES,37.8734686115465,-6.784694821259677,Endesa,Operational,1,Type 2 (Socket Only),2025-09-23 13:03:00+00:00
 461424,Ayunt. Cortegana,Cortegana,Cortegana,,,ES,37.910677790964314,-6.820267744913963,Endesa,Operational,1,Type 2 (Socket Only),2025-09-23 13:02:00+00:00
@@ -980,28 +976,9 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 461405,Parking Cervantes Mérida,Mérida,Mérida,,,ES,38.919450918805126,-6.342967185668044,(Business Owner at Location),Operational,1,Type 2 (Socket Only),2025-09-22 14:14:00+00:00
 461385,Ayunt. Villanueva De La Serena,Villanueva De La Serena,Villanueva De La Serena,,,ES,38.974833386845035,-5.7967499058441945,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-09-22 13:05:00+00:00
 461384,Ayunt. Medellín,Medellín,Medellín,,,ES,38.961428953465344,-5.957475141786574,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-09-22 13:00:00+00:00
-461383,აღმაშენებელი 2,დავით აღმაშენებლის ხეივანი,თბილისი,,,GE,41.81131661686166,44.77228991131642,Da-Tene (GE),Operational,4,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-22 12:55:00+00:00
-461382,აგროჰაბი,"მარშალ გელოვანის გამზირი, 22",თბილისი,,,GE,41.74829327876395,44.769267957711236,Da-Tene (GE),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-22 12:53:00+00:00
-461381,ტოტალ 100,"უნივერსიტეტის ქუჩა, 6",თბილისი,,,GE,41.718348477776885,44.73830555311622,Da-Tene (GE),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-22 12:50:00+00:00
-461380,წყნეთი,26 მაისის I ჩიხი,თბილისი,,,GE,41.69592085539446,44.69829180348188,Da-Tene (GE),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-22 12:48:00+00:00
 461379,Hotel Rest. Finca La Desa,Miajadas,Miajads,,,ES,39.14075629166979,-5.931582377452941,(Business Owner at Location),Operational,1,Type 2 (Socket Only),2025-09-22 12:48:00+00:00
-461378,სამგორი მოლი,"მოსკოვის გამზირი, 2",თბილისი,,,GE,41.685558988305104,44.85413937777537,Da-Tene (GE),Operational,4,CCS (Type 2)|GB-T DC - GB/T 20234.3|Unknown|GB-T DC - GB/T 20234.3,2025-09-22 12:46:00+00:00
-461377,თელავი ქონექთი,"ვახტანგ სეხნიაშვილის ქუჩა, 1დ",თელავი,,,GE,41.92911460576536,45.473814937570296,Da-Tene (GE),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-22 12:40:00+00:00
 461376,Torrecillas De La Tiesa,Torrecillas De La Tiesa,Torrecillas De La Tiesa,,,ES,39.564251510698,-5.740554639769954,Iberdrola | BP Pulse (ES),Operational,1,CCS (Type 2),2025-09-22 12:38:00+00:00
-461375,ბუნებრივი აირი,შ69 ყვარელი-მუკუზანი,ყვარელი,,,GE,41.92510988888827,45.824793806541265,Da-Tene (GE),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-22 12:38:00+00:00
-461374,რუსთავის ავთო ბაზრობა,ს4 თბილისი-წითელი ხიდი,რუსთავი,,,GE,41.56619208118349,44.95231731375566,Da-Tene (GE),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-22 12:35:00+00:00
-461373,Zestaponi Highway,ს1 თბილისი-სენაკი-ლესელიძე,,,,GE,42.16751015714067,42.93910387946414,Da-Tene (GE),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-22 12:32:00+00:00
-461372,West Point Kutaisi,"ჟიული შარტავას ქუჩა, 2",ქუთაისი,,,GE,42.26269885414291,42.66915044082714,Da-Tene (GE),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-22 12:26:00+00:00
-461371,წყალტუბო,შოთა რუსთაველის ქუჩა,წყალტუბო,,,GE,42.32625504707718,42.60133183803987,Da-Tene (GE),Operational,1,Type 2 (Socket Only),2025-09-22 12:24:00+00:00
 461370,Miller Hill Super One,5401 Burning Tree Road,Duluth,MN,55811,US,46.80974806656974,-92.17022785298505,ZEF Energy,Operational,2,Type 1 (J1772)|CCS (Type 1),2025-09-22 03:01:00+00:00
-461368,"კლინიკა ""ხარება""","შოთა რუსთაველის ქუჩა, 26",სამტრედია,,,GE,42.16223674393504,42.34329554553199,Da-Tene (GE),Operational,1,Type 2 (Tethered Connector) ,2025-09-21 12:11:00+00:00
-461367,ახალი ბაზარი,მიხეილ თამარაშვილის ქუჩა,ახალციხე,,,GE,41.64443327893525,42.988824270664736,Da-Tene (GE),Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-09-21 12:06:00+00:00
-461366,ფრიდონ ხალვაშის ტოტალ 100,Meskheti Street,Batumi,Autonomous Republic of Adjara,6000,GE,41.62177569740493,41.61600339716347,Da-Tene (GE),Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-09-21 11:57:00+00:00
-461365,ბათუმი ტოტალ 100,პეტრე ბაგრატიონის ქუჩა,ბათუმი ,,,GE,41.637753687321634,41.64794206954184,Da-Tene (GE),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-21 11:48:00+00:00
-461364,Saburtalo Tsintsadze ,"სულხან ცინცაძის ქუჩა, 37",თბილისი,,,GE,41.72206392324085,44.76796952543191,Green Charge Georgia (GE),Operational,1,Type 2 (Tethered Connector) ,2025-09-21 11:38:00+00:00
-461363,Vake Plaza,"ილია ჭავჭავაძის გამზირი, 72ა",თბილისი,,,GE,41.711151863532365,44.75541056673012,Green Charge Georgia (GE),Operational,1,Type 1 (J1772),2025-09-21 11:35:00+00:00
-461362,Rose Revolution Sq,პირველი რესპუბლიკის მოედანი,თბილისი,,,GE,41.703326502003705,44.792249111273804,Green Charge Georgia (GE),Operational,2,CCS (Type 2)|CHAdeMO,2025-09-21 11:32:00+00:00
-461361,Rustavi Mall,"ნიკო ლომოურის ქუჩა, 7ა",რუსთავი,,,GE,41.5625787996658,44.97754252499544,Green Charge Georgia (GE),Operational,2,CCS (Type 2)|CHAdeMO,2025-09-21 11:28:00+00:00
 461360,Parking Estación Renfe Orense,Orense,Orense,,,ES,42.332743187741556,-7.861370433862021,Repsol - Ibil (ES),Planned For Future Date,1,Type 2 (Socket Only),2025-09-21 11:25:00+00:00
 461359,Aldi Ourense,Ourense,Ourense,,,ES,42.35592862095288,-7.8913128559225925,ALDI SÜD (DE),Operational,1,Type 2 (Socket Only),2025-09-21 11:23:00+00:00
 461358,Balpersa,Orense,Orense,,,ES,42.35532940548268,-7.905460664344787,Iberdrola | BP Pulse (ES),Operational,3,CCS (Type 2)|CHAdeMO|Type 2 (Tethered Connector) ,2025-09-21 11:22:00+00:00
@@ -1316,28 +1293,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 460949,"Flying J Travel Center #737 San Antonio, TX",1815 N Foster Road ,San Antonio,TX,78244,US,29.445990253909102,-98.3609889927468,eVgo Network,Operational,2,CCS (Type 1)|CCS (Type 1),2025-09-06 01:22:00+00:00
 460948,Parqueo Plaza Colonial,Ave. Mella,,,,DO,18.479323409056036,-69.88546595994109,Evergo,Operational,1,Type 1 (J1772),2025-09-05 22:34:00+00:00
 460947,"Brzeska, Kołobrzeg, Polen","Lwowska 2A/4, 78-100 Kołobrzeg, Polen",78-100 Kołobrzeg,,78-100 ,PL,54.19279737849806,15.662792953722146,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-09-05 18:57:00+00:00
-460946,METRO Пермь,"ш. Космонавтов, 393",Пермь,,614500,RU,57.951291,56.118552,Punkt-E,Not Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-05 08:41:00+00:00
-460945,Ямской ТЦ,"ул. Ямская, 118",Тюмень,,625041,RU,57.159107,65.48179,Punkt-E,Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-05 08:41:00+00:00
-460944,Эко Парк Тайга,"Червишевский тракт, 18 километр, с1",село Онохино,,625547,RU,56.93691,65.528617,Punkt-E,Operational,2,GB-T AC - GB/T 20234.2 (Socket)|Type 2 (Socket Only),2025-09-05 08:41:00+00:00
-460943,"Спортивная деревня ""Новинки""","Окская улица, 19",пос. Новинки,,607635,RU,56.1952211,43.8420045,Punkt-E,Not Operational,2,Type 2 (Socket Only)|GB-T AC - GB/T 20234.2 (Socket),2025-09-05 08:41:00+00:00
-460942,Город Чемпионов Кстово ЖК,"бульвар Нефтепереработчиков, дом 13А",Нижний Новгород,,603095,RU,56.152049,44.185386,Punkt-E,Not Operational,1,Type 2 (Socket Only),2025-09-05 08:41:00+00:00
-460941,Олимпийский проспект 38Б,"Олимпийский проспект, 38Б",Мытищи,,141006,RU,55.925704,37.756541,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-05 08:41:00+00:00
-460940,Королёва 5Д,"пр-т Королёва, 5Д",Королёв,,141078,RU,55.921745,37.844966,Punkt-E,Not Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-05 08:41:00+00:00
-460939,Москворецкий бульвар,Москворецкий б-р,Красногорск,,123592,RU,55.804002,37.332427,Punkt-E,Operational,1,Type 2 (Tethered Connector) ,2025-09-05 08:41:00+00:00
-460938,Глобус Одинцово,"село Юдино, 55Е",Одинцовский городской округ,,143081,RU,55.653415,37.176324,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-09-05 08:41:00+00:00
-460937,Ройял Парк ТРЦ,пр. Красный 101,Новосибирск,,630049,RU,55.055662,82.911359,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-09-05 08:41:00+00:00
-460936,Европейский берег ЖК 60 кВт,"ул. Владимира Заровного, дом 38",Новосибирск,,630083,RU,54.989652,82.973364,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-09-05 08:41:00+00:00
-460935,Меркурий ТЦ,"ул. Кольцевая, 65/1",Уфа,,450112,RU,54.822232,56.084756,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-09-05 08:41:00+00:00
-460934,Уфа Черниковская,"Черниковская, дом 51",Уфа,,450063,RU,54.807422,56.118607,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-09-05 08:41:00+00:00
-460933,Уфа Королева,ул. Академика Королева 18,Уфа,,450105,RU,54.77366,56.080647,Punkt-E,Operational,4,CCS (Type 2)|GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|Type 2 (Tethered Connector) ,2025-09-05 08:41:00+00:00
-460932,Уфа Маршала Жукова 5/2,"ул. Маршала Жукова, дом 5/2",Уфа,,450100,RU,54.7669249,56.0494208,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-09-05 08:41:00+00:00
-460931,Уфа Пархоменко,"Пархоменко, дом 133",Уфа,,450006,RU,54.743074,55.965282,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Socket Only),2025-09-05 08:41:00+00:00
-460930,Уфа Мубарякова,"ул. Мубарякова, 1",Уфа,,450092,RU,54.697861,55.996,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-09-05 08:41:00+00:00
-460929,Уфа Перовской,"ул.Софьи Перовской, 42",Уфа,,450103,RU,54.697242,55.984571,Punkt-E,Operational,4,CCS (Type 2)|GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|Type 2 (Tethered Connector) ,2025-09-05 08:41:00+00:00
-460928,Стерлитамак Лазурная,ул. Лазурная 17,Стерлитамак,,453140,RU,53.631889,55.900072,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-09-05 08:41:00+00:00
-460927,Дзержинский БЦ,"ул. им. Дзержинского, д. 3/2", Краснодар,,350020,RU,45.056182,38.97903,Punkt-E,Operational,1,GB-T DC - GB/T 20234.3,2025-09-05 08:41:00+00:00
-460926,Аэропорт Геленджик,"Солнцедарская ул., д. 10",Геленджик,,353468,RU,44.596022,38.024105,Punkt-E,Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-09-05 08:41:00+00:00
-460925,ТЦ Столица Владикавказ,ул. Астана Кесаева 2А, Владикавказ,,362043,RU,43.053326,44.639174,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-09-05 08:41:00+00:00
 460921,[Eurocharge] - Jeseník - Moravská,Moravská 1344/6,Jeseník,,790 01,CZ,50.21996498291969,17.194268886783448,(Unknown Operator),Operational,1,CCS (Type 2),2025-09-05 08:33:00+00:00
 460920,Petrobras - Curva Do Retiro," Posto Curva do Retiro - Rod BR 40 km 548 S/N - Jardim Canada, Nova Lima - MG, Brasil",Nova Lima,,,BR,-20.077168,-43.982534,EZVolt,Operational,2,CCS (Type 2)|CCS (Type 2),2025-09-05 08:09:00+00:00
 460919,Trevo Brasília Corporate Santana,"R. Voluntários da Pátria, 2468 / 2490 - Santana, São Paulo - SP,",São Paulo ,,,BR,-23.498308,-46.625262,EZVolt,Operational,1,Type 2 (Socket Only),2025-09-05 08:09:00+00:00
@@ -1673,8 +1628,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 460567,Parque Empresrial Ibinsa II,Torrejon,Torrejon,,,ES,40.49573905474216,-3.41429903166906,GALP Electric,Operational,1,Type 2 (Socket Only),2025-08-25 20:20:00+00:00
 460566,Leitzako Udala,leitza,Leitza,,,ES,43.07980023028844,-1.9182579162527986,GALP Electric,Operational,1,Type 2 (Socket Only),2025-08-25 20:10:00+00:00
 460565,DFG Naturklima,lasarte,Lasarte,,,ES,43.258285233482496,-2.033310778145136,Zunder,Operational,1,Type 2 (Socket Only),2025-08-25 19:57:00+00:00
-460564,Лента Электросила,Яблочкова 246,Астрахань,Астраханская область,414000,RU,46.37328395659756,48.0789951757705,it Charge (RU),Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CHAdeMO,2025-08-25 17:34:00+00:00
-460563,Marins Garden Hotel,Куйбышева 69,Астрахань,Астраханская область,414000,RU,46.36473307760107,48.04031809391779,Electro.Cars (RU),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-08-25 17:15:00+00:00
 460562,K-Lataus Järvituuli,Tervantie 2,Keuruu,Keski-Suomi,42700,FI,62.2602024356876,24.69445575201479,K Lataus,Operational,2,CCS (Type 2)|Type 2 (Socket Only),2025-08-25 16:54:00+00:00
 460561,C.C. Odeón,Ferrol,Ferrol,,,ES,43.48993669289234,-8.202968022982901,PowerDot (Es),Operational,3,CCS (Type 2)|CHAdeMO|Type 2 (Socket Only),2025-08-25 15:23:00+00:00
 460560,Forvia,valladolid,Valladolid,,,ES,41.68799354971071,-4.723783156819678,GALP Electric,Operational,1,Type 2 (Socket Only),2025-08-25 15:16:00+00:00
@@ -1777,21 +1730,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 460450,Regent's Park 1,El Nasr,New Cairo,,,EG,30.000979727197205,31.510308200729696,Infinity EV (Egypt),Operational,1,Type 2 (Socket Only),2025-08-18 15:39:00+00:00
 460449,Heizkraftwerk TU Clausthal,Leibnizstraße 11,Clausthal-Zellerfeld,Niedersachsen,38678,DE,51.8000005036516,10.347488116742852,Westfalen Weser Netz,Operational,1,Type 2 (Socket Only),2025-08-18 14:16:00+00:00
 460448,Tesla Supercharger Mérida Sur,Hotel Romero,Mérida,,,ES,38.85928041126553,-6.364307043128065,Tesla (including non-tesla),Planned For Future Date,1,CCS (Type 2),2025-08-18 12:31:00+00:00
-460447,Розетки в Спутнике,"Прибрежный бульвар, д.5",с. Засечное,,,RU,53.139536329856696,45.048012606715815,Electro.Cars (RU),Operational,3,CEE 7/4 - Schuko - Type F|CEE 3 Pin|CEE 5 Pin,2025-08-18 08:38:00+00:00
-460446,Территория жизни,"ул 65-летия Победы, стр. 33",Пенза,,,RU,53.23221442582664,44.88745170797222,Electro.Cars (RU),Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CHAdeMO,2025-08-18 08:29:00+00:00
-460445,Автолоцман,"Проспект Победы, д.48",Пенза,,,RU,53.220582691437386,44.97354148095474,Touch (RU),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-08-18 08:23:00+00:00
-460444,БЦ Атриум,"ул. Кирова, д.54Д",Пенза,,,RU,53.19340400048165,45.0181720521349,Electrifly,Operational,1,GB-T DC - GB/T 20234.3,2025-08-18 08:19:00+00:00
-460443,Автосуши,"ул. Измайлова, д.93",Пенза,,,RU,53.18136901805346,45.05600002671213,Electrifly,Operational,2,Type 2 (Tethered Connector) |Type 1 (J1772),2025-08-18 07:48:00+00:00
-460442,FLY 753,"ул. Центральная, д. 25А",Евлашево,Пензенская область,,RU,53.11265127424562,46.83205425280357,Electrifly,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CHAdeMO,2025-08-18 07:42:00+00:00
-460441,FLY 736,"ул. Куйбышевская, 103/4",Махалино,,,RU,53.086016354392285,46.22734960651226,Electrifly,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CHAdeMO,2025-08-18 07:39:00+00:00
-460440,FLY 747,"ул. Александра Матросова, д.159",Городище,,,RU,53.26228445409686,45.71219311504311,Electrifly,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CHAdeMO,2025-08-18 07:36:00+00:00
-460439,FLY 743,"Пл. Ленина, д.1",Петровск,,,RU,52.314846720005306,45.38939472009261,Electrifly,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CHAdeMO,2025-08-18 07:28:00+00:00
-460438,FLY 729,"ул. Московская, д. 85",Нижний Ломов,,,RU,53.528872784802985,43.679753961285314,Electrifly,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CHAdeMO,2025-08-18 07:22:00+00:00
-460437,FLY 739,М5 595км,Мокшан,,,RU,53.43128168635502,44.59682130434339,Electrifly,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CHAdeMO,2025-08-18 07:17:00+00:00
-460436,Автотехцентр Юмакс,"ул.Калинина, д.158",Пенза,,,RU,53.15752046264376,44.98933673870971,Electrifly,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|CHAdeMO,2025-08-18 07:10:00+00:00
-460435,FLY 767,"ул. Мира, д.60",Пенза,,,RU,53.187431021981865,44.97149146782209,Electrifly,Operational,3,CCS (Type 2)|CHAdeMO|GB-T DC - GB/T 20234.3,2025-08-18 07:00:00+00:00
-460434,FLY 772,"ул. Ульяновская, д.58",Пенза,,,RU,53.234660833771585,44.91987568163336,Electrifly,Operational,3,CHAdeMO|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-08-18 06:52:00+00:00
-460433,FLY 752,"ул.Аустрина, д.152Б",Пенза,Пензенская область,,RU,53.24419715760973,45.0141139994048,Electrifly,Operational,3,CHAdeMO|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-08-18 06:22:00+00:00
 460432,Enel Campiglione Fenile,Piazza San Giovanni,Campiglione Fenile,TO,,IT,44.8019,7.322975,Enel X,Operational,1,Type 2 (Socket Only),2025-08-18 06:07:00+00:00
 460431,Celsia el Papayo,Avenida Mirolindo,Ibague,Tolima,,CO,4.428470693345304,-75.20554445930472,Celsia,Operational,3,CCS (Type 1)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-08-18 03:36:00+00:00
 460430,Revel - South San Francisco,710 El Camino Real,South San Francisco,CA,94080,US,37.650626000001736,-122.43051300000104,(Unknown Operator),Planned For Future Date,2,CCS (Type 1)|NACS / Tesla Supercharger,2025-08-18 03:21:00+00:00
@@ -1972,7 +1910,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 460239,Buswendeschleife,Pforzheimer Str. 14,Engelsbrand/Salmbach,Enzkreis,75331,DE,48.823315989361106,8.657771710828456,,Operational,2,Type 2 (Socket Only)|Type 2 (Socket Only),2025-08-07 12:02:00+00:00
 460238,Milence (Estacionamiento Camiones),zaragoza,Zaragoza,,,ES,41.639884021074806,-1.0082099182119464,(Business Owner at Location),Operational,1,CCS (Type 2),2025-08-07 09:32:00+00:00
 460237,Cogullada (Endesa),Ctra. Cogullada,Zaragoza,,,ES,41.67106143115609,-0.8603486090044044,Endesa,Operational,2,CCS (Type 2)|CCS (Type 2),2025-08-07 09:26:00+00:00
-460236,БорисХоф Вольт Сити 5 DC60,"Мосвка, 2-я Магистральная улица, д.18",Moscow,,,RU,55.76199442286864,37.52861149014274,it Charge (RU),Operational,3,CCS (Type 2)|Type 2 (Socket Only)|GB-T DC - GB/T 20234.3,2025-08-06 16:06:00+00:00
 460234,GO TO-U EDUCITY HUB @ ISKANDAR PUTERI,"NO 3, STUDENT HUB",ISKANDAR PUTERI,JOHOR DARUL TA'ZIM,79250,MY,1.4319652934410811,103.61727027432562,Go ToU,Operational,1,CCS (Type 2),2025-08-06 09:40:00+00:00
 460233,Electrip ,Via Roald Amundsen 39,Modena,MO,,IT,44.657646,10.896451,Electrip,Operational,1,CCS (Type 2),2025-08-06 09:30:00+00:00
 460229,Gss Power Elche,Calle Matas,Elche,Alicante,03293,ES,38.259512088117,-0.723282032472,Zunder,Operational,1,CCS (Type 2),2025-08-05 20:01:00+00:00
@@ -2294,7 +2231,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 459851,"On The Run, Industrial Ave",631 Industrial Ave,Ottawa,Ontario,K1G 0Z1,CA,45.41102865033119,-75.64112243634068,On the Run (CA),Operational,1,CCS (Type 1),2025-07-14 14:54:00+00:00
 459845,Chevrolet Guasave,"Blvd. 16 de Septiembre 275, Centro,",Guasave,sinaloa ,81000,MX,25.56940033031333,-108.46379733643721,(Unknown Operator),Operational,1,CCS (Type 1),2025-07-14 00:47:00+00:00
 459844,Cork International Hotel,Cork Airport Business Park,Cork,Co. Cork,,IE,51.852537385477376,-8.487724212608555,ePower,Operational,1,Type 2 (Socket Only),2025-07-13 21:46:00+00:00
-459843,Колесо Харабали,Волжская 17а,Харабали,Астраханская область,416010,RU,47.41628845594951,47.231899288403724,Touch (RU),Operational,2,Type 2 (Socket Only)|GB-T AC - GB/T 20234.2 (Tethered Cable),2025-07-13 16:53:00+00:00
 459842,Elevat AC Fram,Turnerjeva ulica 113,Fram,,2313,SI,46.45569651773354,15.628763927292198,Elevat/MasterCharge (EU),Operational,1,Type 2 (Tethered Connector) ,2025-07-13 16:15:00+00:00
 459841,Elevat Tinje,Veliko Tinje 33,Zgornja Ložnica,,2316,SI,46.41494303768255,15.500049411415375,Elevat/MasterCharge (EU),Operational,2,Type 2 (Socket Only)|CEE 7/4 - Schuko - Type F,2025-07-13 16:12:00+00:00
 459840,Elevat Oplotnica,Goriška cesta 4,Oplotnica,,2317,SI,46.38698479314385,15.443718281465294,Elevat/MasterCharge (EU),Operational,1,Type 2 (Tethered Connector) ,2025-07-13 16:09:00+00:00
@@ -2329,7 +2265,7 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 459801,Ayunt. Huesca. Palacio Deportes,palacio Deportes Huesca,Huesca,,,ES,42.133773820179044,-0.4208915546933554,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-07-12 16:00:00+00:00
 459800,Ayunt. Huesca. Convento Santa Clara,Convento Santa Clara,Huesca,,,ES,42.13301817903522,-0.404732520951427,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-07-12 15:50:00+00:00
 459799,Ayunt. Huesca. Parking disuasorio Pilar Lorengar,Pilar Lorengar,Huesc,,,ES,42.14573284538426,-0.4203772093539442,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-07-12 15:21:00+00:00
-459798,Тц Колесо Ахтубинск,Астраханская 25,Ахтубинск,астраханская область,416500,RU,48.272806513698214,46.205300342041255,Touch (RU),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-07-12 08:41:00+00:00
+:00+00:00
 459797,MYDIN KUBANG KERIAN (Shopping Mall),Mydin Kubang Kerian,Kota Bharu,,15200,MY,6.097991,102.277771,ChargeSini,Operational,2,CCS (Type 2)|CCS (Type 2),2025-07-12 07:16:00+00:00
 459796,THE WALK @ RIVERSON (Shopping Mall),Riverson,Kota Kinabalu,,8810,MY,5.969017,116.064499,ChargeSini,Not Operational,3,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-07-12 07:16:00+00:00
 459795,LIDO PLAZA 2 (Shopping Mall),Lido Plaza,Penampang,,88300,MY,5.936645,116.082413,ChargeSini,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-07-12 07:16:00+00:00
@@ -2775,8 +2711,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 459260,Pousada Vila Boa,"R. 15 de Novembro, St. Central, 21",Goiás,Goiás,76600000,BR,-15.935812,-50.142762,Yellotmob (Brasil),Operational,1,Type 2 (Tethered Connector) ,2025-07-03 19:18:00+00:00
 459259,Posto Z+Z T-63 FastCharger,"Av. T-63, 1077",Goiânia,Goiás,74230100,BR,-16.714314,-49.269014,Yellotmob (Brasil),Operational,2,CCS (Type 2)|Type 2 (Tethered Connector) ,2025-07-03 18:50:00+00:00
 459258,Total Tiradentes,Ave. Tiradentes,,,,DO,18.47132883974723,-69.9252498092232,Evergo,Operational,1,Unknown,2025-07-03 13:28:00+00:00
-459255,Green City DC 160kWh Кировский Авенир ,unknown,unknown,,,RU,59.870241,30.254469,it Charge (RU),Operational,2,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3,2025-07-03 07:51:00+00:00
-459254,#003 НБ Ольгино Первая AC22,unknown,unknown,,,RU,55.7474348,37.9897471,it Charge (RU),Operational,1,Type 2 (Tethered Connector) ,2025-07-03 07:51:00+00:00
 459246,"Gedimino  54, Tauragė","Gedimino  54, Tauragė",,,,LT,55.2423601,22.3052938,Stuart Energy (LT),Operational,1,Type 2 (Tethered Connector) ,2025-07-03 07:26:00+00:00
 459237,Eldrive Lithuania PC Mandarinas,Ateities g. 91,Vilnius,,,LT,54.731936,25.246976,Eldrive Lithuania (LT),Operational,4,CCS (Type 2)|CCS (Type 2)|CCS (Type 2)|CCS (Type 2),2025-07-03 07:26:00+00:00
 459207,Metrem Beclean SRL,Metream Sintereag-Gara DN17,Beclean,,,RO,47.17922574,24.25861434,Voltrelli (RO),Operational,3,CCS (Type 2)|CHAdeMO|Type 2 (Socket Only),2025-07-03 06:36:00+00:00
@@ -2800,11 +2734,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 459170,Eldrive Lithuania Naujoji g. 52,"Naujoji g. 52, Alytus, 62381 Alytaus m. sav.",Alytus,,,LT,54.404835,24.022002,Eldrive Lithuania (LT),Operational,2,CCS (Type 2)|CCS (Type 2),2025-07-03 06:31:00+00:00
 459169,Eldrive Lithuania Rotušės a. 10,"Rotušės a. 10, 62141 Alytus, Lithuania",Alytus,,,LT,54.396429,24.050491,Eldrive Lithuania (LT),Operational,4,CCS (Type 2)|CCS (Type 2)|CCS (Type 2)|CCS (Type 2),2025-07-03 06:31:00+00:00
 459167,Eldrive Lithuania Eldrive įkrovimo parkas Senoji Varėna | NUOLAIDA,"Vilniaus g. 25, Senoji Varėna, 65487 Varėnos",Senoji Varėna,,,LT,54.255298,24.541787,Eldrive Lithuania (LT),Operational,11,CCS (Type 2)|CHAdeMO|CCS (Type 2)|CCS (Type 2)|CCS (Type 2)|CCS (Type 2)|CCS (Type 2)|CCS (Type 2)|CCS (Type 2)|CCS (Type 2)|CCS (Type 2),2025-07-03 06:31:00+00:00
-459166,Европолис ТРК,"Полюстровский пр-т, 84",Санкт-Петербург,,195197,RU,59.987685,30.354925,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-07-03 06:26:00+00:00
-459165,Сбербанк Тюмень,"ул. Рижская, 61",Тюмень,,625023,RU,57.134205,65.583704,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-07-03 06:26:00+00:00
-459164,Индустриальный парк CRAFT 120,"Березовский, километр 17-ый",Березовский,,623700,RU,56.869633,60.797182,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2),2025-07-03 06:26:00+00:00
-459163,Тесты_Вендоров,Тестовая,Москва,,700000,RU,55.0,44.0,Punkt-E,Not Operational,2,CHAdeMO|CCS (Type 2),2025-07-03 06:26:00+00:00
-459162,Отель Ривьера,"пр. Геленджикский, д.133б",Геленджик,,353460,RU,44.583153,38.060127,Punkt-E,Operational,2,GB-T AC - GB/T 20234.2 (Socket)|Type 2 (Socket Only),2025-07-03 06:26:00+00:00
 459155,Birkevang (PowerGo),Birkevænget 1,Herlufmagle,,4160,DK,55.31637002,11.75121027,PowerGo,Operational,4,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-07-03 06:25:00+00:00
 459154,Børnehuset Himmelhøj (PowerGo),Alfehøj 85,Holmegaard,,4684,DK,55.2726032,11.80732279,PowerGo,Operational,4,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-07-03 06:25:00+00:00
 459153,Næstved Ungdomsskole (PowerGo),Skellet 29,Næstved,,4700,DK,55.22603989,11.75092316,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-07-03 06:25:00+00:00
@@ -3861,7 +3790,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 457975,Lidl,Balassagyarmati út 9-15,Vác,Pest,2600,HU,47.7928461423237,19.115667460324772,Lidl,Operational,3,CCS (Type 2)|CHAdeMO|Type 2 (Socket Only),2025-06-22 14:50:00+00:00
 457974,McDonald's,Cork Rd,Waterford,Co. Watford,,IE,52.24888732633352,-7.121583676134151,InstaVolt Ltd,Operational,2,CHAdeMO|CCS (Type 2),2025-06-22 13:53:00+00:00
 457973,Villafranca de los Barros (Zunder) ,Villafranca De Los Barros,Villafranca De Los Barros,,,ES,38.55816644732309,-6.358783109716285,Zunder,Planned For Future Date,1,CCS (Type 2),2025-06-22 09:48:00+00:00
-457972,פז Charge - הסיירים,כביש 4 תל אביב -אשדוד מול מרכז חיזוי בית דגן,בית דגן,,,IL,32.08200963172864,34.81489414659458,(Unknown Operator),Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-22 08:44:00+00:00
 457970,Fattoria Zivieri,Via laguna,Sasso Marconi,,,IT,44.396417294617635,11.196121283020148,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-06-21 16:42:00+00:00
 457969,TotalEnergies - Vuurtorenplein 5,Vuurtorenplein 5,De PAnne,,8660,BE,51.10017139411053,2.582411743652216,TotalEnergies (FR),Operational,1,Type 2 (Socket Only),2025-06-21 15:49:00+00:00
 457968,TotalEnergies - Kapellelaan 10,Kapellelaan 10,De Panne,,8660,BE,51.098847865366054,2.5815829513380777,TotalEnergies (FR),Operational,1,Type 2 (Socket Only),2025-06-21 15:47:00+00:00
@@ -3869,345 +3797,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 457966,Chesapeake Market & Deli,7144 Lake Shore Drive,North Beach,Maryland,,US,38.72590356579107,-76.54026554728765,(Unknown Operator),Operational,1,Type 1 (J1772),2025-06-21 15:22:00+00:00
 457965,Scandic Hallandia Halmstad,Rådhusgatan 4,Halmstad,Halland,302 43,SE,56.67298916601334,12.858266977643012,MER,Operational,6,Type 2 (Socket Only)|Type 2 (Socket Only)|Type 2 (Socket Only)|Type 2 (Socket Only)|Type 2 (Socket Only)|Type 2 (Socket Only),2025-06-21 15:21:00+00:00
 457962,ALDI Dunshaughlin,Lagore Rd,Dunshaughlin,Co. Meath,,IE,53.51256534916604,-6.5375698291626065,Shell Recharge Solutions (UK),Operational,1,Type 2 (Socket Only),2025-06-21 14:10:00+00:00
-457961,АЗС ЗСК,"Нефтеюганское ш., перекресток 1 ",Белый Яр,,628433,RU,61.27478,73.28157,Punkt-E,Operational,4,CHAdeMO|Type 2 (Socket Only)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457960,Магнит Экстра Выборг,"ул. Транспортная, 1",Выборг,,188800,RU,60.7001,28.78437,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457959,"Васкелово, база отдыха Онега",ул. Карьерная,Васкелово,,188695,RU,60.37799,30.34708,Punkt-E,Operational,2,GB-T AC - GB/T 20234.2 (Socket)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457958,Пятёрочка Зеленогорск,"ул. Вокзальная, 5",Зеленогорск,,197720,RU,60.20568,29.70519,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457957,Магнит Экстра Сертолово,"ул. Дмитрия Кожемякина, 1/1",Сертолово,,188650,RU,60.13784,30.215802,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457956,Мега Парнас,"117 км КАД, стр 1",Порошкино,,194292,RU,60.0903,30.37826,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457955,Девяткино ТЦ,"ул. Главная, 60",Новое Девяткино,,188661,RU,60.05915,30.48596,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457954,Мурино,"Привокзальная площадь, 3",Мурино,,188662,RU,60.05157,30.44524,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|CCS (Type 2),2025-06-21 13:25:00+00:00
-457953,Асафьева 4А,"ул. Асафьева, 4А",Санкт-Петербург,,194356,RU,60.04879,30.32328,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457952,Перекрёсток Просвещения,"проспект Просвещения, 37А",Санкт-Петербург,,194291,RU,60.04795,30.35624,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457951,Родео Драйв ТРК,"проспект Культуры, 1",Санкт-Петербург,,195274,RU,60.03297,30.36872,Punkt-E,Operational,4,CHAdeMO|CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457950,Перекрёсток Парашютная,"ул. Парашютная, 46",Санкт-Петербург,,197350,RU,60.03208,30.24839,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457949,Сити Молл ТРК,"Коломяжский проспект, 17к2",Санкт-Петербург,,197341,RU,60.00487,30.29962,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457948,Комендантский проспект 4к2литА,"Комендантский проспект, 4к2литА",Санкт-Петербург,,197227,RU,60.0017164,30.2661951,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457947,Аура ТЦ СПб,"проспект Лахтинский, 85к2",Санкт-Петербург,,197229,RU,59.99374,30.15213,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457946,Перекрёсток Карбышева,"ул. Карбышева, 9",Санкт-Петербург,,194021,RU,59.99285,30.35514,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457945,Пятёрочка Наличная,"ул. Наличная, 32, к1",Санкт-Петербург,,199226,RU,59.94411,30.22778,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457944,Нахимова 5к1,"ул. Нахимова, 5к1",Санкт-Петербург,,199226,RU,59.94172,30.22514,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457943,Охта Молл ТЦ СПб,"Брантовская дорога, 3с2",Санкт-Петербург,,195027,RU,59.941002,30.417764,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457942,Херсонская 35-37Б,"ул. Херсонская, 35-37Б",Санкт-Петербург,,191167,RU,59.92758,30.38258,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457941,площадь Морской Славы,"площадь Морской Славы, 1",Санкт-Петербург,,190000,RU,59.92651,30.2386,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457940,ПИК ТРК,"ул.  Ефимова, 4А",Санкт-Петербург,,190031,RU,59.926144,30.321701,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457939,Дворцовый проспект 55/8,"Дворцовый проспект, 55/8",Ломоносов,,198412,RU,59.91594,29.76933,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457938,Боровая 42Б,"ул. Боровая, 42",Санкт-Петербург,,192007,RU,59.91541,30.3447,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457937,Лондон Молл ТРК,"ул. Коллонтай, 3Б",Санкт-Петербург,,193313,RU,59.91192,30.445,Punkt-E,Operational,4,CHAdeMO|CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457936,Бумажная 9к1,"ул. Бумажная, 9к1",Санкт-Петербург,,190020,RU,59.90503,30.27047,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457935,Мега Дыбенко,"Мурманское шоссе, 1",Кудрово,,188691,RU,59.89562,30.51577,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457934,Маршала Казакова 60к1,"ул. Маршала Казакова, 60к1",Санкт-Петербург,,198332,RU,59.8633,30.18751,Punkt-E,Not Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457933,Пятёрочка Ленинский,"Ленинский проспект, 98",Санкт-Петербург,,198332,RU,59.85355,30.21846,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457932,Перекрёсток Прибрежная,"ул. Прибрежная, 13",Санкт-Петербург,,192177,RU,59.83399,30.50407,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457931,Пятёрочка Ветеранов,"проспект Ветеранов, 114к4",Санкт-Петербург,,198261,RU,59.83244,30.19518,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457930,Лето СПб,"шоссе Пулковское, 25к1",Санкт-Петербург,,196240,RU,59.82149,30.31757,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457929,ЖК Зелёный квартал 14,"ул. Струве 14к1, стр.1",Санкт-Петербург,,196140,RU,59.76573,30.31658,Punkt-E,Operational,2,Type 2 (Socket Only)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457928,ЖК Зелёный квартал 8,"ул. Струве, 8к2, стр.1",Санкт-Петербург,,196140,RU,59.76326,30.32095,Punkt-E,Operational,2,Type 2 (Socket Only)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457927,ТЦ Аврора Колпино,"ул. Тверская, 58/6",Колпино,,196655,RU,59.73502,30.61273,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457926,Славянка,"ул. Ростовская, 1",Шушары,,196628,RU,59.73386,30.45946,Punkt-E,Unknown,3,CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457925,Гатчина,"Шведский проезд, 1",Гатчина,,188300,RU,59.58109,30.14547,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457924,Форт ТЦ Тосно,"ул. Боярова, 2А",Тосно,,187000,RU,59.54399,30.87845,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457923,Пятёрочка Анри Барбюса,"ул. Анри Барбюса, 47",Пермь,,614107,RU,58.03015,56.30557,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457922,Пермь бульвар Гагарина,"бульвар Гагарина, 65",Пермь,,614077,RU,58.00613,56.28699,Punkt-E,Operational,6,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457921,Лента Пермь,"проспект Парковый, 66",Пермь,,614046,RU,57.99639,56.1758,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457920,Пермь Космонавтов 120,"шоссе Космонавтов, 120",Пермь,,614087,RU,57.99093,56.1948,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457919,Пермь Стахановская,"ул. Стахановская, 18А",Пермь,,614095,RU,57.986,56.22315,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457918,ТРЦ Планета,"шоссе Космонавтов, 162Б",Пермь,,614065,RU,57.974018,56.151161,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457917,Южный Парк,"Проселочная улица, 1",Нижний Тагил,,622049,RU,57.852512,59.971127,Punkt-E,Operational,2,GB-T AC - GB/T 20234.2 (Socket)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457916,МФК Магеллан,"ул. 50 лет Октября, 14",Тюмень,,625048,RU,57.15241,65.56675,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457915,Ауди центр Тюмень,"ул. Пермякова, 94, сооружение 4",Тюмень,,625033,RU,57.10598,65.56056,Punkt-E,Operational,4,CHAdeMO|CCS (Type 2)|GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457914,ТурБаза Чусовая,"ул. Турбаза Чусовая, 6Б, c. 1",Первоуральск,,623132,RU,57.03269,59.54812,Punkt-E,Not Operational,2,Type 2 (Socket Only)|GB-T AC - GB/T 20234.2 (Socket),2025-06-21 13:25:00+00:00
-457913,Фабрика здорового питания,"ул. Феофанова, 4б",Верхняя Пышма,,624093,RU,56.96842,60.56539,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457912,Евролэнд ТРЦ,"ул. Куконковых, 141",Иваново,,153000,RU,56.96444,41.02517,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457911,Первый ТЦ (Первоуральск),"ул. Береговая, 7/1",Первоуральск,,623101,RU,56.91652,59.94655,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457910,Екатеринбург Космонавтов 58,"проспект Космонавтов, 58",Екатеринбург,,620091,RU,56.89428,60.61467,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457909,Лента Екатеринбург XXII Партсъезда,"ул. 22-го Партсъезда, 2",Екатеринбург,,620088,RU,56.88682,60.58293,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457908,Екатеринбург Билимбаевская,"ул. Билимбаевская, 7",Екатеринбург,,620050,RU,56.87924,60.52206,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457907,Лента Екатеринбург Космонавтов,"проспект Космонавтов, 1в/2",Екатеринбург,,620141,RU,56.86114,60.60937,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457906,Blissco Молл ТЦ,"ул. Уральская, 61А",Екатеринбург,,620041,RU,56.85667,60.6343,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457905,Гранд Фитнес,"ул. Бебеля, 35",Екатеринбург,,620034,RU,56.84976,60.55647,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457904,Екатеринбург Малышева 122,"ул. Малышева, 122",Екатеринбург,,620078,RU,56.8383,60.63757,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457903,Екатеринбург Малышева 84,"ул. Малышева, 84",Екатеринбург,,620000,RU,56.83547,60.61585,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457902,Екатеринбург Крауля,"ул. Крауля, 5",Екатеринбург,,620109,RU,56.82961,60.56688,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457901,Гринвич ТРЦ,"ул. 8 Марта, строение 46",Екатеринбург,,620014,RU,56.82833,60.60041,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457900,Мега Екатеринбург,"ул. Металлургов, 87",Екатеринбург,,620043,RU,56.82372,60.50649,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457899,ЖК Александровский сад,"ул. Степана Разина, 23",Екатеринбург,,620063,RU,56.821719,60.609385,Punkt-E,Operational,2,GB-T AC - GB/T 20234.2 (Socket)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457898,Радуга парк ТРЦ,"ул. Репина, 94",Екатеринбург,,620043,RU,56.81774,60.53603,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457897,Фан Фан ТРЦ,"ул. Ясная, 2",Екатеринбург,,620102,RU,56.81622,60.58674,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457896,Екатеринбург Белинского,"ул. Белинского, 232, к. 2",Екатеринбург,,620089,RU,56.79729,60.63144,Punkt-E,Operational,3,CHAdeMO|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457895,Екатеринбург Краснолесья,"ул. Краснолесья, 163",Екатеринбург,,620105,RU,56.79675,60.51424,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457894,Екатеринбург Щербакова,"ул. Щербакова, 76",Екатеринбург,,620076,RU,56.77699,60.66376,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457893,Brand Stories ТРЦ,"ул. Нескучная, строение 3",Екатеринбург,,620103,RU,56.74066,60.54174,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457892,Лента Томск,"проспект Мира, 30",Томск,,634057,RU,56.5115,84.96931,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457891,СПАР Томск,"ул. Архитекторов, 2",Томск,,634030,RU,56.49376,85.05611,Punkt-E,Operational,2,Type 1 (J1772)|Type 1 (J1772),2025-06-21 13:25:00+00:00
-457890,Бор Ленина 97,"ул. Ленина, 97",Бор,,606440,RU,56.35965,44.05085,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457889,Бор Интернациональная 12 | Ленина 131,ул. Ленина 131,Бор,,606440,RU,56.35953,44.05517,Punkt-E,Not Operational,6,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457888,Героев Космоса 2А,"Героев Космоса, 2А",Нижний Новгород,,603139,RU,56.35846,43.82311,Punkt-E,Not Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457887,"Бор, Крупской 20","ул. Крупской, 20",Бор,,606440,RU,56.35717,44.07146,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457886,НСО Северное,"ул. Урицкого, 14",село Северное,,632080,RU,56.3508,78.37131,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457885,Волжская набережная 13,"Волжская набережная, 18",Нижний Новгород,,603071,RU,56.3432,43.94774,Punkt-E,Not Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457884,Федосеенко 9,"Федосеенко, 9",Нижний Новгород,,603037,RU,56.34153,43.82831,Punkt-E,Not Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457883,Мечникова 75,"ул. Мечникова, 75",Нижний Новгород,,603035,RU,56.33776,43.83894,Punkt-E,Not Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457882,Чаадаева 28,"ул. Чаадаева, 28",Нижний Новгород,,603035,RU,56.33129,43.8395,Punkt-E,Not Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457881,Бульвар Мира 7,"бульвар Мира, 7",Нижний Новгород,,603086,RU,56.32759,43.95563,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457880,Родионова 23,"ул. Родионова, 23",Нижний Новгород,,603093,RU,56.31798,44.06197,Punkt-E,Unknown,3,CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457879,Львовская 8А,"ул. Львовская, 8А",Нижний Новгород,,603095,RU,56.26984,43.88484,Punkt-E,Not Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457878,Дьяконова 11А,"ул. Дьяконова, 11А",Нижний Новгород,,603000,RU,56.26221,43.87752,Punkt-E,Not Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457877,Агат TANK Афонино,"ул. Магистральная, строение 137Б",Афонино,,607680,RU,56.25605,44.09623,Punkt-E,Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457876,"Мячково Советская, 15","ул. Советская, стр. 15",село Мячково,,606085,RU,56.22894,42.79754,Punkt-E,Operational,6,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3|CHAdeMO|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457875,Южное шоссе 2Д,"Южное ш., 2Д",Нижний Новгород,,603123,RU,56.22163,43.85225,Punkt-E,Not Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457874,Баженова 8Б,"ул. Баженова, 8Б",Нижний Новгород,,603000,RU,56.21708,43.79987,Punkt-E,Operational,6,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457873,Гороховец Ленина 66,"ул. Ленина, 66",Гороховец,,601480,RU,56.20101,42.69147,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457872,Учебный центр Сенеж,"ул. Прибрежная, с2кА",Солнечногорск,,141508,RU,56.17735,37.03353,Punkt-E,Operational,2,Type 2 (Socket Only)|GB-T AC - GB/T 20234.2 (Socket),2025-06-21 13:25:00+00:00
-457871,Кафе Север Метрополь,"проспект Строителей, 9, корпус 1",Владимир,,600014,RU,56.1409,40.36677,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457870,Гостиница у Золотых Ворот,"ул. Большая Московская, д. 15",Владимир,,600000,RU,56.12807,40.40083,Punkt-E,Not Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457869,Богородск,"ул. Ленина, 232",Богородск,,607600,RU,56.10511,43.52001,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457868,Нефтекамск Парковая,"ул. Парковая, 18Б",Нефтекамск,,452687,RU,56.08722,54.237257,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457867,Ворсма,"ул. Ленина, 1А",Ворсма,,606120,RU,55.99649,43.29362,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457866,Ашан Зеленоград,"ул. Жилинская, 1 с.1",Солнечногорск,,141551,RU,55.98392,37.14097,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457865,Пятёрочка Зеленоград,к1508,Зеленоград,,124683,RU,55.98331,37.15454,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457864,Фэшн Хаус ТЦ МСК - 2,"ул. Торгово-Промышленная, 6",Химки,,141580,RU,55.97864,37.30297,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457863,Павлово,"ул. Ленина, 7",Павлово,,606100,RU,55.96545,43.06801,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|CCS (Type 2),2025-06-21 13:25:00+00:00
-457862,Гостиница Корнилов,"ул. Ленина, 94",Покров,,601120,RU,55.91853,39.18207,Punkt-E,Not Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457861,РИО Дмитровка,"Дмитровское ш., 163А",Москва,,127495,RU,55.91038,37.54289,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457860,Капитолий Ленинградский ТЦ,"Правобережная ул., 1Б",Москва,,125445,RU,55.880226,37.450147,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457859,Отрада ТП,"Пятницкое ш., 7-й км, вл2",Красногорск,,143442,RU,55.87343,37.33377,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457858,Бахетле Мира,"ул. Мира, 29а",Казань,,420075,RU,55.86428,49.22462,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457857,Ирбис АЗС Новая Тура,"ул. Верхняя, 1ж",Новая Тура,,422527,RU,55.86203,48.83414,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457856,Бахетле Залесная,"ул. Залесная, 66",Казань,,420076,RU,55.85021,48.89518,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457855,Лента Казань Копылова,"ул. Копылова, 1Б",Казань,,420036,RU,55.84716,49.08196,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457854,Европолис Ростокино ТРЦ - 2,"проспект Мира, дом 211, корпус 2",Москва,,129226,RU,55.845938,37.666093,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457853,Империал Парк БЦ,"Вишнёвая, 9 к1",Москва,,125362,RU,55.83106,37.44547,Punkt-E,Operational,2,GB-T AC - GB/T 20234.2 (Socket)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457852,МОКИ ТЦ,"ул. Кулахметова, 28",Казань,,420095,RU,55.82998,49.06196,Punkt-E,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457851,ЖК Павловы Озёра,пос. Павловы Озёра,д. Исаково,,143430,RU,55.827324,37.130083,Punkt-E,Not Operational,2,GB-T AC - GB/T 20234.2 (Socket)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457850,Бахетле Ямашева,"проспект Ямашева, 71",Казань,,420126,RU,55.82584,49.13477,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457849,"Павшинский бульвар, 4"," Павшинский бульвар, 2с1",Красногорск,,143410,RU,55.823692,37.366202,Punkt-E,Operational,1,Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457848,Ашан Балашиха,"мкр Авиаторов, ул. Третьяка, 8",Балашиха,,143909,RU,55.822594,37.951405,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457847,Красногорский бульвар 24,"Красногорский бульвар,  24",Красногорск,,143410,RU,55.820352,37.375389,Punkt-E,Operational,1,Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457846,"Павшинский бульвар, 12","Подмосковный бульвар, 12",Красногорск,,143401,RU,55.81974,37.369934,Punkt-E,Operational,1,Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457845,Красногорский бульвар МФК,"Красногорский бульвар, 4к1",Красногорск,,143401,RU,55.81502,37.36181,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457844,Амакс Сафар Отель,"ул. Односторонка Гривки, 1",Казань,,420066,RU,55.81304,49.09491,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457843,Авиационная 68,"ул. Авиационная, 68",Москва,,123182,RU,55.809635,37.455579,Punkt-E,Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457842,Маршала Василевского 3к1,"ул. Маршала Василевского, 3к1",Москва,,123098,RU,55.803873,37.473106,Punkt-E,Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457841,Пятая Авеню ТРЦ,"ул. Маршала Бирюзова, 32",Москва,,123060,RU,55.80017,37.48306,Punkt-E,Operational,4,CHAdeMO|CCS (Type 2)|CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457840,Рига Молл ТЦ,"Новорижское ш., 23-й км, вл.2с1",Красногорск,,143700,RU,55.79997,37.2758,Punkt-E,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 13:25:00+00:00
-457839,Бахетле Мамадышский,"ул. Мамадышский Тракт, 46",Казань,,420125,RU,55.79939,49.25235,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457838,Рогова 15к1,"ул. Рогова, 15к1",Москва,,123098,RU,55.796029,37.457573,Punkt-E,Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457837,Selgros (Казань),"Мамадышский Тракт, 32",Казань,,420125,RU,55.79536,49.24746,Punkt-E,Not Operational,2,Type 2 (Socket Only)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457836,Савеловский ТЦ,"ул. Сущёвский Вал, дом 5, стр. 19",Москва,,127018,RU,55.794706,37.593995,Punkt-E,Not Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457835,ЦУМ ТЦ,"ул. Московская, 2",Казань,,420111,RU,55.79315,49.10174,Punkt-E,Not Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457834,БЦ Золото Москва,"ул. Золотая, 11",Москва,,105094,RU,55.77989,37.71104,Punkt-E,Operational,2,Type 2 (Socket Only)|GB-T AC - GB/T 20234.2 (Socket),2025-06-21 13:25:00+00:00
-457833,Мега Казань,"проспект Победы, 141",Казань,,420100,RU,55.77967,49.21214,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457832,Хорошо ТРЦ,"Хорошёвское шоссе, 27",Москва,,123007,RU,55.77703,37.52419,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457831,Магнит Семейный Павловский Посад,"Большой Железнодорожный пр., 23",Павловский Посад,,142500,RU,55.77654,38.66367,Punkt-E,Operational,3,CCS (Type 2)|CHAdeMO|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457830,Бахетле Павлюхина,"ул. Павлюхина, 57",Казань,,420049,RU,55.77537,49.13779,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457829,Ирбис АЗС Техническая,"ул. Техническая, 27",Казань,,420054,RU,55.75496,49.13008,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457828,Воздвиженка 10,"ул. Воздвиженка, 10",Москва,,125009,RU,55.75356,37.60583,Punkt-E,Not Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457827,Бахетле Оренбургский тракт,"ул. Оренбургский тракт, 22А",Казань,,420059,RU,55.75326,49.16099,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457826,Квартал Остров.1,"1-й квартал, жилой комплекс Остров",Москва,,123423,RU,55.751748,37.453187,Punkt-E,Operational,4,CHAdeMO|CCS (Type 2)|CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457825,Дорогомиловский рынок,"ул. Можайский Вал, 10",Москва,,121151,RU,55.74328,37.55482,Punkt-E,Operational,3,Type 2 (Socket Only)|Type 2 (Socket Only)|Type 1 (J1772),2025-06-21 13:25:00+00:00
-457824,Кунцево Плаза ТРЦ,"ул. Ярцевская, 19",Москва,,121552,RU,55.738317,37.411248,Punkt-E,Operational,2,Type 2 (Socket Only)|GB-T AC - GB/T 20234.2 (Socket),2025-06-21 13:25:00+00:00
-457823,Ашан Ликино-Дулёво,"ул. Советская, 35",Ликино-Дулёво,,142672,RU,55.722857,38.959327,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457822,Ирбис АЗС 843 км,а/д М-7 Волга 843 км,Казань,,422796,RU,55.71808,49.49321,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457821,Можайский Двор ТЦ,"Новоивановское, ул. Амбулаторная, 50",Одинцово,,143025,RU,55.71245,37.37559,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457820,Мозаика ТЦ,"7-я Кожуховская ул., 9",Москва,,115193,RU,55.71023,37.67319,Punkt-E,Operational,5,CHAdeMO|CCS (Type 2)|Type 2 (Socket Only)|CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457819,Квартал Вест ТЦ,"Аминьевское ш., 6",Москва,,119530,RU,55.7078,37.4575,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457818,Ашан Марфино,МКАД 53 км,Одинцово,,143026,RU,55.70698,37.38325,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457817,Капитолий Вернадского ТЦ,"проспект Вернадского, 6",Москва,,119334,RU,55.691884,37.528762,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457816,АЗС Нефтьмагистраль,"МКАД, 12-й километр, вл2",Москва,,109145,RU,55.67556,37.83601,Punkt-E,Operational,5,CCS (Type 2)|CHAdeMO|Type 2 (Socket Only)|GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457815,РИО Ленинский,"Ленинский пр-т., 109",Москва,,119421,RU,55.66433,37.512,Punkt-E,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457814,Гудзон ТРК,"Каширское шоссе, 14",Москва,,115230,RU,55.66364,37.62507,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457813,МАРИ ТЦ,"ул. Поречная, 10",Москва,,109469,RU,55.65057,37.77015,Punkt-E,Not Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457812,Галеон ТЦ,"Ленинский пр-т, 123В",Москва,,117513,RU,55.64774,37.48111,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457811,Капитолий Беляево ТЦ,"ул. Миклухо-Маклая, 32А",Москва,,117279,RU,55.641212,37.529398,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457810,Ашан Пролетарский,"Пролетарский пр-т, 30",Москва,,115516,RU,55.63039,37.6589,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457809,Selgros (Внуково),"29-й км Боровского ш., 4с1",Внуково,,108850,RU,55.62899,37.31019,Punkt-E,Operational,2,Type 2 (Socket Only)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457808,Каширская Плаза ТРЦ,"Каширское шоссе, 61Г",Москва,,115582,RU,55.622139,37.712861,Punkt-E,Operational,6,CHAdeMO|CCS (Type 2)|Type 2 (Socket Only)|GB-T AC - GB/T 20234.2 (Socket)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457807,Аэропарковка Казань,"Территория аэропорт, 5",Казань,,422627,RU,55.6187,49.28541,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457806,FORT Ясенево ТРЦ,"проспект Новоясеневский, 11",Москва,,117588,RU,55.60691,37.53658,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457805,Selgros (Бирюлево),"ул. Подольских Курсантов, 26с1",Москва,,117546,RU,55.59245,37.63358,Punkt-E,Operational,2,Type 2 (Socket Only)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457804,Зефир в Мармеладе ТЦ,"ул. Куликова, 7а",Муром,,602251,RU,55.57166,42.03586,Punkt-E,Operational,3,CHAdeMO|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457803,Галерея 9-18 ТЦ,"ул. Олимпийская, 6к1",Видное,,142702,RU,55.54563,37.69999,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457802,Бутово Молл ТРЦ,"Чечёрский проезд, 51",Щербинка,,117042,RU,55.52431,37.51633,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457801,Мираторг М-2,"29-й км трассы М-2 Крым, стр. 3",Подольск,,117148,RU,55.50181,37.60851,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457800,Гостиница Дон,"33-й км М-4 ""Дон"", стр. 4",Домодедово,,143230,RU,55.47189,37.74991,Punkt-E,Not Operational,3,CCS (Type 2)|CHAdeMO|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457799,НСО Куйбышев,"ул. Краскома, 32",Куйбышев,,632387,RU,55.44656,78.31105,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457798,Перекрёсток Каширский Бронницы,"Каширский переулок, 66",Бронницы,,140170,RU,55.41699,38.24757,Punkt-E,Not Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457797,"Бирск, Коммунистическая",ул. Коммунистическая 58,Бирск,,452450,RU,55.415727,55.530544,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457796,Арзамас Ленина 200б,"пр-т Ленина, 200Б",Арзамас,,603000,RU,55.40228,43.83449,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457795,Магнит Экстра Воскресенск,"ул. Зелинского, 7А",Воскресенск,,140207,RU,55.31241,38.65771,Punkt-E,Operational,3,CCS (Type 2)|CHAdeMO|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457794,НСО Чаны,"ул. Заводская, 26",рп Чаны,,632201,RU,55.31177,76.76053,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457793,НСО Колывань,"ул. Максима Горького, 56А",рп Колывань,,633162,RU,55.30495,82.73673,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457792,НСО Мошково,"ул. Вокзальная, 42",рп Мошково,,633131,RU,55.30485,83.62289,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457791,Аэропорт Кемерово,"ул. Аэропорт, 2",Кемерово,,650070,RU,55.28137,86.11487,Punkt-E,Operational,9,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457790,НСО Тогучин,"ул. Комсомольская, 7",Тогучин,,633456,RU,55.23892,84.40202,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457789,НСО Татарск,"ул. Василевского, 4А",Татарск,,632122,RU,55.23434,75.98656,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457788,Сбербанк Челябинск,"проспект Комсомольский, 70В",Челябинск,,454014,RU,55.19508,61.31906,Punkt-E,Operational,2,CCS (Type 2)|CHAdeMO,2025-06-21 13:25:00+00:00
-457787,Бажовский ТОК,"​ул. Бажова, 91",Челябинск,,454071,RU,55.18157,61.45397,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457786,Челябинск Молодогвардейцев,"ул. Молодогвардейцев, 55А",Челябинск,,454136,RU,55.18028,61.33315,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|CCS (Type 2),2025-06-21 13:25:00+00:00
-457785,Челябинск Столыпина,"ул. Петра Столыпина, 11А",Челябинск,,454103,RU,55.17447,61.25654,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457784,Челябинск Труда,"ул. Труда, 203",Челябинск,,454018,RU,55.16912,61.35469,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457783,M-1 Сафоново KFC,"Шахта-4, 20",Сафоново,,215503,RU,55.1404,33.23763,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457782,Энергия АЗС Рекордный 3,"Рекордный пер., 3",Новосибирск,,630020,RU,55.08905,82.93755,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457781,ЖК Легендарный Северный,"ул. Аэропорт, 1/2",Новосибирск,,630123,RU,55.08191,82.90507,Punkt-E,Operational,2,Type 1 (J1772)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457780,Малинка ТЦ,"ул. Дуси Ковальчук,  1/1",Новосибирск,,630001,RU,55.04814,82.88214,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457779,Адриена Лежена 27,"ул. Адриена Лежена, 27/1",Новосибирск,,630089,RU,55.04464,82.98376,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457778,Галерея ТЦ,"ул. Гоголя, 13",Новосибирск,,630005,RU,55.0438,82.923,Punkt-E,Operational,2,Type 1 (J1772)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457777,Энергия АЗС С. Шамшиных 61,"ул. Семьи Шамшиных, 61",Новосибирск,,630091,RU,55.03864,82.92953,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457776,Лазурный ТЦ,"ул. В.Высоцкого, 45/1",Новосибирск,,630133,RU,55.03039,83.01788,Punkt-E,Not Operational,2,Type 1 (J1772)|Type 1 (J1772),2025-06-21 13:25:00+00:00
-457775,НСО Коченёво,"ул. Октябрьская, 48",рп Коченево,,632640,RU,55.02489,82.20602,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457774,Энергия АЗС Большая 367,"ул. Большая, 367/2",Новосибирск,,630032,RU,55.01841,82.81112,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457773,Энергия АЗС Фабричная 4,"ул. Фабричная, 4a",Новосибирск,,630007,RU,55.01581,82.92166,Punkt-E,Not Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457772,Большевистская 37,"ул. Большевистская, 37",Новосибирск,,630102,RU,55.01024,82.93376,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457771,Аэропорт Толмачево,Проезд Мозжерина,Обь,,633102,RU,55.00683,82.66861,Punkt-E,Operational,4,CHAdeMO|CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457770,Станционная 98,"ул. Станционная, 98/2",Новосибирск,,630041,RU,54.9965,82.78175,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457769,Парковка Дружба,ул. Путейцев,Обь,,630000,RU,54.99567,82.67799,Punkt-E,Not Operational,3,CCS (Type 2)|CHAdeMO|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457768,Сбербанк Омск,"Маршала Жукова, 4/1",Омск,,644024,RU,54.98436,73.38549,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457767,Грани ТРЦ,"ул. Покрышкина, 6",Новосибирск,,630048,RU,54.98186,82.89152,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457766,Быстроном (Первомайская 57),"ул. Первомайская, 57",Новосибирск,,630000,RU,54.97567,83.04294,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457765,Мега Омск,"бульвар Архитекторов, 35",Омск,,644074,RU,54.97481,73.28553,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457764,Энергия АЗС Петухова 19,"ул. Петухова, 19",Новосибирск,,630088,RU,54.94492,82.85828,Punkt-E,Not Operational,2,Type 1 (J1772)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457763,Матрёшкин двор ЖК,"ул. Александра Чистякова, 12",Новосибирск,,630023,RU,54.94273,82.96619,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457762,АГЗС Метан пос. Пугачевский,"Зелёная улица, 4",посёлок Пугачёвский,,456438,RU,54.91807,60.33278,Punkt-E,Operational,3,CCS (Type 2)|CHAdeMO|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457761,Сбербанк Лыкова,"ул. Лыкова, 7",Новосибирск,,630055,RU,54.86106,83.08385,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457760,Топлайн АЗС Приморская 2,"ул. Приморская, 2А",Новосибирск,,630056,RU,54.85559,82.98311,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457759,Балтийская 33,"ул. Балтийская, 33",Новосибирск,,630058,RU,54.85522,83.04992,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457758,Уфа Богдана Хмельницкого,"ул. Богдана Хмельницкого, 125",Уфа,,450065,RU,54.819434,56.118062,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457757,Уфа Космонавтов,"ул. Космонавтов, 12",Уфа,,450064,RU,54.818041,56.063527,Punkt-E,Not Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457756,Уфа Северодвинская,"ул. Северодвинская, 14",Уфа,,450064,RU,54.812697,56.06078,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457755,Уфа Адмирала Макарова,"ул. Адмирала Макарова, 32",Уфа,,450081,RU,54.800045,56.055551,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457754,Уфа Дмитрия Купцова,"ул. Дмитрия Купцова, 6",Уфа,,450010,RU,54.793871,55.845863,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457753,Уфа Российская,ул. Российская 17,Уфа,,450000,RU,54.787326,56.04077,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457752,Уфа Ахметова,"ул. Ахметова, дом 273",Уфа,,450017,RU,54.783031,55.886846,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457751,Акварин ТЦ,"ул. Ферина, 29",Уфа,,450043,RU,54.7788991,56.1335926,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457750,Уфа Юрия Гагарина,"ул. Юрия Гагарина, 74",Уфа,,450105,RU,54.777561,56.075351,Punkt-E,Not Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457749,Уфа проспект Октября,"пр. Октября, 128",Уфа,,450053,RU,54.773991,56.029695,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457748,Уфа Маршала Жукова,"ул. Маршала Жукова, 14",Уфа,,450105,RU,54.772365,56.064355,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457747,Уфа Рихарда Зорге,"ул. Рихарда Зорге, дом 69",Уфа,,450075,RU,54.771362,56.015007,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457746,Уфа Комсомольская,"ул. Комсомольская, 142",Уфа,,450096,RU,54.760393,56.019502,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457745,Уфа Гвардейская,"ул. Гвардейская, дом 58/5",Уфа,,450028,RU,54.756659,56.243756,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457744,Уфа Салавата Юлаева 89,"проспект Салавата Юлаева, 89",Уфа,,450071,RU,54.7505,56.01434,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457743,Уфа Менделеева 162А,"ул. Менделеева, 162А",Уфа,,450071,RU,54.749526,56.032932,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457742,Уфа Белякова,"ул. Белякова, 4",Уфа,,450006,RU,54.741304,55.953916,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457741,Уфа Менделеева 203,"ул. Менделеева, 203",Уфа,,450071,RU,54.74038,56.025002,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457740,Уфа 50-летия Октября,"ул. 50-летия Октября, дом 21",Уфа,,450005,RU,54.738849,55.980869,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457739,Уфа Ивана Якутова,"ул. Ивана Якутова, 7Б",Уфа,,450000,RU,54.738355,55.956993,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457738,Уфа Мустая Карима,"ул. Мустая Карима, 69/1",Уфа,,450015,RU,54.7382961,55.9491017,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457737,ТЦ Центральный Уфа,"ул. Цюрупы, 97",Уфа,,450000,RU,54.73764,55.95715,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457736,Уфа Кустарная,"ул. Кустарная, дом 19",Уфа,,450077,RU,54.730687,55.965663,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457735,Уфа Кирова 29,"ул. Кирова, 29",Уфа,,450077,RU,54.730666,55.953806,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457734,Уфа Карла Маркса,"ул. Карла Маркса, дом 30/1",Уфа,,450052,RU,54.729925,55.945702,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457733,Уфа Кирова 89,"ул. Кирова, 89",Уфа,,450078,RU,54.728142,55.972611,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457732,Уфа Цюрупы 75, ул. Цюрупы 75,Уфа,,450077,RU,54.728066,55.953412,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457731,Уфа Менделеева 140/1,"ул. Менделеева, 140/1",Уфа,,450080,RU,54.720913,56.012406,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457730,Уфа Мингажева,"ул. Мингажева, дом 40/1",Уфа,,450078,RU,54.71976,55.96971,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457729,Уфа Бакалинская,"ул. Бакалинская, 66",Уфа,,450022,RU,54.719601,55.987023,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457728,Уфа Менделеева 7А,"ул. Менделеева, 7А, Уфа",Уфа,,450047,RU,54.711207,55.972321,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457727,НСО Чистоозерное,"ул. Покрышкина, 10",рп Чистоозерное,,632720,RU,54.70706,76.57416,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457726,НСО Здвинск,"ул. Калинина, 37",село Здвинск,,632951,RU,54.70387,78.6646,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457725,Уфа Евгения Столярова,"ул. Евгения Столярова, 3",Уфа,,450095,RU,54.697941,55.858588,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457724,Уфа Зайнаб Биишевой,"ул. Зайнаб Биишевой, 3",Уфа,,450074,RU,54.693168,55.986456,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457723,Уфа Габдуллы Амантая,"ул. Габдуллы Амантая, дом 10",Уфа,,450074,RU,54.688918,55.996188,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457722,Мега Уфа,"ул. Рубежная, 174",Уфа,,450018,RU,54.67456,55.92914,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457721,Уфа Рубежная,"ул. Рубежная, 166",Уфа,,450018,RU,54.66667,55.932145,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457720,Парк-отель Сова,"проезд Шабулина, 21Г",Рязань,,390010,RU,54.6497,39.6663,Punkt-E,Operational,2,Type 2 (Socket Only)|GB-T AC - GB/T 20234.2 (Socket),2025-06-21 13:25:00+00:00
-457719,Мавзолей Тура-хана,Еремеевский сельсовет,Чишминский район,,452170,RU,54.6021121,55.2194037,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457718,НСО Довольное,"ул. Ленина, 108",село Довольное,,632450,RU,54.496,79.66276,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457717,Октябрьский Островского,"ул. Островского, дом 55",Октябрьский,,452602,RU,54.485,53.48054,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CCS (Type 2)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457716,НСО Купино,"ул. Советов, 211А",Купино,,632733,RU,54.3713,77.31921,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457715,НСО Ордынское,"ул. Советская, 2А",рп Ордынское,,633261,RU,54.36397,81.9053,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457714,НСО Маслянино,рп Маслянино,рп Маслянино,,633561,RU,54.34585,84.15876,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457713,НСО Кочки,"ул. Пушкинская, 29А",село Кочки,,632491,RU,54.33261,80.4941,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457712,Глобус Тула,"ул. Аркадия Шипунова, 1А",Тула,,300045,RU,54.176691,37.649063,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457711,Гостиница Уют,"ул. Шишкина, 161",Казачинское,,391550,RU,54.02175,41.67492,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457710,НСО Краснозёрское,"ул. Набережная, 70А",рп Краснозерское,,632901,RU,53.97718,79.2285,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457709,НСО Сузун,"ул. Ленина, 27",рп Сузун,,633623,RU,53.78115,82.319,Punkt-E,Operational,1,Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457708,НСО Карасук,"ул. Демьяна Бедного, 62а",Карасук,,632868,RU,53.73243,78.0466,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457707,Стерлитамак Голикова,"ул. Голикова, дом 22",Стерлитамак,,453103,RU,53.639262,55.936567,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457706,Магнитогорский Центральный рынок,"проспект Карла Маркса, 74",Магнитогорск,,455023,RU,53.41446,58.97675,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457705,ТРК Континент,"проспект Ленина, 83",Магнитогорск,,455000,RU,53.4036079,58.9874048,Punkt-E,Operational,3,CHAdeMO|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457704,Радуга Вкуса,"ул. Советская, 86А",Магнитогорск,,455030,RU,53.398187,58.959456,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457703,Гостиный двор ТЦ,"проспект Карла Маркса, 153",Магнитогорск,,455000,RU,53.37867,58.98155,Punkt-E,Not Operational,4,GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457702,Семейный Парк,"проспект Карла Маркса, 172",Магнитогорск,,455000,RU,53.3786517,58.9767759,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457701,Ривер ТЦ,"ул. Солнечная Поляна, д. 88",Барнаул,,656060,RU,53.34915,83.64965,Punkt-E,Operational,1,Type 1 (J1772),2025-06-21 13:25:00+00:00
-457700,Парк Хаус ТРЦ Самара,"Московское шоссе, 81А",Самара,,443111,RU,53.23255,50.19981,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457699,Лента Самара,"ул. Физкультурная, 141",Самара,,443092,RU,53.22062,50.27578,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457698,Амбар ТК,"Южное шоссе, 5",Самара,,443085,RU,53.135516,50.172799,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457697,Парк отель Алтан,тер база отдыха Алтан (деревня Сарма),деревня Сарма,,666423,RU,53.086988,106.799839,Punkt-E,Operational,2,Type 2 (Socket Only)|GB-T AC - GB/T 20234.2 (Socket),2025-06-21 13:25:00+00:00
-457696,Акварель+ ТРЦ Тамбов,"ул. Студенецкая Набережная, 20А",Тамбов,,392024,RU,52.7281,41.44541,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|CHAdeMO,2025-06-21 13:25:00+00:00
-457695,Ресторан Бирлогово,"ул. Октябрьская, 16",Тамбов,,392024,RU,52.72507,41.44807,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|CHAdeMO,2025-06-21 13:25:00+00:00
-457694,РИО ТРЦ Тамбов,"ул. Советская, 99А",Тамбов,,392024,RU,52.72472,41.45856,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|CHAdeMO,2025-06-21 13:25:00+00:00
-457693,Октябрьский ТРЦ,"ул. Генерала Меркулова, 2",Липецк,,398046,RU,52.59063,39.54675,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457692,Ашан Липецк,"ул. Героя России Эдуарда Белана, 26",Липецк,,398004,RU,52.574677,39.524709,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457691,СБЕР Пискунова,"ул. Пискунова, 122А",Иркутск,,664023,RU,52.27059,104.32458,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457690,Юбилейный ТРЦ,"ул. Юбилейный микрорайон, 19/1",Иркутск,,664056,RU,52.22682,104.30526,Punkt-E,Operational,4,GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457689,ЖК Z-town (публичная),"набережная Чуева, 7",Воронеж,,394063,RU,51.698618,39.262354,Punkt-E,Not Operational,1,GB-T AC - GB/T 20234.2 (Socket),2025-06-21 13:25:00+00:00
-457688,Мой Новый ТК,"ул. Верхняя, 17Д",Саратов,,410076,RU,51.509858,45.978222,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457687,Энгельс Серафимовича,"ул. Серафимовича, 197",Энгельс,,413124,RU,51.50896,46.17929,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457686,Энгельс Колотилова,"ул. Колотилова, 155",Энгельс,,413113,RU,51.48447,46.15351,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457685,Ложка за маму - хутор Ленина,"Ленинская ул., 36",хутор Ленина,,347400,RU,49.053212,40.516878,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457684,АГАТ Волгоград,"шоссе Авиаторов, 2а",Волгоград,,400048,RU,48.7532,44.47712,Punkt-E,Operational,2,Type 2 (Socket Only)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457683,Стройград ТЦ,"пр-т имени В.И. Ленина, 65К",Волгоград,,400005,RU,48.74886,44.547261,Punkt-E,Not Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457682,магазин Всё для дома,"переулок Иванова, 12",Шахты,,346530,RU,47.72786,40.19673,Punkt-E,Operational,1,GB-T AC - GB/T 20234.2 (Socket),2025-06-21 13:25:00+00:00
-457681,Магнит Экстра Шахты,"проспект Победа Революции, 113",Шахты,,346524,RU,47.69762,40.20883,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457680,Ложка за маму 1015-й км М-4 (в Москву),"1015-й километр, 1","Октябрьский район, М-4 Дон",,346480,RU,47.617805,39.996331,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457679,Ашан Орбитальная,"ул. Обсерваторная, 13",пос. Верхнетемерницкий,,344114,RU,47.30764,39.72141,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457678,Магнит Экстра Лелюшенко,"ул. Лелюшенко, 4",Ростов-на-Дону,,344045,RU,47.29437,39.73408,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457677,Галерея Парк ТЦ,"проспект Космонавтов, 19А/28Ж",Ростов-на-Дону,,344000,RU,47.28856,39.71301,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457676,Ложка за маму - Аксай,"ул. Шолохова, 2Б",Аксай,,346720,RU,47.27179,39.85554,Punkt-E,Operational,4,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457675,Лента Аксайский,"Аксайский проспект, 2",Аксай,,344094,RU,47.27048,39.82473,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457674,ААА Моторс Театральный,"проспект Театральный, 60Е",Ростов-на-Дону,,344000,RU,47.23844,39.73664,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457673,ААА Моторс Доватора,"ул. Доватора, 259",Ростов-на-Дону,,344103,RU,47.23728,39.60266,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457672,Миллениум ТЦ,ул. Текучёва 139А,Ростов-на-Дону,,344000,RU,47.23517,39.70664,Punkt-E,Unknown,3,CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457671,Большой ТЦ,"ул. Города Волос, 70",Ростов-на-Дону,,344000,RU,47.23134,39.725,Punkt-E,Operational,3,CHAdeMO|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457670,Речное училище,"пр. Театральный, 46",Ростов-на-Дону,,344000,RU,47.23037,39.74151,Punkt-E,Unknown,3,CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457669,Дом профсоюзов,"ул. Красноармейская, 65а",Ростов-на-Дону,,344000,RU,47.22849,39.71464,Punkt-E,Not Operational,3,CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457668,Гвардейская площадь,"Гвардейский переулок, 3",Ростов-на-Дону,,344000,RU,47.22382,39.69348,Punkt-E,Operational,3,CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457667,Мармелад ТРЦ,"пл. Мира, 7",Таганрог,,347930,RU,47.217626,38.89729,Punkt-E,Not Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457666,Будда ресторан,"Будённовский проспект, 1Г",Ростов-на-Дону,,344000,RU,47.21529,39.70926,Punkt-E,Unknown,3,CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457665,Соколёнок парк,"ул. Литвинова, 4",Ростов-на-Дону,,344000,RU,47.21066,39.67065,Punkt-E,Unknown,3,CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457664,Plaza Cinema ТЦ,"пр. Коммунистический, 30",Ростов-на-Дону,,344000,RU,47.20808,39.63108,Punkt-E,Unknown,3,CCS (Type 2)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457663,Отель Кортъярд,"ул. Левобережная, 2К",Ростов-на-Дону,,344002,RU,47.20679,39.72626,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457662,ААА Моторс Дзержинского,"ул. имени Дзержинского, 231/2",Краснодар,,350005,RU,45.11474,38.98491,Punkt-E,Not Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457661,Ключавто Покрышкина,"ул. им. Александра Покрышкина, 17",Краснодар,,350005,RU,45.10502,38.96614,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457660,Аллея ТЦ,"ул. Григория Пономаренко, 41",Краснодар,,350087,RU,45.101911,39.002322,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457659,Стрелка ТЦ,"ул. Московская, 162",Краснодар,,350024,RU,45.093668,39.002681,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457658,Любимово ТРЦ,"ул. Адмирала Крузенштерна, 4",Краснодар,,350073,RU,45.09083,39.04367,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457657,Вест Молл ТРЦ,"ул. Западный Обход, дом 31",Краснодар,,350012,RU,45.085041,38.899175,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457656,Сказка ТЦ,"ул. Шоссе Нефтяников, 42",Краснодар,,350051,RU,45.07144,38.98396,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457655,Агат Ставрополь,"проспект Кулакова, 18/9",Ставрополь,,355035,RU,45.06916,41.92748,Punkt-E,Operational,2,Type 2 (Socket Only)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457654,Магнит Экстра 40-летия Победы,"ул. имени 40-летия Победы, 174",Краснодар,,350901,RU,45.05465,39.03087,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457653,"ЖК Все свои, дом 5/2а","ул. Колхозная, 5/2а",Краснодар,,350042,RU,45.04858,38.98979,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457652,"ЖК Все свои, дом 5/2","ул. Колхозная, 5/2",Краснодар,,350042,RU,45.0461,38.99282,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457651,Boxpark ОТЦ (Краснодар),"ул. им. Тургенева, 39",Краснодар,,350004,RU,45.04373,38.95657,Punkt-E,Not Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457650,ААА Москвич Аэропортовская,"ул. Аэропортовская, 4/1",Краснодар,,350912,RU,45.02781,39.13065,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457649,Магнит Экстра Ставрополь,ул. Западный Обход 68А,Ставрополь,,355029,RU,45.02174,41.911004,Punkt-E,Operational,4,CCS (Type 2)|GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457648,Мега Адыгея-Кубань,"Тургеневское шоссе, 27",Новая Адыгея,,385132,RU,45.01508,38.93038,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457647,ОЗ Молл ТРЦ,"ул. Крылатая, 2",Краснодар,,350023,RU,45.012631,39.120823,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457646,Зеленодольская 24,"Промышленный р-н, мкр № 35, Зеленодольская ул., 24",Ставрополь,,355021,RU,45.005129,41.902789,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457645,Сити Центр ТРК Краснодар,"Индустриальная улица, 2",Краснодар,,350007,RU,45.001458,38.962768,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457644,Магнит Экстра Армавир,"ул. Энгельса, 57/2",Армавир,,352900,RU,44.99874,41.11973,Punkt-E,Operational,4,CCS (Type 2)|GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457643,Анапа Крестьянская 23,"ул. Крестьянская, 23",Анапа,,353445,RU,44.90024,37.34078,Punkt-E,Operational,3,CHAdeMO|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457642,Перекрёсток Таманская,"ул. Таманская, 121с1",Анапа,,353440,RU,44.8757,37.31666,Punkt-E,Operational,3,GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457641,Ключавто Золотая рыбка,"ул. Золотая рыбка, 33к1",село Цемдолина,,353960,RU,44.77874,37.68789,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457640,Мефодиевский ТЦ,"ул. Котовского, 6",Новороссийск,,353906,RU,44.7404,37.77501,Punkt-E,Operational,3,CHAdeMO|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457639,Кинотеатр Нептун,"набережная Адмирала Серебрякова, 53",Новороссийск,,353900,RU,44.70066,37.78761,Punkt-E,Operational,3,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457638,Гостиница Династия,"ул. Красивая, 29",Геленджик,,353465,RU,44.57726,38.066,Punkt-E,Operational,2,Type 2 (Socket Only)|GB-T AC - GB/T 20234.2 (Socket),2025-06-21 13:25:00+00:00
-457637,Апарт-отель Пушкин,"Зелёный переулок, 3",Геленджик,,353460,RU,44.57344,38.08108,Punkt-E,Operational,2,GB-T AC - GB/T 20234.2 (Socket)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457636,Детейлинг Rich Style,"ул. Кирова, 109",Геленджик,,353460,RU,44.56837,38.08906,Punkt-E,Not Operational,2,GB-T AC - GB/T 20234.2 (Socket)|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457635,Магнит Экстра Геленджик,"ул. Советская, 71",Геленджик,,353475,RU,44.55232,38.08841,Punkt-E,Operational,3,CHAdeMO|GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457634,Бургер Кинг Джубга,"Новороссийское ш., 1Б",Джубга,,352844,RU,44.31759,38.69871,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457633,Бургер Кинг Новомихайловский,"ул. Мира, 82А",Новомихайловский,,352855,RU,44.25296,38.84527,Punkt-E,Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457632,Магнит Семейный Минводы,"ул. Советская, 89",Минеральные Воды,,357212,RU,44.19797,43.12064,Punkt-E,Operational,4,CCS (Type 2)|GB-T DC - GB/T 20234.3|GB-T DC - GB/T 20234.3|Type 2 (Socket Only),2025-06-21 13:25:00+00:00
-457631,Пятёрочка Агой,"ул. Центральная, 35",село Агой,,352830,RU,44.14156,39.02276,Punkt-E,Not Operational,2,CHAdeMO|CCS (Type 2),2025-06-21 13:25:00+00:00
-457630,Пятёрочка Сочинская,"ул. Сочинская, 248А",Туапсе,,352800,RU,44.093962,39.113736,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457629,Пятёрочка Красная Поляна,"Защитников Кавказа, 12",пгт Красная Поляна,,354392,RU,43.6741,40.2011,Punkt-E,Not Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 13:25:00+00:00
-457628,Парковка электротакси Аэропорта Сочи,аэропорт Сочи имени В.И. Севастьянова,Сочи,,354355,RU,43.446959,39.938829,Punkt-E,Operational,4,CCS (Type 2)|GB-T DC - GB/T 20234.3|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457627,Апельсин базар ТЦ 60 кВт,"ул. Мира, 37",Сочи,,354340,RU,43.44111,39.91078,Punkt-E,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 13:25:00+00:00
-457626,Магнит Экстра Сириус,"ул. Приреченская, 2/5",ПГТ Сириус,,354340,RU,43.42426,39.93494,Punkt-E,Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-06-21 13:25:00+00:00
-457625,Отель Рэдиссон Сириус,"ул. 65 лет Победы, 50",ПГТ Сириус,,354349,RU,43.39455,39.97758,Punkt-E,Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
-457624,"ООО Каспий-Петрол (Буйнакск, Дагестан)","посёлок Восточный, ул. Грозненская, угол ф/д Хасавюрт-Бабаюрт",Хасавюрт,,,RU,43.23887,46.61602,Punkt-E,Not Operational,3,CHAdeMO|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-21 13:25:00+00:00
-457623,Ресторан Grand Palace,"ул. Заурбека Борова, 1А",Магас,,386001,RU,43.169804,44.802678,Punkt-E,Not Operational,2,GB-T DC - GB/T 20234.3|CCS (Type 2),2025-06-21 13:25:00+00:00
 457622,Floralien,Floralienlaan,Antwerp,,2600,BE,51.18674553405535,4.418748584167361,(Unknown Operator),Operational,1,CCS (Type 2),2025-06-21 13:08:00+00:00
 456851,Radisson Scandinavia Hotel Oslo (PowerGo),Holbergs gate 30,Oslo,,0166,NO,59.918067,10.733192,PowerGo,Operational,8,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
 456849,Sundhedshus Hanstholm (PowerGo),Bådsgårdsvej 12,Hanstholm,,7730,DK,57.112787,8.60706,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00

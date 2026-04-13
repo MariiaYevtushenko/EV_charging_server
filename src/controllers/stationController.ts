@@ -1,6 +1,7 @@
 import type { RequestHandler } from "express";
 import { stationService } from "../services/stationService.js";
 import { parsePaginationQuery } from "../lib/pagination.js";
+import { parseStationListSort } from "../lib/stationListSort.js";
 import {
   parseCreateStationBody,
   parseUpdateStationBody,
@@ -31,7 +32,6 @@ export const getStationDashboard: RequestHandler = async (req, res, next) => {
 const MAP_BOUNDS_DEFAULT_LIMIT = 2500;
 const MAP_BOUNDS_MAX_LIMIT = 5000;
 
-/** Станції для карти у видимому прямокутнику: minLat, maxLat, minLng, maxLng; опційно limit (1…5000). */
 export const getStationsMap: RequestHandler = async (req, res, next) => {
   try {
     const q = req.query as Record<string, unknown>;
@@ -76,10 +76,22 @@ export const getStationsMap: RequestHandler = async (req, res, next) => {
 
 export const getAllStations: RequestHandler = async (req, res, next) => {
   try {
-    const { page, pageSize, skip } = parsePaginationQuery(
-      req.query as Record<string, unknown>
+    const q = req.query as Record<string, unknown>;
+    const { page, pageSize, skip } = parsePaginationQuery(q);
+    const sort = parseStationListSort(q);
+    const rawStatus = q["status"];
+    const statusFilter =
+      typeof rawStatus === "string" && rawStatus.trim() !== ""
+        ? parseStationStatus(rawStatus)
+        : undefined;
+    const data = await stationService.getStationsPage(
+      skip,
+      pageSize,
+      page,
+      pageSize,
+      sort,
+      statusFilter
     );
-    const data = await stationService.getStationsPage(skip, pageSize, page, pageSize);
     res.json(data);
   } catch (e) {
     next(e);
@@ -150,6 +162,24 @@ export const unarchiveStation: RequestHandler = async (req, res, next) => {
   }
 };
 
+
+export const deleteStation: RequestHandler = async (req, res, next) => {
+  try {
+    const stationId = Number(req.params["stationId"]);
+    if (!Number.isFinite(stationId)) {
+      res.status(400).json({ error: "Station id is required" });
+      return;
+    }
+    const deleted = await stationService.deleteStation(stationId);
+    if (!deleted) {
+      res.status(404).json({ error: "Station not found" });
+      return;
+    }
+    res.status(204).send();
+  } catch (e) {
+    next(e);
+  }
+};
 
 export const updateStationStatus: RequestHandler = async (req, res, next) => {
   try {

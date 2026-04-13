@@ -1,4 +1,5 @@
 import { stationRepository } from "../db/stationRepository.js";
+import type { ParsedStationListSort } from "../lib/stationListSort.js";
 import type { Prisma, Station, StationStatus } from "../../generated/prisma/index.js";
 
 /** DTO для REST — відповідає таблицям station + location + port (DB_script.MD) */
@@ -31,6 +32,23 @@ type StationWithLocationPorts = Prisma.StationGetPayload<{
     ports: { include: { connectorType: true } };
   };
 }>;
+
+/** Кількості по статусу для UI (узгоджено з `stationFromDashboardDto`). */
+export type StationsPageStatusCounts = {
+  working: number;
+  offline: number;
+  maintenance: number;
+  archived: number;
+};
+
+function mapDbStatusCounts(db: Record<StationStatus, number>): StationsPageStatusCounts {
+  return {
+    working: db.WORK,
+    offline: db.NO_CONNECTION,
+    maintenance: db.FIX,
+    archived: db.ARCHIVED,
+  };
+}
 
 function toDashboardDto(
   station: StationWithLocationPorts,
@@ -138,29 +156,42 @@ export const stationService = {
     });
   },
 
-  /** Пагінація списку станцій + унікальні міста для фільтрів. */
+  
   async getStationsPage(
     skip: number,
     take: number,
     page: number,
-    pageSize: number
+    pageSize: number,
+    sort: ParsedStationListSort,
+    statusFilter?: StationStatus
   ): Promise<{
     items: StationDashboardDto[];
     total: number;
     page: number;
     pageSize: number;
     cities: string[];
+    statusCounts: StationsPageStatusCounts;
   }> {
-    const [total, stations, cities] = await Promise.all([
-      stationRepository.countStations(),
-      stationRepository.findManyPaginated(skip, take),
+    const listWhere: Prisma.StationWhereInput | undefined =
+      statusFilter !== undefined ? { status: statusFilter } : undefined;
+    const [total, stations, cities, byStatus] = await Promise.all([
+      stationRepository.countStations(listWhere),
+      stationRepository.findManyPaginated(skip, take, sort, listWhere),
       stationRepository.getDistinctCitiesForStations(),
+      stationRepository.countByStatus(),
     ]);
     const coordMap = await stationRepository.getLocationCoordsBatch(
       stations.map((s) => s.locationId)
     );
     const items = stations.map((s) => toDashboardDto(s, coordMap.get(s.locationId) ?? null));
-    return { items, total, page, pageSize, cities };
+    return {
+      items,
+      total,
+      page,
+      pageSize,
+      cities,
+      statusCounts: mapDbStatusCounts(byStatus),
+    };
   },
 
 
@@ -182,5 +213,13 @@ export const stationService = {
 
   async updateStationStatus(stationId: number, status: StationStatus): Promise<Station> {
     return await stationRepository.updateStationStatus(stationId, status);
-  },  
+  },
+
+  /** Повертає false, якщо станції немає. */
+  async deleteStation(stationId: number): Promise<boolean> {
+    const existing = await stationRepository.findByIdWithPorts(stationId);
+    if (!existing) return false;
+    await stationRepository.deleteStationById(stationId);
+    return true;
+  },
 };

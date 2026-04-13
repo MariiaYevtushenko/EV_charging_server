@@ -1,6 +1,26 @@
 import prisma from "../prisma.config.js";
-import type { PrismaClient, Station, StationStatus } from "../../generated/prisma/index.js";
+import type { Prisma, PrismaClient, Station, StationStatus } from "../../generated/prisma/index.js";
+import type { ParsedStationListSort } from "../lib/stationListSort.js";
 
+const ALL_STATION_STATUSES: StationStatus[] = ["WORK", "NO_CONNECTION", "FIX", "ARCHIVED"];
+
+function buildStationListOrderBy(sort: ParsedStationListSort): Prisma.StationOrderByWithRelationInput {
+  const dir = sort.dir;
+  switch (sort.key) {
+    case "name":
+      return { name: dir };
+    case "status":
+      return { status: dir };
+    case "city":
+      return { location: { city: dir } };
+    case "todayRevenue":
+    case "todaySessions":
+    
+      return { createdAt: dir };
+    default:
+      return { name: "asc" };
+  }
+}
 
 const db = prisma as unknown as PrismaClient;
 
@@ -51,14 +71,36 @@ export const stationRepository = {
     });
   },
 
-  async countStations(): Promise<number> {
-    return db.station.count();
+  async countStations(where?: Prisma.StationWhereInput): Promise<number> {
+    return db.station.count({ where: where ?? {} });
   },
 
-  async findManyPaginated(skip: number, take: number) {
+  /** Кількість станцій по кожному статусу (усі записи в БД). */
+  async countByStatus(): Promise<Record<StationStatus, number>> {
+    const rows = await db.station.groupBy({
+      by: ["status"],
+      _count: { _all: true },
+    });
+    const out = Object.fromEntries(ALL_STATION_STATUSES.map((s) => [s, 0])) as Record<
+      StationStatus,
+      number
+    >;
+    for (const r of rows) {
+      out[r.status] = r._count._all;
+    }
+    return out;
+  },
+
+  async findManyPaginated(
+    skip: number,
+    take: number,
+    sort: ParsedStationListSort,
+    where?: Prisma.StationWhereInput
+  ) {
     return db.station.findMany({
+      where: where ?? {},
       include: stationInclude,
-      orderBy: { id: "asc" },
+      orderBy: buildStationListOrderBy(sort),
       skip,
       take,
     });
@@ -209,6 +251,28 @@ export const stationRepository = {
     return await db.station.update({
       where: { id: stationId }, 
       data: { status: status },
+    });
+  },
+
+  /** Остаточне видалення станції: сесії, бронювання, порти (каскад), локація якщо більше немає станцій. */
+  async deleteStationById(stationId: number): Promise<void> {
+    await db.$transaction(async (tx) => {
+      const row = await tx.station.findUnique({
+        where: { id: stationId },
+        select: { locationId: true },
+      });
+      if (!row) return;
+
+      await tx.session.deleteMany({ where: { stationId } });
+      await tx.booking.deleteMany({ where: { stationId } });
+      await tx.station.delete({ where: { id: stationId } });
+
+      const remainingAtLocation = await tx.station.count({
+        where: { locationId: row.locationId },
+      });
+      if (remainingAtLocation === 0) {
+        await tx.location.delete({ where: { id: row.locationId } });
+      }
     });
   },
 
