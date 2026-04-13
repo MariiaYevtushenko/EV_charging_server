@@ -25,6 +25,7 @@ CREATE TYPE session_status AS ENUM ('ACTIVE', 'COMPLETED', 'FAILED');
 CREATE TYPE payment_method AS ENUM ('CARD', 'APPLE_PAY', 'GOOGLE_PAY');
 CREATE TYPE payment_status AS ENUM ('PENDING', 'SUCCESS', 'FAILED', 'REFUNDED');
 
+-- додати в бд перевірку на імейл та номер телефону(символи)
 CREATE TABLE IF NOT EXISTS ev_user(
 id SERIAL PRIMARY KEY,
 name VARCHAR(50) NOT NULL,
@@ -45,6 +46,8 @@ street VARCHAR(100) NOT NULL,
 house_number VARCHAR(10) NOT NULL
 );
 
+
+-- подумати над ON DELETE CASCADE
 CREATE TABLE IF NOT EXISTS station (
 id SERIAL PRIMARY KEY,
 location_id INT NOT NULL REFERENCES location(id) ON DELETE CASCADE,
@@ -76,6 +79,8 @@ CREATE TABLE IF NOT EXISTS port (
 id - ідентифікатор
 license_plate - номерні знаки
 battery_capacity - ємність батареї (кВт·год)
+
+-- +
 CREATE TABLE IF NOT EXISTS vehicle (
 id SERIAL PRIMARY KEY,
 user_id INT NOT NULL REFERENCES ev_user(id) ON DELETE CASCADE,

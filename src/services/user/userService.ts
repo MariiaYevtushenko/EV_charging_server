@@ -2,19 +2,36 @@ import { userRepository } from "../../db/user/userRepository.js";
 import type { EvUser, Session, Vehicle, Booking, Bill, UserRole } from "../../../generated/prisma/index.js";
 import type { Prisma } from "../../../generated/prisma/index.js";
 import { HttpError } from "../../lib/httpError.js";
+import {
+  AssertValidEmail,
+  AssertValidName,
+  AssertValidPhoneNumber,
+  AssertValidSurname,
+  NormalizePhoneInput,
+} from "../../lib/profileValidation.js";
 import { verifyPassword } from "../../lib/password.js";
 
 function buildProfileUpdate(body: unknown): Prisma.EvUserUpdateInput {
   const b = body as Record<string, unknown>;
   const data: Prisma.EvUserUpdateInput = {};
-  if (typeof b.name === "string") data.name = b.name.trim().slice(0, 50);
-  if (typeof b.surname === "string") data.surname = b.surname.trim().slice(0, 50);
+  if (typeof b.name === "string") {
+    AssertValidName(b.name, "Ім'я");
+    data.name = b.name.trim().slice(0, 50);
+  }
+  if (typeof b.surname === "string") {
+    AssertValidSurname(b.surname);
+    data.surname = b.surname.trim().slice(0, 50);
+  }
   if (typeof b.email === "string") {
+    AssertValidEmail(b.email);
     data.email = b.email.trim().toLowerCase().slice(0, 254);
   }
   const phoneRaw = b.phoneNumber ?? b.phone;
   if (typeof phoneRaw === "string") {
-    data.phoneNumber = phoneRaw.trim().slice(0, 15);
+    const normalized = NormalizePhoneInput(phoneRaw);
+    const stored = normalized === "" ? "-" : normalized;
+    AssertValidPhoneNumber(stored);
+    data.phoneNumber = stored === "-" ? "-" : stored.slice(0, 15);
   }
   if (typeof b.role === "string") {
     const r = b.role as UserRole;
