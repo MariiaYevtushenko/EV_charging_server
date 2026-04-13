@@ -22,6 +22,14 @@ export const tariffRepository = {
     });
   },
 
+  /** Найпізніша календарна дата серед усіх рядків тарифу (DAY/NIGHT мають однакову дату). */
+  async maxEffectiveDate(): Promise<Date | null> {
+    const agg = await db.tariff.aggregate({
+      _max: { effectiveDate: true },
+    });
+    return agg._max.effectiveDate;
+  },
+
   /**
    * Upsert двох рядків tariff (DAY і NIGHT) на одну календарну дату.
    */

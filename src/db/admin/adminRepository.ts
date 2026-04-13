@@ -1,5 +1,7 @@
 import prisma from "../../prisma.config.js";
-import type { PrismaClient, UserRole } from "../../../generated/prisma/index.js";
+import type { Prisma, PrismaClient, UserRole } from "../../../generated/prisma/index.js";
+
+const ALL_USER_ROLES: UserRole[] = ["USER", "STATION_ADMIN", "ADMIN"];
 import { adminUserDetailInclude } from "../../services/admin/adminUserDetailMapper.js";
 
 const db = prisma as unknown as PrismaClient;
@@ -16,12 +18,30 @@ export type EvUserPublicRow = {
 };
 
 export const adminRepository = {
-  async countUsers(): Promise<number> {
-    return db.evUser.count();
+  async countUsers(where?: Prisma.EvUserWhereInput): Promise<number> {
+    return db.evUser.count({ where: where ?? {} });
   },
 
-  async getUsersPage(skip: number, take: number): Promise<EvUserPublicRow[]> {
+  /** Кількості по ролях (усі записи в БД). */
+  async countUsersByRole(): Promise<Record<UserRole, number>> {
+    const rows = await db.evUser.groupBy({
+      by: ["role"],
+      _count: { _all: true },
+    });
+    const out = Object.fromEntries(ALL_USER_ROLES.map((r) => [r, 0])) as Record<UserRole, number>;
+    for (const r of rows) {
+      out[r.role] = r._count._all;
+    }
+    return out;
+  },
+
+  async getUsersPage(
+    skip: number,
+    take: number,
+    where?: Prisma.EvUserWhereInput
+  ): Promise<EvUserPublicRow[]> {
     return await db.evUser.findMany({
+      where: where ?? {},
       select: {
         id: true,
         name: true,
@@ -120,5 +140,41 @@ export const adminRepository = {
         },
       },
     });
+  },
+
+  /** Агрегати за поточну календарну добу (часовий пояс процесу Node). */
+  async getDashboardNetworkStats(): Promise<{
+    todaySessions: number;
+    todayRevenueUah: number;
+    todaySuccessfulPayments: number;
+  }> {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+
+    const billTodayWhere: Prisma.BillWhereInput = {
+      paymentStatus: "SUCCESS",
+      OR: [
+        { paidAt: { gte: start, lte: end } },
+        { paidAt: null, createdAt: { gte: start, lte: end } },
+      ],
+    };
+
+    const [todaySessions, revenueAgg, todaySuccessfulPayments] = await Promise.all([
+      db.session.count({
+        where: { startTime: { gte: start, lte: end } },
+      }),
+      db.bill.aggregate({
+        where: billTodayWhere,
+        _sum: { calculatedAmount: true },
+      }),
+      db.bill.count({ where: billTodayWhere }),
+    ]);
+
+    const todayRevenueUah =
+      revenueAgg._sum.calculatedAmount != null ? Number(revenueAgg._sum.calculatedAmount) : 0;
+
+    return { todaySessions, todayRevenueUah, todaySuccessfulPayments };
   },
 };

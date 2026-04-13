@@ -1,6 +1,7 @@
 import { tariffRepository } from "../../db/tariffRepository.js";
 import { dateKeyLocal, localDateAtNoon } from "../../utils/tariffDateUtils.js";
 import { envFallbackDayNight } from "../../utils/tariffEnv.js";
+import { fetchNbuEurRateUah } from "../fx/nbuEurService.js";
 import { buildTariffApiUrl } from "./tariffHttpUtils.js";
 import { parseTariffApiPayload } from "./tariffApiParser.js";
 import {
@@ -20,6 +21,33 @@ export async function saveHistoricalTariff(
   nightPrice: number
 ): Promise<void> {
   await tariffRepository.upsertDayNightForCalendarDay(date, dayPrice, nightPrice);
+}
+
+/**
+ * Якщо зовнішній API віддає ціни в EUR, перед записом у БД (грн/кВт·год) множимо на курс НБУ.
+ * Вимкнути: `TARIFF_API_PRICES_IN_EUR=false` (наприклад, API вже в гривнях).
+ * За замовчуванням — конвертація увімкнена.
+ */
+function tariffApiPricesInEur(): boolean {
+  const v = process.env["TARIFF_API_PRICES_IN_EUR"];
+  if (v === "false" || v === "0") return false;
+  return true;
+}
+
+/** Пара денної/нічної ціни з API (€) → грн для `tariff.price_per_kwh`. */
+async function convertApiEurPairToUahIfNeeded(
+  day: number,
+  night: number,
+  rateCache: { v: number | null }
+): Promise<{ day: number; night: number }> {
+  if (!tariffApiPricesInEur()) {
+    return { day, night };
+  }
+  if (rateCache.v == null) {
+    rateCache.v = (await fetchNbuEurRateUah()).rateUahPerEur;
+  }
+  const r = rateCache.v;
+  return { day: day * r, night: night * r };
 }
 
 async function fetchTariffsFromApi(
@@ -106,6 +134,7 @@ export type SeedTariffsFromApiResult = {
  * - один запит до API: об'єкт { day, night } — та сама пара на всі дні; масив по датах — ціна на день з мапи, інакше fallback з env;
  * - `TARIFF_API_PER_DAY=true` — для кожного дня GET `TARIFF_API_URL?date=YYYY-MM-DD` (очікується один об'єкт day/night).
  * - ENTSO-E: від’ємні €/kWh за замовчуванням стають додатними (`|x|`), якщо не `ENTSOE_CLAMP_NEGATIVE_PRICES=false`.
+ * - Якщо `TARIFF_API_PRICES_IN_EUR` увімкнено (за замовчуванням так), значення з API трактуються як €/кВт·год і перед записом у БД множаться на курс НБУ (грн/€).
  */
 export async function SeedTariffsFromApi(
   days: number = 90,
@@ -124,6 +153,7 @@ export async function SeedTariffsFromApi(
   const persist =
     options?.persistDayNight ??
     ((d: Date, day: number, night: number) => saveHistoricalTariff(d, day, night));
+  const nbuRateCache = { v: null as number | null };
   const url = process.env["TARIFF_API_URL"];
   const rangeAnchorDate = localDateAtNoon(rangeDate);
 
@@ -176,7 +206,8 @@ export async function SeedTariffsFromApi(
         0
       );
       const { day, night } = await fetchEntsoeDayNightKwh(calendarDay);
-      await persist(calendarDay, day, night);
+      const uah = await convertApiEurPairToUahIfNeeded(day, night, nbuRateCache);
+      await persist(calendarDay, uah.day, uah.night);
       daysWritten++;
     }
     return { daysWritten, mode: "entsoe" };
@@ -210,11 +241,12 @@ export async function SeedTariffsFromApi(
           `Per-day tariff API must return a single day/night object (${dateIso})`
         );
       }
-      await persist(
-        calendarDay,
+      const uah = await convertApiEurPairToUahIfNeeded(
         perDayPayload.day,
-        perDayPayload.night
+        perDayPayload.night,
+        nbuRateCache
       );
+      await persist(calendarDay, uah.day, uah.night);
       daysWritten++;
     }
     return { daysWritten, mode: "api_per_day" };
@@ -241,11 +273,12 @@ export async function SeedTariffsFromApi(
         0,
         0
       );
-      await persist(
-        calendarDay,
+      const uah = await convertApiEurPairToUahIfNeeded(
         parsedPayload.day,
-        parsedPayload.night
+        parsedPayload.night,
+        nbuRateCache
       );
+      await persist(calendarDay, uah.day, uah.night);
       daysWritten++;
     }
     return { daysWritten, mode: "api_single" };
@@ -264,9 +297,20 @@ export async function SeedTariffsFromApi(
     );
     const dateKey = dateKeyLocal(calendarDay);
     const seriesRow = parsedPayload.points.get(dateKey);
-    const dayPrice = seriesRow?.day ?? fallbackPrices.day;
-    const nightPrice = seriesRow?.night ?? fallbackPrices.night;
-    await persist(calendarDay, dayPrice, nightPrice);
+    if (seriesRow) {
+      const uah = await convertApiEurPairToUahIfNeeded(
+        seriesRow.day,
+        seriesRow.night,
+        nbuRateCache
+      );
+      await persist(calendarDay, uah.day, uah.night);
+    } else {
+      await persist(
+        calendarDay,
+        fallbackPrices.day,
+        fallbackPrices.night
+      );
+    }
     daysWritten++;
   }
   return { daysWritten, mode: "api_series" };
@@ -274,18 +318,25 @@ export async function SeedTariffsFromApi(
 
 /**
  * Щоденне оновлення: з TARIFF_API_URL або з env TARIFF_DAY_PRICE / TARIFF_NIGHT_PRICE.
+ * Значення з API за замовчуванням у € → у БД пишемо грн (× курс НБУ), див. `tariffApiPricesInEur`.
  */
 export async function ingestDailyTariff(date: Date = new Date()): Promise<{
   day: number;
   night: number;
 }> {
   const apiPrices = await fetchTariffsFromApi(date);
-  const day =
-    apiPrices.dayPricePerKwh ??
-    Number(process.env["TARIFF_DAY_PRICE"] ?? 13.5);
-  const night =
-    apiPrices.nightPricePerKwh ??
-    Number(process.env["TARIFF_NIGHT_PRICE"] ?? 9.2);
+  const dayFromApi = apiPrices.dayPricePerKwh;
+  const nightFromApi = apiPrices.nightPricePerKwh;
+
+  let day = dayFromApi ?? Number(process.env["TARIFF_DAY_PRICE"] ?? 13.5);
+  let night = nightFromApi ?? Number(process.env["TARIFF_NIGHT_PRICE"] ?? 9.2);
+
+  if (tariffApiPricesInEur()) {
+    const { rateUahPerEur } = await fetchNbuEurRateUah();
+    if (dayFromApi != null) day = dayFromApi * rateUahPerEur;
+    if (nightFromApi != null) night = nightFromApi * rateUahPerEur;
+  }
+
   await saveHistoricalTariff(date, day, night);
   return { day, night };
 }

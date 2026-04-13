@@ -7,6 +7,7 @@ import {
   getNetworkBookings,
   getNetworkSession,
   getNetworkSessions,
+  getDashboard,
 } from "../../controllers/admin/adminController.js";
 import {
   getForecastBias,
@@ -19,10 +20,14 @@ import { requireCronSecret } from "../../middlewares/cronSecretMiddleware.js";
 import {
   getTariffsList,
   getTariffsToday,
+  postTariffsSyncMissing,
   putTariffsToday,
 } from "../../controllers/admin/tariffAdminController.js";
+import { GetNbuEurUah } from "../../controllers/admin/fxController.js";
 
 export const adminRouter = Router();
+
+adminRouter.get("/dashboard", getDashboard);
 
 adminRouter.get("/users", getUsers);
 adminRouter.get("/users/:userId", getUser);
@@ -38,7 +43,10 @@ adminRouter.put("/forecast/bias", putForecastBias);
 
 adminRouter.get("/tariffs", getTariffsList);
 adminRouter.get("/tariffs/today", getTariffsToday);
+adminRouter.post("/tariffs/sync-missing", postTariffsSyncMissing);
 adminRouter.put("/tariffs/today", putTariffsToday);
+
+adminRouter.get("/fx/eur-uah", GetNbuEurUah);
 
 adminRouter.post(
   "/forecast/ingest-tariff",

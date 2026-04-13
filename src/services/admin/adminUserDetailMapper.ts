@@ -1,8 +1,9 @@
 import type { Prisma } from "../../../generated/prisma/index.js";
 import type {
-  BookingStatus,
-  PaymentMethod,
-  PaymentStatus,
+    BookingStatus,
+    PaymentMethod,
+    PaymentStatus,
+    SessionStatus,
 } from "../../../generated/prisma/index.js";
 
 /** JSON для клієнта (відповідає `EndUser` у client/src/types/globalAdmin.ts). */
@@ -41,15 +42,18 @@ export type AdminEndUserDto = {
     createdAt: string;
     description: string;
   }[];
-  charges: {
+  /** Зарядні сесії користувача (зв’язок з бронюванням, якщо є). */
+  sessions: {
     id: string;
     stationId: string;
     stationName: string;
+    portLabel: string;
+    status: "active" | "completed" | "failed";
+    startedAt: string;
+    endedAt: string | null;
     kwh: number;
     cost: number;
-    startedAt: string;
-    durationMin: number;
-    portLabel: string;
+    bookingId: string | null;
   }[];
 };
 
@@ -75,6 +79,7 @@ export const adminUserDetailInclude = {
         },
       },
       bill: true,
+      booking: { select: { id: true } },
     },
   },
 } satisfies Prisma.EvUserInclude;
@@ -84,6 +89,19 @@ export type EvUserDetailPayload = Prisma.EvUserGetPayload<{
 }>;
 
 /** У БД лише BOOKED / PAID / CANCELLED: BOOKED → очікує (активне бронювання), PAID → завершено. */
+function mapSessionUiStatus(s: SessionStatus): AdminEndUserDto["sessions"][number]["status"] {
+  switch (s) {
+    case "ACTIVE":
+      return "active";
+    case "COMPLETED":
+      return "completed";
+    case "FAILED":
+      return "failed";
+    default:
+      return "active";
+  }
+}
+
 export function mapBookingStatus(s: BookingStatus): AdminEndUserDto["bookings"][number]["status"] {
   switch (s) {
     case "BOOKED":
@@ -190,24 +208,20 @@ export function mapEvUserDetailToDto(user: EvUserDetailPayload): AdminEndUserDto
     })
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  const charges: AdminEndUserDto["charges"] = sessions.map((s) => {
+  const sessionsList: AdminEndUserDto["sessions"] = sessions.map((s) => {
     const st = s.port.station;
-    const end = s.endTime;
-    const start = s.startTime;
-    const durationMin =
-      end && start
-        ? Math.max(0, Math.round((end.getTime() - start.getTime()) / 60_000))
-        : 0;
     const cost = s.bill ? Number(s.bill.calculatedAmount) : 0;
     return {
       id: String(s.id),
       stationId: String(s.stationId),
       stationName: st.name,
+      portLabel: `Порт ${s.portNumber}`,
+      status: mapSessionUiStatus(s.status),
+      startedAt: s.startTime.toISOString(),
+      endedAt: s.endTime ? s.endTime.toISOString() : null,
       kwh: Number(s.kwhConsumed),
       cost,
-      startedAt: s.startTime.toISOString(),
-      durationMin,
-      portLabel: `Порт ${s.portNumber}`,
+      bookingId: s.bookingId != null ? String(s.bookingId) : null,
     };
   });
 
@@ -223,6 +237,6 @@ export function mapEvUserDetailToDto(user: EvUserDetailPayload): AdminEndUserDto
     cars,
     bookings,
     payments,
-    charges,
+    sessions: sessionsList,
   };
 }

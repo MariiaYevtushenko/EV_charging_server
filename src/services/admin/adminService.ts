@@ -5,6 +5,7 @@ import type {
     PaymentMethod,
     PaymentStatus,
     SessionStatus,
+    UserRole,
 } from "../../../generated/prisma/index.js";
 import {
     mapBookingStatus,
@@ -150,25 +151,50 @@ function paymentMethodUi(m: PaymentMethod): string {
     }
 }
 
+export type AdminUsersRoleCounts = {
+    USER: number;
+    STATION_ADMIN: number;
+    ADMIN: number;
+};
+
 export type AdminUsersPageResult = {
     items: EvUserPublicRow[];
     total: number;
     page: number;
     pageSize: number;
+    roleCounts: AdminUsersRoleCounts;
 };
+
+function mapRoleCounts(row: Record<UserRole, number>): AdminUsersRoleCounts {
+    return {
+        USER: row.USER,
+        STATION_ADMIN: row.STATION_ADMIN,
+        ADMIN: row.ADMIN,
+    };
+}
 
 export const adminService = {
     async getUsersPage(
         skip: number,
         take: number,
         page: number,
-        pageSize: number
+        pageSize: number,
+        roleFilter?: UserRole | null
     ): Promise<AdminUsersPageResult> {
-        const [total, items] = await Promise.all([
-            adminRepository.countUsers(),
-            adminRepository.getUsersPage(skip, take),
+        const where =
+            roleFilter !== undefined && roleFilter !== null ? { role: roleFilter } : undefined;
+        const [total, items, byRole] = await Promise.all([
+            adminRepository.countUsers(where),
+            adminRepository.getUsersPage(skip, take, where),
+            adminRepository.countUsersByRole(),
         ]);
-        return { items, total, page, pageSize };
+        return {
+            items,
+            total,
+            page,
+            pageSize,
+            roleCounts: mapRoleCounts(byRole),
+        };
     },
     async getUser(userId: number): Promise<AdminEndUserDto> {
         const row = await adminRepository.getUserDetailForAdmin(userId);
@@ -306,5 +332,13 @@ export const adminService = {
                   }
                 : null,
         };
+    },
+
+    async getDashboardSummary(): Promise<{
+        todaySessions: number;
+        todayRevenueUah: number;
+        todaySuccessfulPayments: number;
+    }> {
+        return adminRepository.getDashboardNetworkStats();
     },
 }   

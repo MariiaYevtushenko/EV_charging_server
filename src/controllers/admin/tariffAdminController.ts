@@ -19,6 +19,15 @@ export const getTariffsToday: RequestHandler = async (_req, res, next) => {
   }
 };
 
+export const postTariffsSyncMissing: RequestHandler = async (_req, res, next) => {
+  try {
+    const data = await tariffAdminService.syncMissingTariffDaysToToday();
+    res.json(data);
+  } catch (e) {
+    next(e);
+  }
+};
+
 export const putTariffsToday: RequestHandler = async (req, res, next) => {
   try {
     const b = req.body as Record<string, unknown>;
