@@ -160,7 +160,12 @@ export const createBooking: RequestHandler = async (req, res, next) => {
                 startTime
             );
         } else if (bookingType === BookingType.DEPOSIT) {
-            prepaymentAmount = Number(process.env["DEPOSIT_AMOUNT_UAH"] ?? 100);
+            const rawDeposit = b["prepaymentAmount"];
+            const fromBody =
+                rawDeposit != null ? Number(rawDeposit) : Number.NaN;
+            prepaymentAmount = Number.isFinite(fromBody) && fromBody >= 0
+                ? Math.round(fromBody * 100) / 100
+                : Number(process.env["DEPOSIT_AMOUNT_UAH"] ?? 50);
         } else {
             prepaymentAmount =
                 b["prepaymentAmount"] != null ? Number(b["prepaymentAmount"]) : 0;

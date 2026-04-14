@@ -24,6 +24,8 @@ export type AdminNetworkBookingRow = {
     userName: string;
     stationId: string;
     stationName: string;
+    /** Номер порта на станції (для таблиць без дублювання назви станції). */
+    portNumber: number;
     slotLabel: string;
     status: AdminEndUserDto["bookings"][number]["status"];
     start: string;
@@ -233,6 +235,7 @@ export const adminService = {
                 userName: userDisplayName(b.user),
                 stationId: String(b.stationId),
                 stationName: st.name,
+                portNumber: b.portNumber,
                 slotLabel,
                 status: mapBookingStatus(b.status),
                 start: b.startTime.toISOString(),

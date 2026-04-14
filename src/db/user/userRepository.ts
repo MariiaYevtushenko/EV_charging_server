@@ -60,14 +60,31 @@ export const userRepository = {
     });
   },
 
-  async getBookings(userId: number): Promise<Booking[]> {
+  async getBookings(userId: number) {
     return await db.booking.findMany({
       where: { userId: userId },
+      orderBy: { startTime: "desc" },
+      include: {
+        port: {
+          include: {
+            station: { include: { location: true } },
+            connectorType: true,
+          },
+        },
+      },
     });
   },
-  async getBooking(userId: number, bookingId: number): Promise<Booking> {
+  async getBooking(userId: number, bookingId: number) {
     return await db.booking.findFirstOrThrow({
       where: { id: bookingId, userId },
+      include: {
+        port: {
+          include: {
+            station: { include: { location: true } },
+            connectorType: true,
+          },
+        },
+      },
     });
   },
   async createBooking(data: Prisma.BookingCreateInput): Promise<Booking> {
@@ -89,14 +106,35 @@ export const userRepository = {
     });
   },
 
-  async getSessions(userId: number): Promise<Session[]> {
+  async getSessions(userId: number) {
     return await db.session.findMany({
       where: { userId: userId },
+      orderBy: { startTime: "desc" },
+      include: {
+        port: {
+          include: {
+            station: {
+              include: { location: true },
+            },
+          },
+        },
+        bill: true,
+      },
     });
   },
-  async getSession(userId: number, sessionId: number): Promise<Session> {
+  async getSession(userId: number, sessionId: number) {
     return await db.session.findFirstOrThrow({
       where: { id: sessionId, userId },
+      include: {
+        port: {
+          include: {
+            station: {
+              include: { location: true },
+            },
+          },
+        },
+        bill: true,
+      },
     });
   },
   async createSession(data: Prisma.SessionCreateInput): Promise<Session> {
@@ -118,15 +156,37 @@ export const userRepository = {
     });
   },
 
-  async getBills(userId: number): Promise<Bill[]> {
+  async getBills(userId: number) {
     return await db.bill.findMany({
       where: { session: { userId } },
       orderBy: { createdAt: "desc" },
+      include: {
+        session: {
+          include: {
+            port: {
+              include: {
+                station: true,
+              },
+            },
+          },
+        },
+      },
     });
   },
-  async getBill(userId: number, billId: number): Promise<Bill> {
+  async getBill(userId: number, billId: number) {
     return await db.bill.findFirstOrThrow({
       where: { id: billId, session: { userId } },
+      include: {
+        session: {
+          include: {
+            port: {
+              include: {
+                station: true,
+              },
+            },
+          },
+        },
+      },
     });
   },
   async updateBill(userId: number, billId: number, data: Prisma.BillUpdateInput): Promise<Bill> {

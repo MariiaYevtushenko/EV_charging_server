@@ -1,5 +1,5 @@
 import { userRepository } from "../../db/user/userRepository.js";
-import type { EvUser, Session, Vehicle, Booking, Bill, UserRole } from "../../../generated/prisma/index.js";
+import type { EvUser, Vehicle, Booking, Bill, UserRole } from "../../../generated/prisma/index.js";
 import type { Prisma } from "../../../generated/prisma/index.js";
 import { HttpError } from "../../lib/httpError.js";
 import {
@@ -91,10 +91,10 @@ export const userService = {
     return await userRepository.addVehicle(userId, data);
   },
 
-  async getBookings(userId: number): Promise<Booking[]> {
+  async getBookings(userId: number) {
     return await userRepository.getBookings(userId);
   },
-  async getBooking(userId: number, bookingId: number): Promise<Booking> {
+  async getBooking(userId: number, bookingId: number) {
     return await userRepository.getBooking(userId, bookingId);
   },
   async createBooking(data: Prisma.BookingCreateInput): Promise<Booking> {
@@ -107,27 +107,27 @@ export const userService = {
     return await userRepository.deleteBooking(userId, bookingId);
   },
 
-  async getSessions(userId: number): Promise<Session[]> {
+  async getSessions(userId: number) {
     return await userRepository.getSessions(userId);
   },
-  async getSession(userId: number, sessionId: number): Promise<Session> {
+  async getSession(userId: number, sessionId: number) {
     return await userRepository.getSession(userId, sessionId);
   },
-  async createSession(data: Prisma.SessionCreateInput): Promise<Session> {
+  async createSession(data: Prisma.SessionCreateInput) {
     return await userRepository.createSession(data);
   },
-  async updateSession(userId: number, sessionId: number, data: Prisma.SessionUpdateInput): Promise<Session> {
+  async updateSession(userId: number, sessionId: number, data: Prisma.SessionUpdateInput) {
     return await userRepository.updateSession(userId, sessionId, data);
   },
-  async deleteSession(userId: number, sessionId: number): Promise<Session> {
+  async deleteSession(userId: number, sessionId: number) {
     return await userRepository.deleteSession(userId, sessionId);
   },
 
   /** Рахунки (таблиця bill у DB_script.MD); маршрути залишено як /payments для сумісності */
-  async getPayments(userId: number): Promise<Bill[]> {
+  async getPayments(userId: number) {
     return await userRepository.getBills(userId);
   },
-  async getPayment(userId: number, billId: number): Promise<Bill> {
+  async getPayment(userId: number, billId: number) {
     return await userRepository.getBill(userId, billId);
   },
   async updatePayment(userId: number, billId: number, data: Prisma.BillUpdateInput): Promise<Bill> {
