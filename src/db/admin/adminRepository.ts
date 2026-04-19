@@ -1,10 +1,77 @@
 import prisma from "../../prisma.config.js";
 import type { Prisma, PrismaClient, UserRole } from "../../../generated/prisma/index.js";
+import type {
+  AdminUsersSortKey,
+  NetworkBookingUiFilter,
+  NetworkBookingsSortKey,
+  NetworkListPeriod,
+  NetworkPaymentUiFilter,
+  NetworkPaymentsSortKey,
+  NetworkSessionUiFilter,
+  NetworkSessionsSortKey,
+} from "../../lib/pagination.js";
 
 const ALL_USER_ROLES: UserRole[] = ["USER", "STATION_ADMIN", "ADMIN"];
 import { adminUserDetailInclude } from "../../services/admin/adminUserDetailMapper.js";
 
 const db = prisma as unknown as PrismaClient;
+
+export function mergeBookingWhere(
+  a?: Prisma.BookingWhereInput,
+  b?: Prisma.BookingWhereInput
+): Prisma.BookingWhereInput | undefined {
+  if (!a && !b) return undefined;
+  if (!a) return b;
+  if (!b) return a;
+  return { AND: [a, b] };
+}
+
+export function mergeSessionWhere(
+  a?: Prisma.SessionWhereInput,
+  b?: Prisma.SessionWhereInput
+): Prisma.SessionWhereInput | undefined {
+  if (!a && !b) return undefined;
+  if (!a) return b;
+  if (!b) return a;
+  return { AND: [a, b] };
+}
+
+export function mergeBillWhere(
+  a?: Prisma.BillWhereInput,
+  b?: Prisma.BillWhereInput
+): Prisma.BillWhereInput | undefined {
+  if (!a && !b) return undefined;
+  if (!a) return b;
+  if (!b) return a;
+  return { AND: [a, b] };
+}
+
+export function buildNetworkListPeriodBookingWhere(
+  period: NetworkListPeriod
+): Prisma.BookingWhereInput | undefined {
+  if (period === "all") return undefined;
+  const days = period === "7d" ? 7 : 30;
+  const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  return { startTime: { gte: cutoff } };
+}
+
+export function buildNetworkListPeriodSessionWhere(
+  period: NetworkListPeriod
+): Prisma.SessionWhereInput | undefined {
+  if (period === "all") return undefined;
+  const days = period === "7d" ? 7 : 30;
+  const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  return { startTime: { gte: cutoff } };
+}
+
+export function buildNetworkListPeriodBillWhere(
+  period: NetworkListPeriod
+): Prisma.BillWhereInput | undefined {
+  if (period === "all") return undefined;
+  const days = period === "7d" ? 7 : 30;
+  const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  return { createdAt: { gte: cutoff } };
+}
 
 /** Фільтр списку користувачів: роль + текстовий пошук (ПІБ, email, телефон). */
 export function buildUsersListWhere(
@@ -29,6 +96,25 @@ export function buildUsersListWhere(
   if (roleWhere && !searchWhere) return roleWhere;
   if (!roleWhere && searchWhere) return searchWhere;
   return { AND: [roleWhere!, searchWhere!] };
+}
+
+/** ORDER BY для списку користувачів (узгоджено з колонками таблиці). */
+export function buildUsersListOrderBy(
+  sort: AdminUsersSortKey,
+  order: "asc" | "desc"
+): Prisma.EvUserOrderByWithRelationInput[] {
+  switch (sort) {
+    case "name":
+      return [{ surname: order }, { name: order }, { id: "asc" }];
+    case "email":
+      return [{ email: order }, { id: "asc" }];
+    case "phone":
+      return [{ phoneNumber: order }, { id: "asc" }];
+    case "role":
+      return [{ role: order }, { id: "asc" }];
+    default:
+      return [{ surname: "asc" }, { name: "asc" }, { id: "asc" }];
+  }
 }
 
 /** Поля ev_user без password_hash (для списку в адмінці). */
@@ -63,7 +149,8 @@ export const adminRepository = {
   async getUsersPage(
     skip: number,
     take: number,
-    where?: Prisma.EvUserWhereInput
+    where?: Prisma.EvUserWhereInput,
+    orderBy?: Prisma.EvUserOrderByWithRelationInput | Prisma.EvUserOrderByWithRelationInput[]
   ): Promise<EvUserPublicRow[]> {
     return await db.evUser.findMany({
       where: where ?? {},
@@ -76,7 +163,7 @@ export const adminRepository = {
         role: true,
         createdAt: true,
       },
-      orderBy: { id: "asc" },
+      orderBy: orderBy ?? { id: "asc" },
       skip,
       take,
     });
@@ -89,25 +176,98 @@ export const adminRepository = {
     });
   },
 
-  async listNetworkBookings(take = 5000) {
-    return await db.booking.findMany({
-      take,
-      orderBy: { startTime: "desc" },
-      include: {
-        user: { select: { id: true, name: true, surname: true } },
-        port: {
-          include: {
-            station: {
-              select: {
-                id: true,
-                name: true,
-                location: { select: { city: true, country: true } },
+  /** Текстовий пошук по бронюванню (користувач, станція, локація) та за id. */
+  buildNetworkBookingsSearchWhere(search?: string | null): Prisma.BookingWhereInput | undefined {
+    const q = (search ?? "").trim();
+    if (q.length === 0) return undefined;
+
+    const idNum = Number.parseInt(q, 10);
+    const idOnlyDigits = /^\d+$/.test(q);
+    const idClause: Prisma.BookingWhereInput | undefined =
+      idOnlyDigits && Number.isFinite(idNum) && idNum >= 1 ? { id: idNum } : undefined;
+
+    const textOr: Prisma.BookingWhereInput[] = [
+      { user: { name: { contains: q, mode: "insensitive" } } },
+      { user: { surname: { contains: q, mode: "insensitive" } } },
+      { user: { email: { contains: q, mode: "insensitive" } } },
+      { port: { station: { name: { contains: q, mode: "insensitive" } } } },
+      { port: { station: { location: { city: { contains: q, mode: "insensitive" } } } } },
+      { port: { station: { location: { country: { contains: q, mode: "insensitive" } } } } },
+    ];
+
+    if (idClause) {
+      return { OR: [idClause, ...textOr] };
+    }
+    return { OR: textOr };
+  },
+
+  /** Фільтр за статусом у UI (узгоджено з mapBookingStatus). «Підтверджено» в БД не виділено — порожній результат. */
+  buildNetworkBookingsUiStatusWhere(ui: NetworkBookingUiFilter): Prisma.BookingWhereInput {
+    switch (ui) {
+      case "pending":
+        return { status: "BOOKED" };
+      case "paid":
+        return { status: { in: ["COMPLETED", "PAID"] } };
+      case "cancelled":
+        return { status: { in: ["CANCELLED", "NO_ACTION"] } };
+      case "confirmed":
+        return { id: { equals: 0 } };
+      default:
+        return {};
+    }
+  },
+
+  networkBookingsOrderBy(
+    sort: NetworkBookingsSortKey,
+    order: "asc" | "desc"
+  ): Prisma.BookingOrderByWithRelationInput {
+    switch (sort) {
+      case "start":
+        return { startTime: order };
+      case "userName":
+        return { user: { name: order } };
+      case "stationName":
+        return { port: { station: { name: order } } };
+      case "slot":
+        return { portNumber: order };
+      case "status":
+        return { status: order };
+      default:
+        return { startTime: "desc" };
+    }
+  },
+
+  async listNetworkBookings(params: {
+    skip: number;
+    take: number;
+    where?: Prisma.BookingWhereInput;
+    orderBy: Prisma.BookingOrderByWithRelationInput;
+  }) {
+    const where = params.where ?? {};
+    const [rows, total] = await Promise.all([
+      db.booking.findMany({
+        where,
+        skip: params.skip,
+        take: params.take,
+        orderBy: params.orderBy,
+        include: {
+          user: { select: { id: true, name: true, surname: true } },
+          port: {
+            include: {
+              station: {
+                select: {
+                  id: true,
+                  name: true,
+                  location: { select: { city: true, country: true } },
+                },
               },
             },
           },
         },
-      },
-    });
+      }),
+      db.booking.count({ where }),
+    ]);
+    return { rows, total };
   },
 
   async getNetworkBookingById(bookingId: number) {
@@ -144,25 +304,183 @@ export const adminRepository = {
     });
   },
 
-  async listNetworkSessions(take = 5000) {
-    return await db.session.findMany({
-      take,
-      orderBy: { startTime: "desc" },
-      include: {
-        user: { select: { id: true, name: true, surname: true } },
-        bill: true,
-        port: {
-          include: {
-            station: {
-              select: {
-                id: true,
-                name: true,
-                location: { select: { city: true, country: true } },
-              },
+  buildNetworkSessionsSearchWhere(search?: string | null): Prisma.SessionWhereInput | undefined {
+    const q = (search ?? "").trim();
+    if (q.length === 0) return undefined;
+
+    const idNum = Number.parseInt(q, 10);
+    const idOnlyDigits = /^\d+$/.test(q);
+    const idClause: Prisma.SessionWhereInput | undefined =
+      idOnlyDigits && Number.isFinite(idNum) && idNum >= 1 ? { id: idNum } : undefined;
+
+    const textOr: Prisma.SessionWhereInput[] = [
+      { user: { name: { contains: q, mode: "insensitive" } } },
+      { user: { surname: { contains: q, mode: "insensitive" } } },
+      { user: { email: { contains: q, mode: "insensitive" } } },
+      { port: { station: { name: { contains: q, mode: "insensitive" } } } },
+      { port: { station: { location: { city: { contains: q, mode: "insensitive" } } } } },
+      { port: { station: { location: { country: { contains: q, mode: "insensitive" } } } } },
+    ];
+
+    if (idClause) {
+      return { OR: [idClause, ...textOr] };
+    }
+    return { OR: textOr };
+  },
+
+  buildNetworkSessionsUiStatusWhere(ui: NetworkSessionUiFilter): Prisma.SessionWhereInput {
+    switch (ui) {
+      case "active":
+        return { status: "ACTIVE" };
+      case "completed":
+        return { status: "COMPLETED" };
+      case "failed":
+        return { status: "FAILED" };
+      default:
+        return {};
+    }
+  },
+
+  /** Текстовий пошук по рахунку (bill id, session id, користувач, станція). */
+  buildNetworkBillsSearchWhere(search?: string | null): Prisma.BillWhereInput | undefined {
+    const q = (search ?? "").trim();
+    if (q.length === 0) return undefined;
+
+    const idNum = Number.parseInt(q, 10);
+    const idOnlyDigits = /^\d+$/.test(q);
+    const billIdClause: Prisma.BillWhereInput | undefined =
+      idOnlyDigits && Number.isFinite(idNum) && idNum >= 1 ? { id: idNum } : undefined;
+    const sessionIdClause: Prisma.BillWhereInput | undefined =
+      idOnlyDigits && Number.isFinite(idNum) && idNum >= 1 ? { sessionId: idNum } : undefined;
+
+    const textOr: Prisma.BillWhereInput[] = [
+      { session: { user: { name: { contains: q, mode: "insensitive" } } } },
+      { session: { user: { surname: { contains: q, mode: "insensitive" } } } },
+      { session: { user: { email: { contains: q, mode: "insensitive" } } } },
+      { session: { port: { station: { name: { contains: q, mode: "insensitive" } } } } },
+    ];
+
+    const clauses: Prisma.BillWhereInput[] = [...textOr];
+    if (billIdClause) clauses.push(billIdClause);
+    if (sessionIdClause) clauses.push(sessionIdClause);
+    return { OR: clauses };
+  },
+
+  buildNetworkBillsUiStatusWhere(ui: NetworkPaymentUiFilter): Prisma.BillWhereInput {
+    switch (ui) {
+      case "success":
+        return { paymentStatus: "SUCCESS" };
+      case "pending":
+        return { paymentStatus: "PENDING" };
+      case "failed":
+        return { paymentStatus: { in: ["FAILED", "REFUNDED"] } };
+      default:
+        return {};
+    }
+  },
+
+  networkBillsOrderBy(
+    sort: NetworkPaymentsSortKey,
+    order: "asc" | "desc"
+  ): Prisma.BillOrderByWithRelationInput {
+    switch (sort) {
+      case "createdAt":
+        return { createdAt: order };
+      case "userName":
+        return { session: { user: { name: order } } };
+      case "description":
+        return { session: { port: { station: { name: order } } } };
+      case "method":
+        return { paymentMethod: order };
+      case "amount":
+        return { calculatedAmount: order };
+      case "status":
+        return { paymentStatus: order };
+      default:
+        return { createdAt: "desc" };
+    }
+  },
+
+  networkSessionsOrderBy(
+    sort: NetworkSessionsSortKey,
+    order: "asc" | "desc"
+  ): Prisma.SessionOrderByWithRelationInput {
+    switch (sort) {
+      case "startedAt":
+        return { startTime: order };
+      case "userName":
+        return { user: { name: order } };
+      case "stationName":
+        return { port: { station: { name: order } } };
+      case "portLabel":
+        return { portNumber: order };
+      case "kwh":
+        return { kwhConsumed: order };
+      case "status":
+        return { status: order };
+      case "cost":
+        return { bill: { calculatedAmount: order } };
+      default:
+        return { startTime: "desc" };
+    }
+  },
+
+  async listNetworkSessions(params: {
+    skip: number;
+    take: number;
+    where?: Prisma.SessionWhereInput;
+    orderBy: Prisma.SessionOrderByWithRelationInput;
+  }) {
+    const where = params.where ?? {};
+    const include = {
+      user: { select: { id: true, name: true, surname: true } },
+      bill: true,
+      port: {
+        include: {
+          station: {
+            select: {
+              id: true,
+              name: true,
+              location: { select: { city: true, country: true } },
             },
           },
         },
       },
+    };
+    const [rows, total] = await Promise.all([
+      db.session.findMany({
+        where,
+        skip: params.skip,
+        take: params.take,
+        orderBy: params.orderBy,
+        include,
+      }),
+      db.session.count({ where }),
+    ]);
+    return { rows, total };
+  },
+
+  async groupNetworkBookingsByDbStatus(where?: Prisma.BookingWhereInput) {
+    return await db.booking.groupBy({
+      by: ["status"],
+      where: where ?? {},
+      _count: { _all: true },
+    });
+  },
+
+  async groupNetworkSessionsByDbStatus(where?: Prisma.SessionWhereInput) {
+    return await db.session.groupBy({
+      by: ["status"],
+      where: where ?? {},
+      _count: { _all: true },
+    });
+  },
+
+  async groupNetworkBillsByPaymentStatus(where?: Prisma.BillWhereInput) {
+    return await db.bill.groupBy({
+      by: ["paymentStatus"],
+      where: where ?? {},
+      _count: { _all: true },
     });
   },
 
@@ -185,31 +503,80 @@ export const adminRepository = {
     });
   },
 
-  /** Усі рахунки (bill) у мережі — для сторінки «Платежі» глобального адміна. */
-  async listNetworkBills(take = 10000) {
-    return await db.bill.findMany({
-      take,
-      orderBy: { createdAt: "desc" },
-      include: {
-        session: {
-          include: {
-            user: { select: { id: true, name: true, surname: true } },
-            port: {
-              include: {
-                station: { select: { id: true, name: true } },
-              },
+  /**
+   * Завершити активну сесію: COMPLETED, end_time, kwh; створити/оновити bill через SQL UpsertBillForSession.
+   */
+  async completeActiveNetworkSession(sessionId: number, kwhConsumed?: number): Promise<void> {
+    await db.$transaction(async (tx) => {
+      const active = await tx.session.findFirst({
+        where: { id: sessionId, status: "ACTIVE" },
+      });
+      if (!active) {
+        const exists = await tx.session.findUnique({
+          where: { id: sessionId },
+          select: { id: true },
+        });
+        throw new Error(exists ? "SESSION_NOT_ACTIVE" : "SESSION_NOT_FOUND");
+      }
+      const finalKwh =
+        kwhConsumed !== undefined && Number.isFinite(kwhConsumed) && kwhConsumed >= 0
+          ? kwhConsumed
+          : Number(active.kwhConsumed);
+
+      await tx.session.update({
+        where: { id: sessionId },
+        data: {
+          endTime: new Date(),
+          kwhConsumed: finalKwh,
+          status: "COMPLETED",
+        },
+      });
+
+      await tx.$executeRawUnsafe(
+        `SELECT upsertbillforsession($1::int, 'CARD'::payment_method, 'PENDING'::payment_status)`,
+        sessionId
+      );
+    });
+  },
+
+  async listNetworkBillsPaged(params: {
+    skip: number;
+    take: number;
+    where?: Prisma.BillWhereInput;
+    orderBy: Prisma.BillOrderByWithRelationInput;
+  }) {
+    const where = params.where ?? {};
+    const include = {
+      session: {
+        include: {
+          user: { select: { id: true, name: true, surname: true } },
+          port: {
+            include: {
+              station: { select: { id: true, name: true } },
             },
           },
         },
       },
-    });
+    };
+    const [rows, total] = await Promise.all([
+      db.bill.findMany({
+        where,
+        skip: params.skip,
+        take: params.take,
+        orderBy: params.orderBy,
+        include,
+      }),
+      db.bill.count({ where }),
+    ]);
+    return { rows, total };
   },
 
-  /** Агрегати за поточну календарну добу (часовий пояс процесу Node). */
+  /** Агрегати за поточну календарну добу (часовий пояс процесу Node) + активні сесії зараз. */
   async getDashboardNetworkStats(): Promise<{
     todaySessions: number;
     todayRevenueUah: number;
     todaySuccessfulPayments: number;
+    activeSessions: number;
   }> {
     const start = new Date();
     start.setHours(0, 0, 0, 0);
@@ -224,7 +591,7 @@ export const adminRepository = {
       ],
     };
 
-    const [todaySessions, revenueAgg, todaySuccessfulPayments] = await Promise.all([
+    const [todaySessions, revenueAgg, todaySuccessfulPayments, activeSessions] = await Promise.all([
       db.session.count({
         where: { startTime: { gte: start, lte: end } },
       }),
@@ -233,11 +600,12 @@ export const adminRepository = {
         _sum: { calculatedAmount: true },
       }),
       db.bill.count({ where: billTodayWhere }),
+      db.session.count({ where: { status: "ACTIVE" } }),
     ]);
 
     const todayRevenueUah =
       revenueAgg._sum.calculatedAmount != null ? Number(revenueAgg._sum.calculatedAmount) : 0;
 
-    return { todaySessions, todayRevenueUah, todaySuccessfulPayments };
+    return { todaySessions, todayRevenueUah, todaySuccessfulPayments, activeSessions };
   },
 };

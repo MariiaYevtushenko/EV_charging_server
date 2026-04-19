@@ -4,9 +4,13 @@ import {
     getUser,
     updateUser,
     getNetworkBooking,
+    getNetworkBookingStatusCounts,
     getNetworkBookings,
     getNetworkSession,
+    getNetworkSessionStatusCounts,
     getNetworkSessions,
+    postCompleteNetworkSession,
+    getNetworkPaymentStatusCounts,
     getNetworkPayments,
     getDashboard,
     getAnalyticsViews,
@@ -36,10 +40,14 @@ adminRouter.get("/users", getUsers);
 adminRouter.get("/users/:userId", getUser);
 adminRouter.put("/users/:userId", updateUser);
 
+adminRouter.get("/network/bookings/status-counts", getNetworkBookingStatusCounts);
 adminRouter.get("/network/bookings/:bookingId", getNetworkBooking);
 adminRouter.get("/network/bookings", getNetworkBookings);
+adminRouter.get("/network/sessions/status-counts", getNetworkSessionStatusCounts);
+adminRouter.post("/network/sessions/:sessionId/complete", postCompleteNetworkSession);
 adminRouter.get("/network/sessions/:sessionId", getNetworkSession);
 adminRouter.get("/network/sessions", getNetworkSessions);
+adminRouter.get("/network/payments/status-counts", getNetworkPaymentStatusCounts);
 adminRouter.get("/network/payments", getNetworkPayments);
 
 adminRouter.get("/forecast/bias", getForecastBias);

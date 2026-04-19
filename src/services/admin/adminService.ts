@@ -1,8 +1,25 @@
 import {
     adminRepository,
+    buildNetworkListPeriodBillWhere,
+    buildNetworkListPeriodBookingWhere,
+    buildNetworkListPeriodSessionWhere,
+    buildUsersListOrderBy,
     buildUsersListWhere,
+    mergeBillWhere,
+    mergeBookingWhere,
+    mergeSessionWhere,
     type EvUserPublicRow,
 } from "../../db/admin/adminRepository.js";
+import type {
+    AdminUsersSortKey,
+    NetworkBookingUiFilter,
+    NetworkListPeriod,
+    NetworkSessionUiFilter,
+    ParsedNetworkBookingsQuery,
+    ParsedNetworkPaymentsQuery,
+    ParsedNetworkSessionsQuery,
+} from "../../lib/pagination.js";
+import { HttpError } from "../../lib/httpError.js";
 import {
     queryAllAnalyticsViews,
     type AdminAnalyticsViewsPayload,
@@ -21,6 +38,17 @@ import {
     type AdminEndUserDto,
 } from "./adminUserDetailMapper.js";
 import { userService } from "../user/userService.js";
+
+export type AdminNetworkBookingsListResponse = {
+    items: AdminNetworkBookingRow[];
+    total: number;
+    page: number;
+    pageSize: number;
+};
+
+export type AdminNetworkBookingStatusCounts = Record<NetworkBookingUiFilter, number>;
+
+export type AdminNetworkSessionStatusCounts = Record<NetworkSessionUiFilter, number>;
 
 export type AdminNetworkBookingRow = {
     id: string;
@@ -85,6 +113,26 @@ export type AdminNetworkSessionRow = {
     kwh: number;
     cost: number | null;
 };
+
+export type AdminNetworkSessionsListResponse = {
+    items: AdminNetworkSessionRow[];
+    total: number;
+    page: number;
+    pageSize: number;
+};
+
+export type AdminNetworkPaymentsListResponse = {
+    items: AdminNetworkPaymentRow[];
+    total: number;
+    page: number;
+    pageSize: number;
+};
+
+/** Лічильники за вкладками статусу на сторінці «Платежі». */
+export type AdminNetworkPaymentStatusCounts = Record<
+    AdminNetworkPaymentRow["status"],
+    number
+>;
 
 /** Рядок для списку платежів (bill) — узгоджено з клієнтом `PaymentRow`. */
 export type AdminNetworkPaymentRow = {
@@ -208,12 +256,15 @@ export const adminService = {
         page: number,
         pageSize: number,
         roleFilter?: UserRole | null,
-        search?: string | null
+        search?: string | null,
+        sort: AdminUsersSortKey = "name",
+        order: "asc" | "desc" = "asc"
     ): Promise<AdminUsersPageResult> {
         const where = buildUsersListWhere(roleFilter, search);
+        const orderBy = buildUsersListOrderBy(sort, order);
         const [total, items, byRole] = await Promise.all([
             adminRepository.countUsers(where),
-            adminRepository.getUsersPage(skip, take, where),
+            adminRepository.getUsersPage(skip, take, where, orderBy),
             adminRepository.countUsersByRole(),
         ]);
         return {
@@ -232,9 +283,88 @@ export const adminService = {
         return await userService.updateProfileFromBody(userId, body);
     },
 
-    async getNetworkBookings(): Promise<AdminNetworkBookingRow[]> {
-        const rows = await adminRepository.listNetworkBookings();
-        return rows.map((b) => {
+    async getNetworkBookingStatusCounts(
+        search?: string,
+        period: NetworkListPeriod = "all"
+    ): Promise<AdminNetworkBookingStatusCounts> {
+        const searchWhere = adminRepository.buildNetworkBookingsSearchWhere(search);
+        const periodWhere = buildNetworkListPeriodBookingWhere(period);
+        const where = mergeBookingWhere(searchWhere, periodWhere);
+        const rows = await adminRepository.groupNetworkBookingsByDbStatus(where);
+        const out: AdminNetworkBookingStatusCounts = {
+            pending: 0,
+            confirmed: 0,
+            cancelled: 0,
+            paid: 0,
+        };
+        for (const r of rows) {
+            const ui = mapBookingStatus(r.status);
+            out[ui] += r._count._all;
+        }
+        return out;
+    },
+
+    async getNetworkSessionStatusCounts(
+        search?: string,
+        period: NetworkListPeriod = "all"
+    ): Promise<AdminNetworkSessionStatusCounts> {
+        const searchWhere = adminRepository.buildNetworkSessionsSearchWhere(search);
+        const periodWhere = buildNetworkListPeriodSessionWhere(period);
+        const where = mergeSessionWhere(searchWhere, periodWhere);
+        const rows = await adminRepository.groupNetworkSessionsByDbStatus(where);
+        const out: AdminNetworkSessionStatusCounts = {
+            active: 0,
+            completed: 0,
+            failed: 0,
+        };
+        for (const r of rows) {
+            const ui = mapSessionUiStatus(r.status);
+            out[ui] += r._count._all;
+        }
+        return out;
+    },
+
+    async getNetworkPaymentStatusCounts(
+        search?: string,
+        period: NetworkListPeriod = "all"
+    ): Promise<AdminNetworkPaymentStatusCounts> {
+        const searchWhere = adminRepository.buildNetworkBillsSearchWhere(search);
+        const periodWhere = buildNetworkListPeriodBillWhere(period);
+        const where = mergeBillWhere(searchWhere, periodWhere);
+        const rows = await adminRepository.groupNetworkBillsByPaymentStatus(where);
+        const out: AdminNetworkPaymentStatusCounts = {
+            success: 0,
+            pending: 0,
+            failed: 0,
+        };
+        for (const r of rows) {
+            const ui = mapBillPaymentUi(r.paymentStatus);
+            out[ui] += r._count._all;
+        }
+        return out;
+    },
+
+    async getNetworkBookingsList(
+        parsed: ParsedNetworkBookingsQuery
+    ): Promise<AdminNetworkBookingsListResponse> {
+        const searchWhere = adminRepository.buildNetworkBookingsSearchWhere(parsed.search);
+        const statusWhere =
+            parsed.status != null
+                ? adminRepository.buildNetworkBookingsUiStatusWhere(parsed.status)
+                : undefined;
+        const periodWhere = buildNetworkListPeriodBookingWhere(parsed.period);
+        const where = mergeBookingWhere(
+            mergeBookingWhere(searchWhere, statusWhere),
+            periodWhere
+        );
+        const orderBy = adminRepository.networkBookingsOrderBy(parsed.sort, parsed.order);
+        const { rows, total } = await adminRepository.listNetworkBookings({
+            skip: parsed.skip,
+            take: parsed.pageSize,
+            ...(where != null ? { where } : {}),
+            orderBy,
+        });
+        const items: AdminNetworkBookingRow[] = rows.map((b) => {
             const st = b.port.station;
             const slotLabel = `${st.name} · порт ${b.portNumber}`;
             return {
@@ -252,11 +382,35 @@ export const adminService = {
                 end: b.endTime.toISOString(),
             };
         });
+        return {
+            items,
+            total,
+            page: parsed.page,
+            pageSize: parsed.pageSize,
+        };
     },
 
-    async getNetworkSessions(): Promise<AdminNetworkSessionRow[]> {
-        const rows = await adminRepository.listNetworkSessions();
-        return rows.map((s) => {
+    async getNetworkSessionsList(
+        parsed: ParsedNetworkSessionsQuery
+    ): Promise<AdminNetworkSessionsListResponse> {
+        const searchWhere = adminRepository.buildNetworkSessionsSearchWhere(parsed.search);
+        const statusWhere =
+            parsed.status != null
+                ? adminRepository.buildNetworkSessionsUiStatusWhere(parsed.status)
+                : undefined;
+        const periodWhere = buildNetworkListPeriodSessionWhere(parsed.period);
+        const where = mergeSessionWhere(
+            mergeSessionWhere(searchWhere, statusWhere),
+            periodWhere
+        );
+        const orderBy = adminRepository.networkSessionsOrderBy(parsed.sort, parsed.order);
+        const { rows, total } = await adminRepository.listNetworkSessions({
+            skip: parsed.skip,
+            take: parsed.pageSize,
+            ...(where != null ? { where } : {}),
+            orderBy,
+        });
+        const items: AdminNetworkSessionRow[] = rows.map((s) => {
             const st = s.port.station;
             return {
                 id: String(s.id),
@@ -274,11 +428,32 @@ export const adminService = {
                 cost: s.bill != null ? Number(s.bill.calculatedAmount) : null,
             };
         });
+        return {
+            items,
+            total,
+            page: parsed.page,
+            pageSize: parsed.pageSize,
+        };
     },
 
-    async getNetworkPayments(): Promise<AdminNetworkPaymentRow[]> {
-        const rows = await adminRepository.listNetworkBills();
-        return rows.map((bill) => {
+    async getNetworkPaymentsList(
+        parsed: ParsedNetworkPaymentsQuery
+    ): Promise<AdminNetworkPaymentsListResponse> {
+        const searchWhere = adminRepository.buildNetworkBillsSearchWhere(parsed.search);
+        const statusWhere =
+            parsed.status != null
+                ? adminRepository.buildNetworkBillsUiStatusWhere(parsed.status)
+                : undefined;
+        const periodWhere = buildNetworkListPeriodBillWhere(parsed.period);
+        const where = mergeBillWhere(mergeBillWhere(searchWhere, statusWhere), periodWhere);
+        const orderBy = adminRepository.networkBillsOrderBy(parsed.sort, parsed.order);
+        const { rows, total } = await adminRepository.listNetworkBillsPaged({
+            skip: parsed.skip,
+            take: parsed.pageSize,
+            ...(where != null ? { where } : {}),
+            orderBy,
+        });
+        const items: AdminNetworkPaymentRow[] = rows.map((bill) => {
             const s = bill.session;
             const st = s.port.station;
             const uid = s.userId != null ? String(s.userId) : null;
@@ -295,6 +470,12 @@ export const adminService = {
                 userName: userDisplayName(s.user),
             };
         });
+        return {
+            items,
+            total,
+            page: parsed.page,
+            pageSize: parsed.pageSize,
+        };
     },
 
     async getNetworkBookingById(bookingId: number): Promise<AdminBookingDetailDto | null> {
@@ -388,10 +569,38 @@ export const adminService = {
         };
     },
 
+    async completeNetworkSession(
+        sessionId: number,
+        kwhConsumed?: number
+    ): Promise<AdminSessionDetailDto> {
+        try {
+            await adminRepository.completeActiveNetworkSession(sessionId, kwhConsumed);
+        } catch (e) {
+            if (e instanceof Error) {
+                if (e.message === "SESSION_NOT_ACTIVE") {
+                    throw new HttpError(
+                        409,
+                        "Сесію не можна завершити: вона не активна або вже завершена."
+                    );
+                }
+                if (e.message === "SESSION_NOT_FOUND") {
+                    throw new HttpError(404, "Сесію не знайдено.");
+                }
+            }
+            throw e;
+        }
+        const dto = await this.getNetworkSessionById(sessionId);
+        if (!dto) {
+            throw new HttpError(500, "Не вдалося завантажити сесію після завершення.");
+        }
+        return dto;
+    },
+
     async getDashboardSummary(): Promise<{
         todaySessions: number;
         todayRevenueUah: number;
         todaySuccessfulPayments: number;
+        activeSessions: number;
     }> {
         return adminRepository.getDashboardNetworkStats();
     },

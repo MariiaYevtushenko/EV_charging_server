@@ -78,7 +78,7 @@ devSeedRouter.post("/seed-from-csv", requireDevSeed, async (_req, res, next) => 
     res.json({
       ok: true,
       message:
-        "SEED виконано: користувачі, авто, станції з CSV, тарифи, бронювання та сесії. Оновіть сторінку списку станцій.",
+        "SEED успішно завершено",
     });
   } catch (e) {
     const message =

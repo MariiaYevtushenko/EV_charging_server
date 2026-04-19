@@ -1,8 +1,14 @@
 /**
- * SEED_ALL_DATA — один BEGIN … COMMIT: при будь-якій помилці ROLLBACK усіх змін.
+ * SEED_ALL_DATA — одна транзакція PostgreSQL: `BEGIN` на старті, `COMMIT` лише після
+ * успішного завершення всіх кроків; при будь-якій помилці — `ROLLBACK` (нічого не лишається наполовину).
  *
  * Порядок: SeedMassiveUsers → vehicle CSV → станції CSV → тарифи → SeedBookingsSessionsBills.
  * Демо-логіни не вставляються (окремо / вручну).
+ *
+ * Числові параметри сиду — змінні оточення (дефолти в `scripts/seed/seedEnvConfig.ts`).
+ *
+ * Опційно: `SEED_OPTIONAL_SQL_PROCEDURES=true` — якщо SQL-процедура відсутня в БД, крок
+ * пропускається (savepoint), решта сиду комітиться. За замовчуванням вимкнено: помилка = повний відкат.
  *
  * CLI: npx tsx scripts/seed-all-data.ts [--truncate]
  */
@@ -15,6 +21,14 @@ import { SeedTariffsFromApi } from "../src/services/forecast/tariffIngestService
 import { loadDefaultEvStationCsvRows, SeedEvStationsFromCsv, SyncLocationStationSequences } from "./seed/seed-from-csv.js";
 import { SeedVehiclesFromCsv, SyncVehicleSequence } from "./seed/seed-vehicles-from-csv.js";
 import { upsertTariffDayNightForCalendarDayPg } from "./seed/tariffUpsertPg.js";
+import {
+  getSeedDemoBookingsCount,
+  getSeedMassiveUserCount,
+  getTariffSeedDays,
+  isSeedOptionalSqlProcedures,
+  SEED_ENV,
+  SEED_ENV_DEFAULTS,
+} from "./seed/seedEnvConfig.js";
 
 const { Client } = pg;
 
@@ -55,11 +69,22 @@ export type SeedAllDataOptions = {
   truncate?: boolean;
 };
 
+function isMissingSqlProcedureError(err: unknown, procedureName: string): boolean {
+  const e = err as { code?: string; message?: string };
+  const msg = String(e?.message ?? "");
+  return (
+    e?.code === "42883" ||
+    (new RegExp(procedureName, "i").test(msg) &&
+      (/does not exist/i.test(msg) || /не існує/i.test(msg)))
+  );
+}
+
 /**
- * Повний пайплайн у **одній** транзакції PostgreSQL.
+ * Повний пайплайн у **одній** транзакції PostgreSQL (`BEGIN` … `COMMIT` / `ROLLBACK`).
  */
 export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> {
   const truncate = Boolean(opts.truncate);
+  const optionalSql = isSeedOptionalSqlProcedures();
 
   console.log(`\n[SEED_ALL_DATA] старт (транзакція) — ${SEED_ALL_DATA_STEPS.join(" → ")}\n`);
 
@@ -79,34 +104,28 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
       await truncateAllDemoTables(client);
     }
 
-    const rawCount = process.env.SEED_MASSIVE_USER_COUNT ?? "1000";
-    const massiveCount = Number.parseInt(String(rawCount), 10);
-    const userBulk =
-      Number.isFinite(massiveCount) && massiveCount >= 0 ? massiveCount : 1000;
+    const userBulk = getSeedMassiveUserCount();
 
     console.log(
       `[SEED_ALL_DATA:1] SQL SeedMassiveUsers(${userBulk}) — випадкові ev_user (db/SEED_users.sql)`,
     );
-    // SAVEPOINT: помилка CALL інакше «вбиває» всю зовнішню транзакцію (25P02 на наступних query).
-    await client.query("SAVEPOINT seed_sp_massive_users");
-    try {
-      await client.query("CALL SeedMassiveUsers($1)", [userBulk]);
-      await client.query("RELEASE SAVEPOINT seed_sp_massive_users");
-    } catch (e: unknown) {
-      await client.query("ROLLBACK TO SAVEPOINT seed_sp_massive_users");
-      const err = e as { code?: string; message?: string };
-      const msg = String(err?.message ?? "");
-      const missing =
-        err?.code === "42883" ||
-        (/SeedMassiveUsers/i.test(msg) &&
-          (/does not exist/i.test(msg) || /не існує/i.test(msg)));
-      if (missing) {
-        console.warn(
-          "[WARN] Procedure SeedMassiveUsers() missing — apply db/SEED_users.sql to the database.",
-        );
-      } else {
-        throw e;
+    if (optionalSql) {
+      await client.query("SAVEPOINT seed_sp_massive_users");
+      try {
+        await client.query("CALL SeedMassiveUsers($1)", [userBulk]);
+        await client.query("RELEASE SAVEPOINT seed_sp_massive_users");
+      } catch (e: unknown) {
+        await client.query("ROLLBACK TO SAVEPOINT seed_sp_massive_users");
+        if (isMissingSqlProcedureError(e, "SeedMassiveUsers")) {
+          console.warn(
+            "[WARN] Procedure SeedMassiveUsers() missing — apply db/SEED_users.sql to the database.",
+          );
+        } else {
+          throw e;
+        }
       }
+    } else {
+      await client.query("CALL SeedMassiveUsers($1)", [userBulk]);
     }
 
     await client.query(`
@@ -128,12 +147,7 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
     );
     await SeedEvStationsFromCsv(client, stationRows);
 
-    const rawDays = process.env.TARIFF_SEED_DAYS ?? "90";
-    const tariffDays = Number.parseInt(String(rawDays), 10);
-    const days =
-      Number.isFinite(tariffDays) && tariffDays >= 1 && tariffDays <= 366
-        ? tariffDays
-        : 90;
+    const days = getTariffSeedDays();
 
     console.log(
       `[SEED_ALL_DATA:4] Тарифи (DAY+NIGHT, anchor=end, останні ${days} днів)`,
@@ -150,33 +164,28 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
       },
     });
 
-    const rawDemoBookings = process.env.SEED_DEMO_BOOKINGS_COUNT ?? "120";
-    const demoBookings = Number.parseInt(String(rawDemoBookings), 10);
-    const bookingCount =
-      Number.isFinite(demoBookings) && demoBookings >= 1 ? demoBookings : 120;
+    const bookingCount = getSeedDemoBookingsCount();
 
     console.log(
       `[SEED_ALL_DATA:5] SQL SeedBookingsSessionsBills(${bookingCount}) — booking/session/bill`,
     );
-    await client.query("SAVEPOINT seed_sp_demo_bookings");
-    try {
-      await client.query("CALL SeedBookingsSessionsBills($1)", [bookingCount]);
-      await client.query("RELEASE SAVEPOINT seed_sp_demo_bookings");
-    } catch (e: unknown) {
-      await client.query("ROLLBACK TO SAVEPOINT seed_sp_demo_bookings");
-      const err = e as { code?: string; message?: string };
-      const msg = String(err?.message ?? "");
-      const missing =
-        err?.code === "42883" ||
-        (/SeedBookingsSessionsBills/i.test(msg) &&
-          (/does not exist/i.test(msg) || /не існує/i.test(msg)));
-      if (missing) {
-        console.warn(
-          "[WARN] Procedure SeedBookingsSessionsBills() missing — apply db/Seed_demo_bookings_sessions_bills.sql to the database.",
-        );
-      } else {
-        throw e;
+    if (optionalSql) {
+      await client.query("SAVEPOINT seed_sp_demo_bookings");
+      try {
+        await client.query("CALL SeedBookingsSessionsBills($1)", [bookingCount]);
+        await client.query("RELEASE SAVEPOINT seed_sp_demo_bookings");
+      } catch (e: unknown) {
+        await client.query("ROLLBACK TO SAVEPOINT seed_sp_demo_bookings");
+        if (isMissingSqlProcedureError(e, "SeedBookingsSessionsBills")) {
+          console.warn(
+            "[WARN] Procedure SeedBookingsSessionsBills() missing — apply db/Seed_demo_bookings_sessions_bills.sql to the database.",
+          );
+        } else {
+          throw e;
+        }
       }
+    } else {
+      await client.query("CALL SeedBookingsSessionsBills($1)", [bookingCount]);
     }
 
     await SyncVehicleSequence(client);
@@ -203,7 +212,12 @@ if (isMain) {
   const argv = process.argv.slice(2);
   if (argv.includes("--help") || argv.includes("-h")) {
     console.log(`Usage: npx tsx scripts/seed-all-data.ts [--truncate]
-Env: DATABASE_URL, SEED_MASSIVE_USER_COUNT (default 1000), SEED_DEMO_BOOKINGS_COUNT (default 120), TARIFF_SEED_DAYS (default 90)`);
+Env (див. scripts/seed/seedEnvConfig.ts та .env.example):
+  DATABASE_URL
+  ${SEED_ENV.MASSIVE_USER_COUNT} (default ${SEED_ENV_DEFAULTS.MASSIVE_USER_COUNT})
+  ${SEED_ENV.DEMO_BOOKINGS_COUNT} (default ${SEED_ENV_DEFAULTS.DEMO_BOOKINGS_COUNT})
+  ${SEED_ENV.TARIFF_SEED_DAYS} (default ${SEED_ENV_DEFAULTS.TARIFF_SEED_DAYS}, range 1–366)
+  ${SEED_ENV.OPTIONAL_SQL_PROCEDURES}=true — пропуск відсутніх SQL-процедур; інакше повний ROLLBACK при помилці.`);
     process.exit(0);
   }
 

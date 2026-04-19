@@ -47,6 +47,7 @@ enum BookingStatus {
   NO_ACTION
   CANCELLED
   COMPLETED
+  PAID
 
   @@map("booking_status")
 }

@@ -2,7 +2,14 @@ import type { RequestHandler } from "express";
 import type { UserRole } from "../../../generated/prisma/index.js";
 import { adminService } from "../../services/admin/adminService.js";
 import { toEvUserPublic } from "../../utils/evUserPublic.js";
-import { parsePaginationQuery } from "../../lib/pagination.js";
+import {
+  parseAdminUsersSortQuery,
+  parseNetworkBookingsQuery,
+  parseNetworkListStatusCountsQuery,
+  parseNetworkPaymentsQuery,
+  parseNetworkSessionsQuery,
+  parsePaginationQuery,
+} from "../../lib/pagination.js";
 
 function parseUserRoleFilter(raw: unknown): UserRole | undefined {
     if (typeof raw !== "string" || raw.trim() === "") return undefined;
@@ -21,7 +28,17 @@ export const getUsers: RequestHandler = async (req, res, next) => {
         const rawSearch = q["q"];
         const search =
             typeof rawSearch === "string" && rawSearch.trim() !== "" ? rawSearch.trim() : undefined;
-        const data = await adminService.getUsersPage(skip, pageSize, page, pageSize, roleFilter, search);
+        const { sort, order } = parseAdminUsersSortQuery(q);
+        const data = await adminService.getUsersPage(
+            skip,
+            pageSize,
+            page,
+            pageSize,
+            roleFilter,
+            search,
+            sort,
+            order
+        );
         res.json(data);
     } catch (e) {
         next(e);
@@ -78,9 +95,20 @@ export const getNetworkBooking: RequestHandler = async (req, res, next) => {
     }
 };
 
-export const getNetworkBookings: RequestHandler = async (_req, res, next) => {
+export const getNetworkBookings: RequestHandler = async (req, res, next) => {
     try {
-        const data = await adminService.getNetworkBookings();
+        const parsed = parseNetworkBookingsQuery(req.query as Record<string, unknown>);
+        const data = await adminService.getNetworkBookingsList(parsed);
+        res.json(data);
+    } catch (e) {
+        next(e);
+    }
+};
+
+export const getNetworkBookingStatusCounts: RequestHandler = async (req, res, next) => {
+    try {
+        const { search, period } = parseNetworkListStatusCountsQuery(req.query as Record<string, unknown>);
+        const data = await adminService.getNetworkBookingStatusCounts(search, period);
         res.json(data);
     } catch (e) {
         next(e);
@@ -108,19 +136,76 @@ export const getNetworkSession: RequestHandler = async (req, res, next) => {
     }
 };
 
-export const getNetworkSessions: RequestHandler = async (_req, res, next) => {
+/** Завершити активну сесію (COMPLETED + bill через UpsertBillForSession). */
+export const postCompleteNetworkSession: RequestHandler = async (req, res, next) => {
     try {
-        const data = await adminService.getNetworkSessions();
+        const sessionId = Number(req.params["sessionId"]);
+        if (!Number.isFinite(sessionId)) {
+            res.status(400).json({
+                error: "Bad Request",
+                message: "Некоректний ідентифікатор сесії.",
+            });
+            return;
+        }
+        const body = req.body as Record<string, unknown> | null | undefined;
+        const raw = body?.["kwhConsumed"];
+        const kwhConsumed =
+            raw === undefined || raw === null
+                ? undefined
+                : Number(raw);
+        if (
+            kwhConsumed !== undefined &&
+            (!Number.isFinite(kwhConsumed) || kwhConsumed < 0)
+        ) {
+            res.status(400).json({
+                error: "Bad Request",
+                message: "Некоректне значення kwhConsumed (очікується число ≥ 0).",
+            });
+            return;
+        }
+        const data = await adminService.completeNetworkSession(sessionId, kwhConsumed);
         res.json(data);
     } catch (e) {
         next(e);
     }
 };
 
-/** Усі платежі (bill) у мережі — сторінка «Платежі». */
-export const getNetworkPayments: RequestHandler = async (_req, res, next) => {
+export const getNetworkSessions: RequestHandler = async (req, res, next) => {
     try {
-        const data = await adminService.getNetworkPayments();
+        const parsed = parseNetworkSessionsQuery(req.query as Record<string, unknown>);
+        const data = await adminService.getNetworkSessionsList(parsed);
+        res.json(data);
+    } catch (e) {
+        next(e);
+    }
+};
+
+export const getNetworkSessionStatusCounts: RequestHandler = async (req, res, next) => {
+    try {
+        const { search, period } = parseNetworkListStatusCountsQuery(req.query as Record<string, unknown>);
+        const data = await adminService.getNetworkSessionStatusCounts(search, period);
+        res.json(data);
+    } catch (e) {
+        next(e);
+    }
+};
+
+/** Лічильники за статусом платежу (bill) — узгоджено зі списком. */
+export const getNetworkPaymentStatusCounts: RequestHandler = async (req, res, next) => {
+    try {
+        const { search, period } = parseNetworkListStatusCountsQuery(req.query as Record<string, unknown>);
+        const data = await adminService.getNetworkPaymentStatusCounts(search, period);
+        res.json(data);
+    } catch (e) {
+        next(e);
+    }
+};
+
+/** Платежі (bill) у мережі — пагінований список для сторінки «Платежі». */
+export const getNetworkPayments: RequestHandler = async (req, res, next) => {
+    try {
+        const parsed = parseNetworkPaymentsQuery(req.query as Record<string, unknown>);
+        const data = await adminService.getNetworkPaymentsList(parsed);
         res.json(data);
     } catch (e) {
         next(e);
