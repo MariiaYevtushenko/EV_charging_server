@@ -8,7 +8,7 @@
 - `vehicle` + csv file  "electric_vehicles_spec_2025.csv.csv",
 - `tariff` - бере з апішки 
 - `booking` — демо: `db/Seed_demo_bookings_sessions_bills.sql` → `SeedBookings(n)` або повний пайплайн `SeedBookingsSessionsBills(n)` (після CSV/тарифів)
-- `session` — `SeedSessions()` (після booking)
+- `session` — `SeedSessions(clear, target_count)` (після booking): ~50% без `booking_id`, ~50% за минулими бронями (не `CANCELLED` / не `NO_ACTION`); `start_time`/`end_time` узгоджені з бронюванням або задані для walk-in
 - `bill` — `SeedBills()` (після session)
 - `tariff_prediction` - буде в процесі 
 - `forecast_bias` - буде в процесі
@@ -19,7 +19,7 @@ CREATE TYPE user_role AS ENUM ('ADMIN', 'STATION_ADMIN', 'USER');
 CREATE TYPE station_status AS ENUM ('WORK', 'NO_CONNECTION', 'FIX', 'ARCHIVED');
 CREATE TYPE port_status AS ENUM ('FREE', 'BOOKED', 'USED', 'REPAIRED');
 CREATE TYPE tariff_period AS ENUM ('DAY', 'NIGHT');
-CREATE TYPE booking_status AS ENUM ('BOOKED', 'PAID', 'CANCELLED');
+CREATE TYPE booking_status AS ENUM ('BOOKED', 'NO_ACTION', 'CANCELLED', 'COMPLETED');
 CREATE TYPE booking_type AS ENUM ('CALC', 'DEPOSIT');
 CREATE TYPE session_status AS ENUM ('ACTIVE', 'COMPLETED', 'FAILED');
 CREATE TYPE payment_method AS ENUM ('CARD', 'APPLE_PAY', 'GOOGLE_PAY');
@@ -125,9 +125,9 @@ CREATE TABLE IF NOT EXISTS session(
     vehicle_id INT REFERENCES vehicle(id),
     station_id INT NOT NULL,
     port_number INT NOT NULL,
-    booking_id INT REFERENCES booking(id),
-    start_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    end_time TIMESTAMP,
+    booking_id INT REFERENCES booking(id), -- NULL = сесія без попереднього бронювання (walk-in)
+    start_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- при наявному booking_id: у межах [booking.start_time, booking.end_time] (див. seed)
+    end_time TIMESTAMP, -- NULL лише для ACTIVE; для завершених сесій > start_time
     kwh_consumed DECIMAL(10,3) DEFAULT 0,
     status session_status DEFAULT 'ACTIVE',
     FOREIGN KEY (station_id, port_number) REFERENCES port(station_id, port_number)

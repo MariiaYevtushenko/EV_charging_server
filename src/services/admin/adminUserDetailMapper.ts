@@ -90,7 +90,7 @@ export type EvUserDetailPayload = Prisma.EvUserGetPayload<{
   include: typeof adminUserDetailInclude;
 }>;
 
-/** У БД лише BOOKED / PAID / CANCELLED: BOOKED → очікує (активне бронювання), PAID → завершено. */
+/** БД: BOOKED / NO_ACTION / CANCELLED / COMPLETED — див. booking_status. */
 function mapSessionUiStatus(s: SessionStatus): AdminEndUserDto["sessions"][number]["status"] {
   switch (s) {
     case "ACTIVE":
@@ -108,8 +108,10 @@ export function mapBookingStatus(s: BookingStatus): AdminEndUserDto["bookings"][
   switch (s) {
     case "BOOKED":
       return "pending";
-    case "PAID":
+    case "COMPLETED":
       return "completed";
+    case "NO_ACTION":
+      return "cancelled";
     case "CANCELLED":
       return "cancelled";
     default:

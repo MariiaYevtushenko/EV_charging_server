@@ -29,6 +29,45 @@ export const getStationDashboard: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const getStationUpcomingBookings: RequestHandler = async (req, res, next) => {
+  try {
+    const stationId = Number(req.params["stationId"]);
+    if (!Number.isFinite(stationId)) {
+      res.status(400).json({ error: "Station id is required" });
+      return;
+    }
+    const items = await stationService.getStationUpcomingBookings(stationId);
+    if (!items) {
+      res.status(404).json({ error: "Station not found" });
+      return;
+    }
+    res.json({ items });
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const getStationEnergyAnalytics: RequestHandler = async (req, res, next) => {
+  try {
+    const stationId = Number(req.params["stationId"]);
+    if (!Number.isFinite(stationId)) {
+      res.status(400).json({ error: "Station id is required" });
+      return;
+    }
+    const raw = req.query["period"];
+    const p = typeof raw === "string" ? raw : "1d";
+    const period = p === "7d" || p === "30d" ? p : "1d";
+    const data = await stationService.getStationEnergyAnalytics(stationId, period);
+    if (!data) {
+      res.status(404).json({ error: "Station not found" });
+      return;
+    }
+    res.json(data);
+  } catch (e) {
+    next(e);
+  }
+};
+
 const MAP_BOUNDS_DEFAULT_LIMIT = 2500;
 const MAP_BOUNDS_MAX_LIMIT = 5000;
 
@@ -84,13 +123,17 @@ export const getAllStations: RequestHandler = async (req, res, next) => {
       typeof rawStatus === "string" && rawStatus.trim() !== ""
         ? parseStationStatus(rawStatus)
         : undefined;
+    const rawSearch = q["q"];
+    const search =
+      typeof rawSearch === "string" && rawSearch.trim() !== "" ? rawSearch.trim() : undefined;
     const data = await stationService.getStationsPage(
       skip,
       pageSize,
       page,
       pageSize,
       sort,
-      statusFilter
+      statusFilter,
+      search
     );
     res.json(data);
   } catch (e) {

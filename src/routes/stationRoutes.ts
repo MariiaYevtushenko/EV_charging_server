@@ -2,6 +2,8 @@ import { Router } from "express";
 import {
   getAllStations,
   getStationDashboard as getStation,
+  getStationEnergyAnalytics,
+  getStationUpcomingBookings,
   getStationsMap,
 } from "../controllers/stationController.js";
 import {
@@ -23,6 +25,8 @@ stationRouter.get("/map", getStationsMap);
 stationRouter.get("/", getAllStations);
 stationRouter.post("/", createStation);
 stationRouter.get("/:stationId/dashboard", getStation);
+stationRouter.get("/:stationId/upcoming-bookings", getStationUpcomingBookings);
+stationRouter.get("/:stationId/analytics-energy", getStationEnergyAnalytics);
 
 stationRouter.put("/:stationId", updateStation);
 stationRouter.post("/:stationId/archive", archiveStation);

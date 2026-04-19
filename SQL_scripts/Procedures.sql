@@ -82,7 +82,7 @@ BEGIN
   WHERE id = p_bill_id;
 
    UPDATE booking
-  SET status = 'PAID'
+  SET status = 'COMPLETED'
   WHERE id = (SELECT b.id FROM booking b JOIN session s ON b.id = s.booking_id JOIN bill bl ON s.id = bl.session_id WHERE bl.id = p_bill_id);
 END;
 $$;
@@ -144,7 +144,7 @@ BEGIN
     WHERE b.id = p_booking_id
       AND b.station_id = p_station_id
       AND b.port_number = p_port_number
-      AND b.status IN ('BOOKED'::booking_status, 'PAID'::booking_status);
+      AND b.status = 'BOOKED'::booking_status;
 
     IF NOT FOUND THEN
       RAISE EXCEPTION 'Бронювання не знайдено, не відповідає порту або недійсне';

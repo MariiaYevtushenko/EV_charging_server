@@ -1,10 +1,6 @@
--- Пакет: розрахунок суми сесії (лише SELECT / обчислення, без зміни БД)
--- Залежності: після 01_tariff.sql (GetTariffType, GetTariffPricePerKwhAt)
 
 -- -----------------------------------------------------------------------------
 -- GetFinalSessionAmount — сума до сплати та ціна kВт·год для сесії
--- -----------------------------------------------------------------------------
--- Логіка: CALC-бронювання, депозит, тариф за добою.
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION GetFinalSessionAmount(p_session_id INT)
 RETURNS TABLE(calculated_amount DECIMAL(10, 2), price_per_kwh DECIMAL(10, 2)) AS $$

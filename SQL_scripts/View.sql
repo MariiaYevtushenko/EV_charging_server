@@ -1,5 +1,3 @@
--- VIEW: аналітика та операційні зрізи. Потрібні таблиці після DDL; дані з session/bill.
--- Годинні звіти — з GetStationHourlyReport (functions/04_reports.sql).
 
 -- Станція: сесії та виручка по кожному порту, останні 30 днів.
 CREATE OR REPLACE VIEW View_StationPerformance AS

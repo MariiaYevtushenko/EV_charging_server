@@ -18,7 +18,10 @@ export const getUsers: RequestHandler = async (req, res, next) => {
         const q = req.query as Record<string, unknown>;
         const { page, pageSize, skip } = parsePaginationQuery(q);
         const roleFilter = parseUserRoleFilter(q["role"]);
-        const data = await adminService.getUsersPage(skip, pageSize, page, pageSize, roleFilter);
+        const rawSearch = q["q"];
+        const search =
+            typeof rawSearch === "string" && rawSearch.trim() !== "" ? rawSearch.trim() : undefined;
+        const data = await adminService.getUsersPage(skip, pageSize, page, pageSize, roleFilter, search);
         res.json(data);
     } catch (e) {
         next(e);

@@ -6,6 +6,31 @@ import { adminUserDetailInclude } from "../../services/admin/adminUserDetailMapp
 
 const db = prisma as unknown as PrismaClient;
 
+/** Фільтр списку користувачів: роль + текстовий пошук (ПІБ, email, телефон). */
+export function buildUsersListWhere(
+  roleFilter?: UserRole | null,
+  search?: string | null
+): Prisma.EvUserWhereInput | undefined {
+  const q = (search ?? "").trim();
+  const searchWhere: Prisma.EvUserWhereInput | undefined =
+    q.length === 0
+      ? undefined
+      : {
+          OR: [
+            { name: { contains: q, mode: "insensitive" } },
+            { surname: { contains: q, mode: "insensitive" } },
+            { email: { contains: q, mode: "insensitive" } },
+            { phoneNumber: { contains: q, mode: "insensitive" } },
+          ],
+        };
+  const roleWhere: Prisma.EvUserWhereInput | undefined =
+    roleFilter != null ? { role: roleFilter } : undefined;
+  if (!roleWhere && !searchWhere) return undefined;
+  if (roleWhere && !searchWhere) return roleWhere;
+  if (!roleWhere && searchWhere) return searchWhere;
+  return { AND: [roleWhere!, searchWhere!] };
+}
+
 /** Поля ev_user без password_hash (для списку в адмінці). */
 export type EvUserPublicRow = {
   id: number;
@@ -72,7 +97,13 @@ export const adminRepository = {
         user: { select: { id: true, name: true, surname: true } },
         port: {
           include: {
-            station: { select: { id: true, name: true } },
+            station: {
+              select: {
+                id: true,
+                name: true,
+                location: { select: { city: true, country: true } },
+              },
+            },
           },
         },
       },
@@ -89,7 +120,13 @@ export const adminRepository = {
         },
         port: {
           include: {
-            station: { select: { id: true, name: true } },
+            station: {
+              select: {
+                id: true,
+                name: true,
+                location: { select: { city: true, country: true } },
+              },
+            },
           },
         },
         sessions: {
@@ -116,7 +153,13 @@ export const adminRepository = {
         bill: true,
         port: {
           include: {
-            station: { select: { id: true, name: true } },
+            station: {
+              select: {
+                id: true,
+                name: true,
+                location: { select: { city: true, country: true } },
+              },
+            },
           },
         },
       },

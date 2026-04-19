@@ -1,4 +1,8 @@
-import { adminRepository, type EvUserPublicRow } from "../../db/admin/adminRepository.js";
+import {
+    adminRepository,
+    buildUsersListWhere,
+    type EvUserPublicRow,
+} from "../../db/admin/adminRepository.js";
 import {
     queryAllAnalyticsViews,
     type AdminAnalyticsViewsPayload,
@@ -24,6 +28,8 @@ export type AdminNetworkBookingRow = {
     userName: string;
     stationId: string;
     stationName: string;
+    stationCity: string;
+    stationCountry: string;
     /** Номер порта на станції (для таблиць без дублювання назви станції). */
     portNumber: number;
     slotLabel: string;
@@ -70,6 +76,8 @@ export type AdminNetworkSessionRow = {
     userName: string;
     stationId: string;
     stationName: string;
+    stationCity: string;
+    stationCountry: string;
     portLabel: string;
     status: "active" | "completed" | "failed";
     startedAt: string;
@@ -199,10 +207,10 @@ export const adminService = {
         take: number,
         page: number,
         pageSize: number,
-        roleFilter?: UserRole | null
+        roleFilter?: UserRole | null,
+        search?: string | null
     ): Promise<AdminUsersPageResult> {
-        const where =
-            roleFilter !== undefined && roleFilter !== null ? { role: roleFilter } : undefined;
+        const where = buildUsersListWhere(roleFilter, search);
         const [total, items, byRole] = await Promise.all([
             adminRepository.countUsers(where),
             adminRepository.getUsersPage(skip, take, where),
@@ -235,6 +243,8 @@ export const adminService = {
                 userName: userDisplayName(b.user),
                 stationId: String(b.stationId),
                 stationName: st.name,
+                stationCity: st.location.city,
+                stationCountry: st.location.country,
                 portNumber: b.portNumber,
                 slotLabel,
                 status: mapBookingStatus(b.status),
@@ -254,6 +264,8 @@ export const adminService = {
                 userName: userDisplayName(s.user),
                 stationId: String(s.stationId),
                 stationName: st.name,
+                stationCity: st.location.city,
+                stationCountry: st.location.country,
                 portLabel: `Порт ${s.portNumber}`,
                 status: mapSessionUiStatus(s.status),
                 startedAt: s.startTime.toISOString(),

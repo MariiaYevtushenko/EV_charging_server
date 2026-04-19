@@ -13,6 +13,8 @@ function buildStationListOrderBy(sort: ParsedStationListSort): Prisma.StationOrd
       return { status: dir };
     case "city":
       return { location: { city: dir } };
+    case "country":
+      return { location: { country: dir } };
     case "todayRevenue":
     case "todaySessions":
     
@@ -23,6 +25,29 @@ function buildStationListOrderBy(sort: ParsedStationListSort): Prisma.StationOrd
 }
 
 const db = prisma as unknown as PrismaClient;
+
+/** Фільтр списку станцій: статус БД + пошук за назвою або містом. */
+export function buildStationsListWhere(
+  statusFilter?: StationStatus | null,
+  search?: string | null
+): Prisma.StationWhereInput | undefined {
+  const q = (search ?? "").trim();
+  const searchWhere: Prisma.StationWhereInput | undefined =
+    q.length === 0
+      ? undefined
+      : {
+          OR: [
+            { name: { contains: q, mode: "insensitive" } },
+            { location: { city: { contains: q, mode: "insensitive" } } },
+          ],
+        };
+  const statusWhere: Prisma.StationWhereInput | undefined =
+    statusFilter != null ? { status: statusFilter } : undefined;
+  if (!statusWhere && !searchWhere) return undefined;
+  if (statusWhere && !searchWhere) return statusWhere;
+  if (!statusWhere && searchWhere) return searchWhere;
+  return { AND: [statusWhere!, searchWhere!] };
+}
 
 const locationSelect = {
   id: true,
@@ -273,6 +298,38 @@ export const stationRepository = {
       if (remainingAtLocation === 0) {
         await tx.location.delete({ where: { id: row.locationId } });
       }
+    });
+  },
+
+  /** Сесії станції з початком у [from, to] — для агрегації енергії. */
+  async findSessionsForStationInRange(stationId: number, from: Date, to: Date) {
+    return db.session.findMany({
+      where: {
+        stationId,
+        startTime: { gte: from, lte: to },
+      },
+      select: {
+        startTime: true,
+        kwhConsumed: true,
+      },
+    });
+  },
+
+  /** Майбутні бронювання BOOKED (початок слоту пізніше за «зараз»), від найближчого. */
+  async listUpcomingBookingsForStation(stationId: number, take = 200) {
+    return db.booking.findMany({
+      where: {
+        stationId,
+        status: "BOOKED",
+        startTime: { gt: new Date() },
+      },
+      orderBy: { startTime: "asc" },
+      take,
+      include: {
+        user: { select: { name: true, surname: true, email: true } },
+        vehicle: { select: { licensePlate: true } },
+        port: { include: { connectorType: { select: { name: true } } } },
+      },
     });
   },
 

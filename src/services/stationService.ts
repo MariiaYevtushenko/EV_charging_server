@@ -1,6 +1,72 @@
-import { stationRepository } from "../db/stationRepository.js";
+import { buildStationsListWhere, stationRepository } from "../db/stationRepository.js";
 import type { ParsedStationListSort } from "../lib/stationListSort.js";
 import type { Prisma, Station, StationStatus } from "../../generated/prisma/index.js";
+
+/** GET /api/stations/:id/upcoming-bookings */
+export type StationUpcomingBookingDto = {
+  id: string;
+  portNumber: number;
+  connectorName: string | null;
+  start: string;
+  end: string;
+  userDisplayName: string | null;
+  userEmail: string | null;
+  vehicleLicensePlate: string | null;
+};
+
+/** GET /api/stations/:id/analytics-energy */
+export type StationEnergyPeriod = "1d" | "7d" | "30d";
+
+export type StationEnergyAnalyticsPointDto = {
+  bucketStart: string;
+  kwh: number;
+};
+
+export type StationEnergyAnalyticsDto = {
+  period: StationEnergyPeriod;
+  bucket: "hour" | "day";
+  points: StationEnergyAnalyticsPointDto[];
+  totalKwh: number;
+  sessionCount: number;
+};
+
+function addMs(d: Date, ms: number): Date {
+  return new Date(d.getTime() + ms);
+}
+
+function buildStationEnergyAnalytics(
+  sessions: { startTime: Date; kwhConsumed: unknown }[],
+  from: Date,
+  to: Date,
+  bucketCount: number,
+  period: StationEnergyPeriod,
+  bucket: "hour" | "day"
+): StationEnergyAnalyticsDto {
+  const ms = to.getTime() - from.getTime();
+  const bucketMs = ms / bucketCount;
+  const kwhArr = Array.from({ length: bucketCount }, () => 0);
+  for (const s of sessions) {
+    const t = s.startTime.getTime();
+    if (t < from.getTime() || t > to.getTime()) continue;
+    let idx = Math.floor((t - from.getTime()) / bucketMs);
+    if (idx >= bucketCount) idx = bucketCount - 1;
+    if (idx < 0) continue;
+    const prev = kwhArr[idx] ?? 0;
+    kwhArr[idx] = prev + Number(s.kwhConsumed);
+  }
+  const points: StationEnergyAnalyticsPointDto[] = kwhArr.map((kwh, i) => ({
+    bucketStart: new Date(from.getTime() + i * bucketMs).toISOString(),
+    kwh: Math.round(kwh * 1000) / 1000,
+  }));
+  const totalKwh = Math.round(kwhArr.reduce((a, b) => a + b, 0) * 1000) / 1000;
+  return {
+    period,
+    bucket,
+    points,
+    totalKwh,
+    sessionCount: sessions.length,
+  };
+}
 
 /** DTO для REST — відповідає таблицям station + location + port (DB_script.MD) */
 export type StationDashboardDto = {
@@ -163,7 +229,8 @@ export const stationService = {
     page: number,
     pageSize: number,
     sort: ParsedStationListSort,
-    statusFilter?: StationStatus
+    statusFilter?: StationStatus,
+    search?: string | null
   ): Promise<{
     items: StationDashboardDto[];
     total: number;
@@ -172,8 +239,7 @@ export const stationService = {
     cities: string[];
     statusCounts: StationsPageStatusCounts;
   }> {
-    const listWhere: Prisma.StationWhereInput | undefined =
-      statusFilter !== undefined ? { status: statusFilter } : undefined;
+    const listWhere = buildStationsListWhere(statusFilter ?? null, search);
     const [total, stations, cities, byStatus] = await Promise.all([
       stationRepository.countStations(listWhere),
       stationRepository.findManyPaginated(skip, take, sort, listWhere),
@@ -221,5 +287,53 @@ export const stationService = {
     if (!existing) return false;
     await stationRepository.deleteStationById(stationId);
     return true;
+  },
+
+  async getStationUpcomingBookings(stationId: number): Promise<StationUpcomingBookingDto[] | null> {
+    const exists = await stationRepository.findByIdWithPorts(stationId);
+    if (!exists) return null;
+    const rows = await stationRepository.listUpcomingBookingsForStation(stationId);
+    return rows.map((b) => {
+      const u = b.user;
+      const userDisplayName =
+        u != null ? `${u.name} ${u.surname}`.trim() || null : null;
+      return {
+        id: String(b.id),
+        portNumber: b.portNumber,
+        connectorName: b.port.connectorType?.name ?? null,
+        start: b.startTime.toISOString(),
+        end: b.endTime.toISOString(),
+        userDisplayName,
+        userEmail: u?.email ?? null,
+        vehicleLicensePlate: b.vehicle?.licensePlate ?? null,
+      };
+    });
+  },
+
+  async getStationEnergyAnalytics(
+    stationId: number,
+    period: StationEnergyPeriod
+  ): Promise<StationEnergyAnalyticsDto | null> {
+    const exists = await stationRepository.findByIdWithPorts(stationId);
+    if (!exists) return null;
+    const to = new Date();
+    let from: Date;
+    let bucketCount: number;
+    let bucket: "hour" | "day";
+    if (period === "1d") {
+      from = addMs(to, -24 * 60 * 60 * 1000);
+      bucketCount = 24;
+      bucket = "hour";
+    } else if (period === "7d") {
+      from = addMs(to, -7 * 24 * 60 * 60 * 1000);
+      bucketCount = 7;
+      bucket = "day";
+    } else {
+      from = addMs(to, -30 * 24 * 60 * 60 * 1000);
+      bucketCount = 30;
+      bucket = "day";
+    }
+    const sessions = await stationRepository.findSessionsForStationInRange(stationId, from, to);
+    return buildStationEnergyAnalytics(sessions, from, to, bucketCount, period, bucket);
   },
 };

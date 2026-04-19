@@ -1,6 +1,12 @@
 /** Параметр `sort` для GET /api/stations (узгоджено з клієнтом `sortValue`). */
 
-export type StationListSortKey = "name" | "city" | "status" | "todayRevenue" | "todaySessions";
+export type StationListSortKey =
+  | "name"
+  | "city"
+  | "country"
+  | "status"
+  | "todayRevenue"
+  | "todaySessions";
 
 export type StationListSortDir = "asc" | "desc";
 
@@ -9,7 +15,7 @@ export type ParsedStationListSort = {
   dir: StationListSortDir;
 };
 
-const KEYS: StationListSortKey[] = ["name", "city", "status", "todayRevenue", "todaySessions"];
+const KEYS: StationListSortKey[] = ["name", "city", "country", "status", "todayRevenue", "todaySessions"];
 const DIRS: StationListSortDir[] = ["asc", "desc"];
 
 export function parseStationListSort(query: Record<string, unknown>): ParsedStationListSort {

@@ -44,8 +44,9 @@ enum TariffPeriod {
 
 enum BookingStatus {
   BOOKED
-  PAID
+  NO_ACTION
   CANCELLED
+  COMPLETED
 
   @@map("booking_status")
 }

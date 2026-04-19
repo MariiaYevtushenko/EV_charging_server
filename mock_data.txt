@@ -53,7 +53,7 @@ INSERT INTO vehicle (user_id, license_plate, brand, model, battery_capacity) VAL
 -- 9. БРОНЮВАННЯ (prepayment_amount)
 INSERT INTO booking (user_id, vehicle_id, station_id, port_number, start_time, end_time, status, booking_type, prepayment_amount) VALUES
 (3, 1, 1, 2, NOW() + INTERVAL '1 hour', NOW() + INTERVAL '2 hours', 'BOOKED', 'CALC', 150.00),
-(4, 2, 1, 1, NOW() - INTERVAL '5 hours', NOW() - INTERVAL '4 hours', 'PAID', 'CALC', 220.00);
+(4, 2, 1, 1, NOW() - INTERVAL '5 hours', NOW() - INTERVAL '4 hours', 'COMPLETED', 'CALC', 220.00);
 
 -- 10. СЕСІЇ
 INSERT INTO session (user_id, vehicle_id, station_id, port_number, booking_id, start_time, end_time, kwh_consumed, status) VALUES
