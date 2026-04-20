@@ -4,6 +4,7 @@ import {
     getUser,
     updateUser,
     getNetworkBooking,
+    postCancelNetworkBooking,
     getNetworkBookingStatusCounts,
     getNetworkBookings,
     getNetworkSession,
@@ -42,6 +43,7 @@ adminRouter.get("/users/:userId", getUser);
 adminRouter.put("/users/:userId", updateUser);
 
 adminRouter.get("/network/bookings/status-counts", getNetworkBookingStatusCounts);
+adminRouter.post("/network/bookings/:bookingId/cancel", postCancelNetworkBooking);
 adminRouter.get("/network/bookings/:bookingId", getNetworkBooking);
 adminRouter.get("/network/bookings", getNetworkBookings);
 adminRouter.get("/network/sessions/status-counts", getNetworkSessionStatusCounts);

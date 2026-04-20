@@ -225,7 +225,7 @@ export const ADMIN_NETWORK_PAYMENTS_MAX_PAGE_SIZE = 2000;
 export type NetworkPaymentsSortKey =
   | "createdAt"
   | "userName"
-  | "description"
+  | "sessionId"
   | "method"
   | "amount"
   | "status";
@@ -242,7 +242,7 @@ const NETWORK_PAYMENT_UI_FILTERS: readonly NetworkPaymentUiFilter[] = [
 const NETWORK_PAYMENTS_SORT_KEYS: readonly NetworkPaymentsSortKey[] = [
   "createdAt",
   "userName",
-  "description",
+  "sessionId",
   "method",
   "amount",
   "status",

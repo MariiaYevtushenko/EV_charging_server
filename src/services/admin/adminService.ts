@@ -478,6 +478,36 @@ export const adminService = {
         };
     },
 
+    async cancelNetworkBooking(bookingId: number): Promise<AdminBookingDetailDto> {
+        try {
+            await adminRepository.cancelNetworkBooking(bookingId);
+        } catch (e) {
+            if (e instanceof Error) {
+                if (e.message === "BOOKING_NOT_FOUND") {
+                    throw new HttpError(404, "Бронювання не знайдено.");
+                }
+                if (e.message === "BOOKING_NOT_CANCELLABLE") {
+                    throw new HttpError(
+                        409,
+                        "Це бронювання не можна скасувати (вже завершено, оплачено або скасовано)."
+                    );
+                }
+                if (e.message === "BOOKING_ACTIVE_SESSION") {
+                    throw new HttpError(
+                        409,
+                        "Спочатку завершіть активну сесію зарядки за цим бронюванням."
+                    );
+                }
+            }
+            throw e;
+        }
+        const dto = await this.getNetworkBookingById(bookingId);
+        if (!dto) {
+            throw new HttpError(500, "Не вдалося завантажити бронювання після скасування.");
+        }
+        return dto;
+    },
+
     async getNetworkBookingById(bookingId: number): Promise<AdminBookingDetailDto | null> {
         const b = await adminRepository.getNetworkBookingById(bookingId);
         if (!b) return null;

@@ -270,6 +270,35 @@ export const adminRepository = {
     return { rows, total };
   },
 
+  /**
+   * Скасувати бронювання (лише BOOKED, без активної сесії).
+   * @throws Error з кодами: BOOKING_NOT_FOUND | BOOKING_NOT_CANCELLABLE | BOOKING_ACTIVE_SESSION
+   */
+  async cancelNetworkBooking(bookingId: number): Promise<void> {
+    const existing = await db.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        sessions: {
+          where: { status: "ACTIVE" },
+          select: { id: true },
+        },
+      },
+    });
+    if (!existing) {
+      throw new Error("BOOKING_NOT_FOUND");
+    }
+    if (existing.status !== "BOOKED") {
+      throw new Error("BOOKING_NOT_CANCELLABLE");
+    }
+    if (existing.sessions.length > 0) {
+      throw new Error("BOOKING_ACTIVE_SESSION");
+    }
+    await db.booking.update({
+      where: { id: bookingId },
+      data: { status: "CANCELLED" },
+    });
+  },
+
   async getNetworkBookingById(bookingId: number) {
     return await db.booking.findUnique({
       where: { id: bookingId },
@@ -388,8 +417,8 @@ export const adminRepository = {
         return { createdAt: order };
       case "userName":
         return { session: { user: { name: order } } };
-      case "description":
-        return { session: { port: { station: { name: order } } } };
+      case "sessionId":
+        return { session: { id: order } };
       case "method":
         return { paymentMethod: order };
       case "amount":

@@ -95,6 +95,23 @@ export const getNetworkBooking: RequestHandler = async (req, res, next) => {
     }
 };
 
+export const postCancelNetworkBooking: RequestHandler = async (req, res, next) => {
+    try {
+        const bookingId = Number(req.params["bookingId"]);
+        if (!Number.isFinite(bookingId)) {
+            res.status(400).json({
+                error: "Bad Request",
+                message: "Некоректний ідентифікатор бронювання.",
+            });
+            return;
+        }
+        const data = await adminService.cancelNetworkBooking(bookingId);
+        res.json(data);
+    } catch (e) {
+        next(e);
+    }
+};
+
 export const getNetworkBookings: RequestHandler = async (req, res, next) => {
     try {
         const parsed = parseNetworkBookingsQuery(req.query as Record<string, unknown>);
