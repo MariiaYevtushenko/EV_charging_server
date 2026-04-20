@@ -1,5 +1,6 @@
 import prisma from "../prisma.config.js";
-import type { Prisma, PrismaClient, Station, StationStatus } from "../../generated/prisma/index.js";
+import { Prisma } from "../../generated/prisma/index.js";
+import type { PrismaClient, Station, StationStatus } from "../../generated/prisma/index.js";
 import type { ParsedStationListSort } from "../lib/stationListSort.js";
 
 const ALL_STATION_STATUSES: StationStatus[] = ["WORK", "NO_CONNECTION", "FIX", "ARCHIVED"];
@@ -17,8 +18,7 @@ function buildStationListOrderBy(sort: ParsedStationListSort): Prisma.StationOrd
       return { location: { country: dir } };
     case "todayRevenue":
     case "todaySessions":
-    
-      return { createdAt: dir };
+      return { name: "asc" };
     default:
       return { name: "asc" };
   }
@@ -26,7 +26,16 @@ function buildStationListOrderBy(sort: ParsedStationListSort): Prisma.StationOrd
 
 const db = prisma as unknown as PrismaClient;
 
-/** Фільтр списку станцій: статус БД + пошук за назвою або містом. */
+// Межі «сьогодні» для списку станцій 
+export function getStationListTodayBounds(): { start: Date; end: Date } {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+  return { start, end };
+}
+
+// Фільтр списку станцій
 export function buildStationsListWhere(
   statusFilter?: StationStatus | null,
   search?: string | null
@@ -88,7 +97,7 @@ export const stationRepository = {
     });
   },
 
-  /** Усі станції з локацією, без портів — для карти (десятки тисяч рядків). */
+  // Усі станції з локацією
   async findAllWithLocationOnly() {
     return db.station.findMany({
       include: stationMapInclude,
@@ -100,7 +109,7 @@ export const stationRepository = {
     return db.station.count({ where: where ?? {} });
   },
 
-  /** Кількість станцій по кожному статусу (усі записи в БД). */
+  // Отримання кількості станцій по кожному статусу
   async countByStatus(): Promise<Record<StationStatus, number>> {
     const rows = await db.station.groupBy({
       by: ["status"],
@@ -116,6 +125,7 @@ export const stationRepository = {
     return out;
   },
 
+  // Отримання списку станцій з пагінацією
   async findManyPaginated(
     skip: number,
     take: number,
@@ -131,7 +141,133 @@ export const stationRepository = {
     });
   },
 
-  /** Міста з локацій, де є хоча б одна станція (для фільтрів у UI). */
+  // Отримання статистики за поточну добу по кожній станції зі списку
+  async getTodayStatsByStationIds(
+    ids: number[]
+  ): Promise<Map<number, { sessions: number; revenue: number }>> {
+    const map = new Map<number, { sessions: number; revenue: number }>();
+    if (ids.length === 0) return map;
+    const { start, end } = getStationListTodayBounds();
+    for (const id of ids) {
+      map.set(id, { sessions: 0, revenue: 0 });
+    }
+    const [sessionGroups, revenueRows] = await Promise.all([
+      db.session.groupBy({
+        by: ["stationId"],
+        where: {
+          stationId: { in: ids },
+          startTime: { gte: start, lte: end },
+        },
+        _count: { _all: true },
+      }),
+      db.$queryRaw<Array<{ station_id: number; r: unknown }>>`
+        SELECT s.station_id AS station_id, COALESCE(SUM(bi.calculated_amount), 0) AS r
+        FROM bill bi
+        INNER JOIN session s ON s.id = bi.session_id
+        WHERE bi.payment_status = 'SUCCESS'::payment_status
+        AND (
+          (bi.paid_at >= ${start} AND bi.paid_at <= ${end})
+          OR (bi.paid_at IS NULL AND bi.created_at >= ${start} AND bi.created_at <= ${end})
+        )
+        AND s.station_id IN (${Prisma.join(ids)})
+        GROUP BY s.station_id
+      `,
+    ]);
+    for (const row of sessionGroups) {
+      const cur = map.get(row.stationId);
+      if (cur) cur.sessions = row._count._all;
+    }
+    for (const row of revenueRows) {
+      const cur = map.get(row.station_id);
+      if (cur) cur.revenue = Number(row.r);
+    }
+    return map;
+  },
+
+
+  // Пагінація списку станцій із сортуванням за метриками «сьогодні»
+  async listStationIdsPaginatedByTodayMetric(params: {
+    skip: number;
+    take: number;
+    sortKey: "todayRevenue" | "todaySessions";
+    dir: "asc" | "desc";
+    statusFilter?: StationStatus | null;
+    search?: string | null;
+  }): Promise<number[]> {
+    const { start, end } = getStationListTodayBounds();
+    const q = (params.search ?? "").trim();
+    const pattern = q.length > 0 ? `%${q}%` : null;
+
+    const statusSql =
+      params.statusFilter != null
+        ? Prisma.sql`AND s.status = ${params.statusFilter}::station_status`
+        : Prisma.empty;
+
+    const searchSql =
+      pattern != null
+        ? Prisma.sql`AND (s.name ILIKE ${pattern} OR l.city ILIKE ${pattern})`
+        : Prisma.empty;
+
+    const orderSessions =
+      params.dir === "asc"
+        ? Prisma.sql`COALESCE(sc.c, 0) ASC`
+        : Prisma.sql`COALESCE(sc.c, 0) DESC`;
+    const orderRevenue =
+      params.dir === "asc"
+        ? Prisma.sql`COALESCE(rt.r, 0) ASC`
+        : Prisma.sql`COALESCE(rt.r, 0) DESC`;
+    const orderSql = params.sortKey === "todaySessions" ? orderSessions : orderRevenue;
+
+    const rows = await db.$queryRaw<Array<{ id: number }>>`
+      WITH bounds AS (
+        SELECT ${start}::timestamptz AS t0, ${end}::timestamptz AS t1
+      ),
+      sess_counts AS (
+        SELECT sess.station_id, COUNT(*)::int AS c
+        FROM session sess
+        CROSS JOIN bounds bd
+        WHERE sess.start_time >= bd.t0 AND sess.start_time <= bd.t1
+        GROUP BY sess.station_id
+      ),
+      rev_totals AS (
+        SELECT s.station_id, COALESCE(SUM(bi.calculated_amount), 0)::numeric AS r
+        FROM bill bi
+        INNER JOIN session s ON s.id = bi.session_id
+        CROSS JOIN bounds bd
+        WHERE bi.payment_status = 'SUCCESS'::payment_status
+        AND (
+          (bi.paid_at >= bd.t0 AND bi.paid_at <= bd.t1)
+          OR (bi.paid_at IS NULL AND bi.created_at >= bd.t0 AND bi.created_at <= bd.t1)
+        )
+        GROUP BY s.station_id
+      )
+      SELECT s.id
+      FROM station s
+      INNER JOIN location l ON l.id = s.location_id
+      LEFT JOIN sess_counts sc ON sc.station_id = s.id
+      LEFT JOIN rev_totals rt ON rt.station_id = s.id
+      WHERE TRUE
+      ${statusSql}
+      ${searchSql}
+      ORDER BY ${orderSql}, s.name ASC
+      OFFSET ${params.skip}
+      LIMIT ${params.take}
+    `;
+    return rows.map((r) => r.id);
+  },
+
+  // Отримання списку станцій по ID з портів
+  async findManyByIdsWithPortsOrdered(ids: number[]) {
+    if (ids.length === 0) return [];
+    const rows = await db.station.findMany({
+      where: { id: { in: ids } },
+      include: stationInclude,
+    });
+    const byId = new Map(rows.map((row) => [row.id, row]));
+    return ids.map((id) => byId.get(id)).filter((row): row is NonNullable<typeof row> => row != null);
+  },
+
+  // Отримання списку міст зі станціями
   async getDistinctCitiesForStations(): Promise<string[]> {
     const rows = await db.$queryRaw<Array<{ city: string }>>`
       SELECT DISTINCT l.city AS city
@@ -142,7 +278,7 @@ export const stationRepository = {
     return rows.map((r) => r.city);
   },
 
-  /** Координати з `point` (lat, lng у тому ж порядку, що й у INSERT). */
+  // Отримання координат з `point`
   async getLocationCoords(locationId: number): Promise<{ lat: number; lng: number } | null> {
     const rows = await db.$queryRawUnsafe<Array<{ lat: number; lng: number }>>(
       `SELECT (coordinates)[0]::float8 AS lat, (coordinates)[1]::float8 AS lng FROM location WHERE id = $1`,
@@ -153,7 +289,7 @@ export const stationRepository = {
     return { lat: Number(r.lat), lng: Number(r.lng) };
   },
 
-  /** Станції в прямокутнику lat/lng (point у БД: [0]=lat, [1]=lng). Обмеження limit — захист від «світу» на одному зумі. */
+  // Отримання списку станцій з локаціями в прямокутнику
   async findIdsWithLocationInBounds(
     minLat: number,
     maxLat: number,
@@ -230,6 +366,7 @@ export const stationRepository = {
     return rows;
   },
 
+  // Отримання координат з `point`
   async getLocationCoordsBatch(
     locationIds: number[]
   ): Promise<Map<number, { lat: number; lng: number }>> {
@@ -245,12 +382,14 @@ export const stationRepository = {
     return m;
   },
 
+  // Створення станції
   async createStation(station: Station): Promise<Station> {
     return await db.station.create({
       data: station,
     });
   },
 
+  // Оновлення станції
   async updateStation(stationId: number, station: Station): Promise<Station> {
     return await db.station.update({
       where: { id: stationId },
@@ -258,6 +397,7 @@ export const stationRepository = {
     });
   },
   
+  // Архівування станції
   async archiveStation(stationId: number): Promise<Station> {
     return await db.station.update({
       where: { id: stationId },
@@ -265,6 +405,7 @@ export const stationRepository = {
     });
   },
 
+  // Відновлення станції з архіву
   async unarchiveStation(stationId: number): Promise<Station> {
     return await db.station.update({
       where: { id: stationId },
@@ -272,6 +413,7 @@ export const stationRepository = {
     });
   },
   
+  // Оновлення статусу станції
   async updateStationStatus(stationId: number, status: StationStatus): Promise<Station> {
     return await db.station.update({
       where: { id: stationId }, 
@@ -279,7 +421,7 @@ export const stationRepository = {
     });
   },
 
-  /** Остаточне видалення станції: сесії, бронювання, порти (каскад), локація якщо більше немає станцій. */
+  // Видалення станції
   async deleteStationById(stationId: number): Promise<void> {
     await db.$transaction(async (tx) => {
       const row = await tx.station.findUnique({
@@ -301,7 +443,7 @@ export const stationRepository = {
     });
   },
 
-  /** Сесії станції з початком у [from, to] — для агрегації енергії. */
+  // Отримання сесій станції з початком у [from, to]
   async findSessionsForStationInRange(stationId: number, from: Date, to: Date) {
     return db.session.findMany({
       where: {
@@ -315,7 +457,8 @@ export const stationRepository = {
     });
   },
 
-  /** Майбутні бронювання BOOKED (початок слоту пізніше за «зараз»), від найближчого. */
+
+  // Отримання майбутніх бронювань станції
   async listUpcomingBookingsForStation(stationId: number, take = 200) {
     return db.booking.findMany({
       where: {

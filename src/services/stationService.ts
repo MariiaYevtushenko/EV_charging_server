@@ -81,6 +81,10 @@ export type StationDashboardDto = {
   lng: number | null;
   createdAt: string;
   updatedAt: string;
+  /** Виручка за поточну календарну добу (грн), з рахунків SUCCESS як у мережевій аналітиці. */
+  todayRevenue: number;
+  /** Кількість сесій з початком у поточну добу. */
+  todaySessions: number;
   ports: Array<{
     id: number;
     portNumber: number;
@@ -118,7 +122,8 @@ function mapDbStatusCounts(db: Record<StationStatus, number>): StationsPageStatu
 
 function toDashboardDto(
   station: StationWithLocationPorts,
-  coords: { lat: number; lng: number } | null | undefined
+  coords: { lat: number; lng: number } | null | undefined,
+  today: { revenue: number; sessions: number } = { revenue: 0, sessions: 0 }
 ): StationDashboardDto {
   const loc = station.location;
   const addressLine = `${loc.street} ${loc.houseNumber}`.trim();
@@ -134,6 +139,8 @@ function toDashboardDto(
     lng: coords ? coords.lng : null,
     createdAt: station.createdAt.toISOString(),
     updatedAt: station.updatedAt.toISOString(),
+    todayRevenue: today.revenue,
+    todaySessions: today.sessions,
     ports: station.ports.map((p) => ({
       // Стабільний числовий id для API: stationId * 10000 + port_number (порт ідентифікується парою station_id + port_number у БД)
       id: station.id * 10000 + p.portNumber,
@@ -152,7 +159,9 @@ export const stationService = {
       return null;
     }
     const coords = await stationRepository.getLocationCoords(station.locationId);
-    return toDashboardDto(station, coords);
+    const statsMap = await stationRepository.getTodayStatsByStationIds([stationId]);
+    const st = statsMap.get(stationId) ?? { sessions: 0, revenue: 0 };
+    return toDashboardDto(station, coords, { revenue: st.revenue, sessions: st.sessions });
   },
 
   async getAllStations(): Promise<StationDashboardDto[]> {
@@ -160,7 +169,14 @@ export const stationService = {
     const coordMap = await stationRepository.getLocationCoordsBatch(
       stations.map((s) => s.locationId)
     );
-    return stations.map((s) => toDashboardDto(s, coordMap.get(s.locationId) ?? null));
+    const statsMap = await stationRepository.getTodayStatsByStationIds(stations.map((s) => s.id));
+    return stations.map((s) => {
+      const st = statsMap.get(s.id) ?? { sessions: 0, revenue: 0 };
+      return toDashboardDto(s, coordMap.get(s.locationId) ?? null, {
+        revenue: st.revenue,
+        sessions: st.sessions,
+      });
+    });
   },
 
   /** Усі станції для карти (без портів) — лише для адмін-утиліт; для UI карти краще `getStationsForMapInBounds`. */
@@ -217,6 +233,8 @@ export const stationService = {
         lng: r.lng,
         createdAt: r.created_at.toISOString(),
         updatedAt: r.updated_at.toISOString(),
+        todayRevenue: 0,
+        todaySessions: 0,
         ports,
       };
     });
@@ -240,16 +258,38 @@ export const stationService = {
     statusCounts: StationsPageStatusCounts;
   }> {
     const listWhere = buildStationsListWhere(statusFilter ?? null, search);
-    const [total, stations, cities, byStatus] = await Promise.all([
+    const [total, cities, byStatus] = await Promise.all([
       stationRepository.countStations(listWhere),
-      stationRepository.findManyPaginated(skip, take, sort, listWhere),
       stationRepository.getDistinctCitiesForStations(),
       stationRepository.countByStatus(),
     ]);
+
+    let stations: Awaited<ReturnType<typeof stationRepository.findManyPaginated>>;
+    if (sort.key === "todayRevenue" || sort.key === "todaySessions") {
+      const ids = await stationRepository.listStationIdsPaginatedByTodayMetric({
+        skip,
+        take,
+        sortKey: sort.key,
+        dir: sort.dir,
+        statusFilter: statusFilter ?? null,
+        search: search ?? null,
+      });
+      stations = await stationRepository.findManyByIdsWithPortsOrdered(ids);
+    } else {
+      stations = await stationRepository.findManyPaginated(skip, take, sort, listWhere);
+    }
+
     const coordMap = await stationRepository.getLocationCoordsBatch(
       stations.map((s) => s.locationId)
     );
-    const items = stations.map((s) => toDashboardDto(s, coordMap.get(s.locationId) ?? null));
+    const statsMap = await stationRepository.getTodayStatsByStationIds(stations.map((s) => s.id));
+    const items = stations.map((s) => {
+      const st = statsMap.get(s.id) ?? { sessions: 0, revenue: 0 };
+      return toDashboardDto(s, coordMap.get(s.locationId) ?? null, {
+        revenue: st.revenue,
+        sessions: st.sessions,
+      });
+    });
     return {
       items,
       total,
