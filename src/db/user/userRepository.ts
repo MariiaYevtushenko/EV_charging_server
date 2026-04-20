@@ -163,6 +163,7 @@ export const userRepository = {
       include: {
         session: {
           include: {
+            vehicle: true,
             port: {
               include: {
                 station: true,
@@ -179,6 +180,7 @@ export const userRepository = {
       include: {
         session: {
           include: {
+            vehicle: true,
             port: {
               include: {
                 station: true,
