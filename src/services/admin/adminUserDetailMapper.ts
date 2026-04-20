@@ -29,6 +29,8 @@ export type AdminEndUserDto = {
     stationId: string;
     stationName: string;
     slotLabel: string;
+    portNumber: string;
+    connectorLabel: string;
     status: "pending" | "confirmed" | "cancelled" | "paid";
     start: string;
     end: string;
@@ -67,6 +69,7 @@ export const adminUserDetailInclude = {
       port: {
         include: {
           station: { select: { id: true, name: true } },
+          connectorType: { select: { name: true } },
         },
       },
     },
@@ -186,12 +189,15 @@ export function mapEvUserDetailToDto(user: EvUserDetailPayload): AdminEndUserDto
 
   const bookings: AdminEndUserDto["bookings"] = user.bookings.map((b) => {
     const st = b.port.station;
+    const conn = connectorCategoryLabel(b.port.connectorType?.name ?? null);
     const slotLabel = `${st.name} · порт ${b.portNumber}`;
     return {
       id: String(b.id),
       stationId: String(b.stationId),
       stationName: st.name,
       slotLabel,
+      portNumber: String(b.portNumber),
+      connectorLabel: conn,
       status: mapBookingStatus(b.status),
       start: b.startTime.toISOString(),
       end: b.endTime.toISOString(),
