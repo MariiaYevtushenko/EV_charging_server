@@ -1,7 +1,7 @@
 import { TariffPeriod } from "../../../generated/prisma/index.js";
 import { tariffRepository } from "../../db/tariffRepository.js";
 import { HttpError } from "../../lib/httpError.js";
-import { ingestDailyTariff } from "../forecast/tariffIngestService.js";
+import { resolveDayNightPricesUahForDate } from "../forecast/tariffIngestService.js";
 import { dateKeyLocal, localDateAtNoon } from "../../utils/tariffDateUtils.js";
 
 export type TariffListItemDto = {
@@ -48,6 +48,22 @@ export async function getTodayTariffs(): Promise<TodayTariffsDto> {
     dayPrice: day ? Number(day.pricePerKwh) : 0,
     nightPrice: night ? Number(night.pricePerKwh) : 0,
   };
+}
+
+/**
+ * Підтягнути з API лише денний або лише нічний тариф на сьогодні; другий період у БД не змінюється.
+ */
+export async function refreshTodayTariffPeriodFromApi(
+  period: "day" | "night"
+): Promise<TodayTariffsDto> {
+  const date = new Date();
+  const { day, night } = await resolveDayNightPricesUahForDate(date);
+  if (period === "day") {
+    await tariffRepository.upsertTariffPeriodForCalendarDay(date, TariffPeriod.DAY, day);
+  } else {
+    await tariffRepository.upsertTariffPeriodForCalendarDay(date, TariffPeriod.NIGHT, night);
+  }
+  return getTodayTariffs();
 }
 
 /**

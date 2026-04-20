@@ -27,6 +27,7 @@ import {
   getTariffsList,
   getTariffsToday,
   postTariffsSyncMissing,
+  postTariffsTodayRefresh,
   putTariffsToday,
 } from "../../controllers/admin/tariffAdminController.js";
 import { GetNbuEurUah } from "../../controllers/admin/fxController.js";
@@ -55,6 +56,7 @@ adminRouter.put("/forecast/bias", putForecastBias);
 
 adminRouter.get("/tariffs", getTariffsList);
 adminRouter.get("/tariffs/today", getTariffsToday);
+adminRouter.post("/tariffs/today/refresh", postTariffsTodayRefresh);
 adminRouter.post("/tariffs/sync-missing", postTariffsSyncMissing);
 adminRouter.put("/tariffs/today", putTariffsToday);
 

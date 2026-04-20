@@ -68,4 +68,27 @@ export const tariffRepository = {
       update: { pricePerKwh: nightPricePerKwh },
     });
   },
+
+  /** Один рядок (DAY або NIGHT) на календарну дату — інший період не змінюється. */
+  async upsertTariffPeriodForCalendarDay(
+    calendarDay: Date,
+    tariffType: TariffPeriod,
+    pricePerKwh: number
+  ): Promise<void> {
+    const effectiveDate = localDateAtNoon(calendarDay);
+    await db.tariff.upsert({
+      where: {
+        tariffType_effectiveDate: {
+          tariffType,
+          effectiveDate,
+        },
+      },
+      create: {
+        tariffType,
+        pricePerKwh,
+        effectiveDate,
+      },
+      update: { pricePerKwh },
+    });
+  },
 };

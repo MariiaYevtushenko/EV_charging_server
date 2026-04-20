@@ -317,10 +317,10 @@ export async function SeedTariffsFromApi(
 }
 
 /**
- * Щоденне оновлення: з TARIFF_API_URL або з env TARIFF_DAY_PRICE / TARIFF_NIGHT_PRICE.
- * Значення з API за замовчуванням у € → у БД пишемо грн (× курс НБУ), див. `tariffApiPricesInEur`.
+ * Розв’язати денну/нічну ціну (грн/кВт·год) з TARIFF_API_URL або env, без запису в БД.
+ * Значення з API за замовчуванням у € → грн (× курс НБУ), див. `tariffApiPricesInEur`.
  */
-export async function ingestDailyTariff(date: Date = new Date()): Promise<{
+export async function resolveDayNightPricesUahForDate(date: Date = new Date()): Promise<{
   day: number;
   night: number;
 }> {
@@ -337,6 +337,18 @@ export async function ingestDailyTariff(date: Date = new Date()): Promise<{
     if (nightFromApi != null) night = nightFromApi * rateUahPerEur;
   }
 
+  return { day, night };
+}
+
+/**
+ * Щоденне оновлення: з TARIFF_API_URL або з env TARIFF_DAY_PRICE / TARIFF_NIGHT_PRICE.
+ * Значення з API за замовчуванням у € → у БД пишемо грн (× курс НБУ), див. `tariffApiPricesInEur`.
+ */
+export async function ingestDailyTariff(date: Date = new Date()): Promise<{
+  day: number;
+  night: number;
+}> {
+  const { day, night } = await resolveDayNightPricesUahForDate(date);
   await saveHistoricalTariff(date, day, night);
   return { day, night };
 }
