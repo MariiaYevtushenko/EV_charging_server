@@ -12,7 +12,8 @@ DECLARE
   v_final_price DECIMAL(10, 2);
   v_tariff_price DECIMAL(10, 2);
 BEGIN
-  SELECT calculated_amount, price_per_kwh_at_time
+  -- GetFinalSessionAmount повертає колонки calculated_amount та price_per_kwh (див. 02_session_billing.sql)
+  SELECT calculated_amount, price_per_kwh
   INTO v_final_price, v_tariff_price
   FROM GetFinalSessionAmount(p_session_id);
 
