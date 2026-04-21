@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 import { userService } from "../../services/user/userService.js";
-import type { Prisma } from "../../../generated/prisma/index.js";
+import type { Prisma, PaymentMethod } from "../../../generated/prisma/index.js";
 import { BookingType, SessionStatus } from "../../../generated/prisma/index.js";
 import { computePrepaymentForCalcBooking } from "../../services/forecast/bookingPricingService.js";
 import { toEvUserPublic } from "../../utils/evUserPublic.js";
@@ -323,6 +323,35 @@ export const updatePayment: RequestHandler = async (req, res, next) => {
         res.json(payment);
     }
     catch (e) {
+        next(e);
+    }
+};
+
+/** POST body: { paymentMethod: 'CARD' | 'APPLE_PAY' | 'GOOGLE_PAY' } — для рахунку зі статусом PENDING. */
+export const postPayBill: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = Number(req.params["userId"]);
+        const paymentId = Number(req.params["paymentId"]);
+        const raw = (req.body as Record<string, unknown>)?.["paymentMethod"];
+        const pm = typeof raw === "string" ? raw : "";
+        const allowed: PaymentMethod[] = ["CARD", "APPLE_PAY", "GOOGLE_PAY"];
+        if (!allowed.includes(pm as PaymentMethod)) {
+            res.status(400).json({
+                error: "Request error",
+                message: "Оберіть спосіб оплати: CARD, APPLE_PAY або GOOGLE_PAY.",
+            });
+            return;
+        }
+        const bill = await userService.payPendingBill(userId, paymentId, pm as PaymentMethod);
+        res.json(bill);
+    } catch (e) {
+        if (e instanceof Error && e.message === "BILL_NOT_PAYABLE") {
+            res.status(409).json({
+                error: "Request error",
+                message: "Рахунок недоступний для оплати (не знайдено або вже оплачено).",
+            });
+            return;
+        }
         next(e);
     }
 };

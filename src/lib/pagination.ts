@@ -56,13 +56,14 @@ export function parseNetworkListStatusCountsQuery(query: Record<string, unknown>
 export type NetworkBookingsSortKey = "start" | "userName" | "stationName" | "slot" | "status";
 
 /** Фільтр списку бронювань (як у UI). */
-export type NetworkBookingUiFilter = "pending" | "confirmed" | "cancelled" | "paid";
+export type NetworkBookingUiFilter = "pending" | "confirmed" | "cancelled" | "paid" | "missed";
 
 const NETWORK_BOOKING_UI_FILTERS: readonly NetworkBookingUiFilter[] = [
   "pending",
   "confirmed",
   "cancelled",
   "paid",
+  "missed",
 ];
 
 export type ParsedNetworkBookingsQuery = {

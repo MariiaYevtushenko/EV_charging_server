@@ -1,7 +1,10 @@
 import { TariffPeriod } from "../../../generated/prisma/index.js";
 import { tariffRepository } from "../../db/tariffRepository.js";
 import { HttpError } from "../../lib/httpError.js";
-import { resolveDayNightPricesUahForDate } from "../forecast/tariffIngestService.js";
+import {
+  ingestDailyTariff,
+  resolveDayNightPricesUahForDate,
+} from "../forecast/tariffIngestService.js";
 import { dateKeyLocal, localDateAtNoon } from "../../utils/tariffDateUtils.js";
 
 export type TariffListItemDto = {

@@ -17,6 +17,7 @@ BEGIN
   INTO v_final_price, v_tariff_price
   FROM GetFinalSessionAmount(p_session_id);
 
+  -- p_payment_method може бути NULL для PENDING (спосіб оплати обирає користувач пізніше)
   INSERT INTO bill (session_id, calculated_amount, price_per_kwh_at_time, payment_method, payment_status)
   VALUES (p_session_id, v_final_price, v_tariff_price, p_payment_method, p_payment_status)
   ON CONFLICT (session_id) DO UPDATE SET

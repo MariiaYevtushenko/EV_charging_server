@@ -14,7 +14,7 @@
 - `forecast_bias` - буде в процесі
 
 **Транзакції (сид)**  
-Повний сид `npm run seed:all` / `seed-all-data.ts` виконується в **одній** транзакції PostgreSQL: успіх → `COMMIT`, будь-яка помилка → `ROLLBACK` (усі зміни відкочуються). Окремо в psql можна обгорнути `CALL SeedBookingsSessionsBills(n)` у `BEGIN` … `COMMIT` (див. коментар на початку `db/Seed_demo_bookings_sessions_bills.sql`). Якщо потрібно пропускати відсутні SQL-процедури без повного відкату — `SEED_OPTIONAL_SQL_PROCEDURES=true`. Кількості користувачів / броней / днів тарифів — змінні оточення, дефолти в `server/scripts/seed/seedEnvConfig.ts` та `server/.env.example`.
+Повний сид `npm run seed:all` / `seed-all-data.ts` виконується в **одній** транзакції PostgreSQL: успіх → `COMMIT`, будь-яка помилка на будь-якому кроці (зокрема `SeedBookingsSessionsBills`) → `ROLLBACK` усього (станції та інші попередні кроки не лишаються). Окремо в psql можна обгорнути `CALL SeedBookingsSessionsBills(n)` у `BEGIN` … `COMMIT` (див. коментар на початку `db/Seed_demo_bookings_sessions_bills.sql`). `SEED_OPTIONAL_SQL_PROCEDURES=true` стосується лише кроку `SeedMassiveUsers` (пропуск, якщо процедури немає); для демо-броней/сесій опційного «часткового коміту» немає. Кількості користувачів / броней / днів тарифів — змінні оточення, дефолти в `server/scripts/seed/seedEnvConfig.ts` та `server/.env.example`.
 
 ---
 

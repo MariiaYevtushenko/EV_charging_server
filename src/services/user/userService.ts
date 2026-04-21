@@ -1,5 +1,5 @@
 import { userRepository } from "../../db/user/userRepository.js";
-import type { EvUser, Vehicle, Booking, Bill, UserRole } from "../../../generated/prisma/index.js";
+import type { EvUser, Vehicle, Booking, Bill, UserRole, PaymentMethod } from "../../../generated/prisma/index.js";
 import type { Prisma } from "../../../generated/prisma/index.js";
 import { HttpError } from "../../lib/httpError.js";
 import {
@@ -132,5 +132,11 @@ export const userService = {
   },
   async updatePayment(userId: number, billId: number, data: Prisma.BillUpdateInput): Promise<Bill> {
     return await userRepository.updateBill(userId, billId, data);
+  },
+
+  /** Користувач обрав спосіб оплати для PENDING-рахунку; підтвердження оплати (демо). */
+  async payPendingBill(userId: number, billId: number, paymentMethod: PaymentMethod): Promise<Bill> {
+    await userRepository.payPendingBill(userId, billId, paymentMethod);
+    return await userRepository.getBill(userId, billId);
   },
 };

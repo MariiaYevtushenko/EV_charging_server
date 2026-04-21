@@ -35,11 +35,13 @@ if (!Number.isFinite(days) || days < 1 || days > 366) {
 
 function EnvValue(key: string): string {
   const v = process.env[key];
-  if (v == null || String(v).trim() === "") return "не задано";
+  if (v == null || String(v).trim() === "") 
+    return "не задано";
+
   return String(v).trim();
 }
 
-function writeSeedReport(result: SeedTariffsFromApiResult): void {
+function WriteSeedReport(result: SeedTariffsFromApiResult): void {
   const daysFrom =
     arg != null && arg !== ""
       ? `аргумент CLI (${arg})`
@@ -80,7 +82,7 @@ async function main(): Promise<void> {
     console.log(
       `Tariff seed: wrote ${r.daysWritten} calendar day(s) (DAY + NIGHT rows each, last ${days} days), mode=${r.mode}.`,
     );
-    writeSeedReport(r);
+    WriteSeedReport(r);
     console.log(`Звіт: ${REPORT_FILE}`);
     process.exit(0);
   } catch (e: unknown) {

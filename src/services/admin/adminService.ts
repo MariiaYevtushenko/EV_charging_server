@@ -61,6 +61,9 @@ export type AdminNetworkBookingRow = {
     /** Номер порта на станції (для таблиць без дублювання назви станції). */
     portNumber: number;
     slotLabel: string;
+    bookingType: "CALC" | "DEPOSIT";
+    /** Для DEPOSIT — сума передплати (грн); для CALC зазвичай 0. */
+    prepaymentAmount: number;
     status: AdminEndUserDto["bookings"][number]["status"];
     start: string;
     end: string;
@@ -175,6 +178,8 @@ export type AdminSessionDetailDto = {
     booking: {
         id: string;
         status: AdminNetworkBookingRow["status"];
+        bookingType: AdminNetworkBookingRow["bookingType"];
+        prepaymentAmount: number;
         start: string;
         end: string;
     } | null;
@@ -214,7 +219,8 @@ function mapBillPaymentUi(s: PaymentStatus): "success" | "pending" | "failed" {
     }
 }
 
-function paymentMethodUi(m: PaymentMethod): string {
+function paymentMethodUi(m: PaymentMethod | null | undefined): string {
+    if (m == null) return "—";
     switch (m) {
         case "CARD":
             return "Картка";
@@ -296,6 +302,7 @@ export const adminService = {
             confirmed: 0,
             cancelled: 0,
             paid: 0,
+            missed: 0,
         };
         for (const r of rows) {
             const ui = mapBookingStatus(r.status);
@@ -377,6 +384,8 @@ export const adminService = {
                 stationCountry: st.location.country,
                 portNumber: b.portNumber,
                 slotLabel,
+                bookingType: b.bookingType,
+                prepaymentAmount: Number(b.prepaymentAmount),
                 status: mapBookingStatus(b.status),
                 start: b.startTime.toISOString(),
                 end: b.endTime.toISOString(),
@@ -580,6 +589,8 @@ export const adminService = {
                 ? {
                       id: String(s.booking.id),
                       status: mapBookingStatus(s.booking.status),
+                      bookingType: s.booking.bookingType,
+                      prepaymentAmount: Number(s.booking.prepaymentAmount),
                       start: s.booking.startTime.toISOString(),
                       end: s.booking.endTime.toISOString(),
                   }

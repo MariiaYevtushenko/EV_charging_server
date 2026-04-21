@@ -6,8 +6,9 @@ import type {
   Booking,
   Session,
   Bill,
+  PaymentMethod,
+  Prisma,
 } from "../../../generated/prisma/index.js";
-import type { Prisma } from "../../../generated/prisma/index.js";
 
 const db = prisma as unknown as PrismaClient;
 
@@ -163,6 +164,7 @@ export const userRepository = {
       include: {
         session: {
           include: {
+            booking: true,
             vehicle: true,
             port: {
               include: {
@@ -180,6 +182,7 @@ export const userRepository = {
       include: {
         session: {
           include: {
+            booking: true,
             vehicle: true,
             port: {
               include: {
@@ -198,6 +201,43 @@ export const userRepository = {
     return await db.bill.update({
       where: { id: billId },
       data,
+    });
+  },
+
+  /** Оплата очікуючого рахунку: спосіб оплати, SUCCESS, paid_at; оновлення бронювання за потреби. */
+  async payPendingBill(userId: number, billId: number, paymentMethod: PaymentMethod): Promise<Bill> {
+    return await db.$transaction(async (tx) => {
+      const existing = await tx.bill.findFirst({
+        where: {
+          id: billId,
+          paymentStatus: "PENDING",
+          session: { userId },
+        },
+        include: {
+          session: { select: { bookingId: true } },
+        },
+      });
+      if (!existing) {
+        throw new Error("BILL_NOT_PAYABLE");
+      }
+
+      const updated = await tx.bill.update({
+        where: { id: billId },
+        data: {
+          paymentMethod,
+          paymentStatus: "SUCCESS",
+          paidAt: new Date(),
+        },
+      });
+
+      if (existing.session.bookingId != null) {
+        await tx.booking.update({
+          where: { id: existing.session.bookingId },
+          data: { status: "COMPLETED" },
+        });
+      }
+
+      return updated;
     });
   },
 };

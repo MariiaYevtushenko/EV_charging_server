@@ -209,7 +209,9 @@ export const adminRepository = {
       case "paid":
         return { status: { in: ["COMPLETED", "PAID"] } };
       case "cancelled":
-        return { status: { in: ["CANCELLED", "NO_ACTION"] } };
+        return { status: "CANCELLED" };
+      case "missed":
+        return { status: "MISSED" };
       case "confirmed":
         return { id: { equals: 0 } };
       default:
@@ -562,7 +564,7 @@ export const adminRepository = {
       });
 
       await tx.$executeRawUnsafe(
-        `SELECT upsertbillforsession($1::int, 'CARD'::payment_method, 'PENDING'::payment_status)`,
+        `SELECT upsertbillforsession($1::int, NULL::payment_method, 'PENDING'::payment_status)`,
         sessionId
       );
     });

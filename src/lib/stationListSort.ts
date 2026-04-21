@@ -1,4 +1,3 @@
-/** Параметр `sort` для GET /api/stations (узгоджено з клієнтом `sortValue`). */
 
 export type StationListSortKey =
   | "name"

@@ -12,5 +12,7 @@ CREATE INDEX IF NOT EXISTS idx_booking_station_port_booked
   ON booking (station_id, port_number)
   WHERE status = 'BOOKED'::booking_status;
 
+-- Використовується для пошуку станцій за координатами, що відображаються на карті
+-- (прямокутник видимої карти)
 CREATE INDEX IF NOT EXISTS idx_location_coordinates
   ON location USING GIST (coordinates);

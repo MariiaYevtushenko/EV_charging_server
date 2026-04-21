@@ -27,7 +27,7 @@ export function AssertValidName(valueName: string, label: string): void {
   }
 }
 
-/** Для прізвища з БД допускається плейсхолдер «-». */
+// Для прізвища допускається -.
 export function AssertValidSurname(valueSurname: string): void {
   const surname = valueSurname.trim();
   if (surname === "-") {

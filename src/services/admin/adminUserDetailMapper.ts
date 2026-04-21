@@ -31,7 +31,7 @@ export type AdminEndUserDto = {
     slotLabel: string;
     portNumber: string;
     connectorLabel: string;
-    status: "pending" | "confirmed" | "cancelled" | "paid";
+    status: "pending" | "confirmed" | "cancelled" | "paid" | "missed";
     start: string;
     end: string;
   }[];
@@ -93,7 +93,7 @@ export type EvUserDetailPayload = Prisma.EvUserGetPayload<{
   include: typeof adminUserDetailInclude;
 }>;
 
-/** БД: BOOKED / NO_ACTION / CANCELLED / COMPLETED / PAID — див. booking_status. */
+/** БД: BOOKED / NO_ACTION / MISSED / CANCELLED / COMPLETED / PAID — див. booking_status. */
 function mapSessionUiStatus(s: SessionStatus): AdminEndUserDto["sessions"][number]["status"] {
   switch (s) {
     case "ACTIVE":
@@ -115,8 +115,9 @@ export function mapBookingStatus(s: BookingStatus): AdminEndUserDto["bookings"][
       return "paid";
     case "PAID":
       return "paid";
+    case "MISSED":
     case "NO_ACTION":
-      return "cancelled";
+      return "missed";
     case "CANCELLED":
       return "cancelled";
     default:
@@ -138,7 +139,8 @@ function mapPaymentStatus(s: PaymentStatus): AdminEndUserDto["payments"][number]
   }
 }
 
-function paymentMethodLabel(m: PaymentMethod): string {
+function paymentMethodLabel(m: PaymentMethod | null | undefined): string {
+  if (m == null) return "—";
   switch (m) {
     case "CARD":
       return "Картка";

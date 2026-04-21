@@ -5,10 +5,12 @@
  * Порядок: SeedMassiveUsers → vehicle CSV → станції CSV → тарифи → SeedBookingsSessionsBills.
  * Демо-логіни не вставляються (окремо / вручну).
  *
- * Числові параметри сиду — змінні оточення (дефолти в `scripts/seed/seedEnvConfig.ts`).
+ * Числові параметри сиду — змінні оточення (дефолти в `scripts/seed/seedEnvConfig.ts`),
+ * зокрема `SEED_DEMO_SESSIONS_COUNT` та `SEED_SESSION_FROM_BOOKING_SHARE` для демо-сесій.
  *
- * Опційно: `SEED_OPTIONAL_SQL_PROCEDURES=true` — якщо SQL-процедура відсутня в БД, крок
- * пропускається (savepoint), решта сиду комітиться. За замовчуванням вимкнено: помилка = повний відкат.
+ * Опційно: `SEED_OPTIONAL_SQL_PROCEDURES=true` — лише для кроку 1 (`SeedMassiveUsers`): якщо
+ * процедура відсутня, крок пропускається (savepoint). Крок 5 (`SeedBookingsSessionsBills`) завжди
+ * атомарний із рештою пайплайна: будь-яка помилка → `ROLLBACK` усієї транзакції (без часткового коміту станцій).
  *
  * CLI: npx tsx scripts/seed-all-data.ts [--truncate]
  */
@@ -23,7 +25,9 @@ import { SeedVehiclesFromCsv, SyncVehicleSequence } from "./seed/seed-vehicles-f
 import { upsertTariffDayNightForCalendarDayPg } from "./seed/tariffUpsertPg.js";
 import {
   getSeedDemoBookingsCount,
+  getSeedDemoSessionsCount,
   getSeedMassiveUserCount,
+  getSeedSessionFromBookingShare,
   getTariffSeedDays,
   isSeedOptionalSqlProcedures,
   SEED_ENV,
@@ -79,9 +83,8 @@ function isMissingSqlProcedureError(err: unknown, procedureName: string): boolea
   );
 }
 
-/**
- * Повний пайплайн у **одній** транзакції PostgreSQL (`BEGIN` … `COMMIT` / `ROLLBACK`).
- */
+
+// Функція для запуску повного заповнення даними
 export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> {
   const truncate = Boolean(opts.truncate);
   const optionalSql = isSeedOptionalSqlProcedures();
@@ -165,28 +168,18 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
     });
 
     const bookingCount = getSeedDemoBookingsCount();
+    const sessionTarget = getSeedDemoSessionsCount();
+    const sessionFromBookingShare = getSeedSessionFromBookingShare();
 
     console.log(
-      `[SEED_ALL_DATA:5] SQL SeedBookingsSessionsBills(${bookingCount}) — booking/session/bill`,
+      `[SEED_ALL_DATA:5] SQL SeedBookingsSessionsBills(bookings=${bookingCount}, sessions=${sessionTarget}, from_booking_share=${sessionFromBookingShare})`,
     );
-    if (optionalSql) {
-      await client.query("SAVEPOINT seed_sp_demo_bookings");
-      try {
-        await client.query("CALL SeedBookingsSessionsBills($1)", [bookingCount]);
-        await client.query("RELEASE SAVEPOINT seed_sp_demo_bookings");
-      } catch (e: unknown) {
-        await client.query("ROLLBACK TO SAVEPOINT seed_sp_demo_bookings");
-        if (isMissingSqlProcedureError(e, "SeedBookingsSessionsBills")) {
-          console.warn(
-            "[WARN] Procedure SeedBookingsSessionsBills() missing — apply db/Seed_demo_bookings_sessions_bills.sql to the database.",
-          );
-        } else {
-          throw e;
-        }
-      }
-    } else {
-      await client.query("CALL SeedBookingsSessionsBills($1)", [bookingCount]);
-    }
+    /** Без savepoint/«опційного пропуску»: інакше при помилці процедури транзакція все одно дійшла б до COMMIT з уже вставленими станціями. */
+    await client.query("CALL SeedBookingsSessionsBills($1, $2, $3)", [
+      bookingCount,
+      sessionTarget,
+      sessionFromBookingShare,
+    ]);
 
     await SyncVehicleSequence(client);
     await SyncLocationStationSequences(client);
@@ -216,8 +209,10 @@ Env (див. scripts/seed/seedEnvConfig.ts та .env.example):
   DATABASE_URL
   ${SEED_ENV.MASSIVE_USER_COUNT} (default ${SEED_ENV_DEFAULTS.MASSIVE_USER_COUNT})
   ${SEED_ENV.DEMO_BOOKINGS_COUNT} (default ${SEED_ENV_DEFAULTS.DEMO_BOOKINGS_COUNT})
+  ${SEED_ENV.DEMO_SESSIONS_COUNT} — optional; якщо порожньо, як кількість броней
+  ${SEED_ENV.SESSION_FROM_BOOKING_SHARE} (default ${SEED_ENV_DEFAULTS.SESSION_FROM_BOOKING_SHARE}, range 0–1)
   ${SEED_ENV.TARIFF_SEED_DAYS} (default ${SEED_ENV_DEFAULTS.TARIFF_SEED_DAYS}, range 1–366)
-  ${SEED_ENV.OPTIONAL_SQL_PROCEDURES}=true — пропуск відсутніх SQL-процедур; інакше повний ROLLBACK при помилці.`);
+  ${SEED_ENV.OPTIONAL_SQL_PROCEDURES}=true — лише для SeedMassiveUsers: пропуск, якщо процедури немає. Помилка SeedBookingsSessionsBills завжди скасовує весь сид (ROLLBACK).`);
     process.exit(0);
   }
 
