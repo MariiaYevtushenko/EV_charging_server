@@ -149,15 +149,31 @@ export const createBooking: RequestHandler = async (req, res, next) => {
             return;
         }
         const startTime = new Date(String(b["startTime"]));
+        const endTime = new Date(String(b["endTime"]));
+        if (Number.isNaN(startTime.getTime()) || Number.isNaN(endTime.getTime())) {
+            res.status(400).json({ error: "Некоректні startTime або endTime" });
+            return;
+        }
+        const durationMinutes = Math.max(
+            1,
+            Math.round((endTime.getTime() - startTime.getTime()) / 60000)
+        );
         const bookingType =
             (b["bookingType"] as BookingType) ?? BookingType.CALC;
 
         let prepaymentAmount = 0;
-        if (bookingType === BookingType.CALC && b["vehicleId"] != null) {
+        if (bookingType === BookingType.CALC) {
+            if (b["vehicleId"] == null) {
+                res.status(400).json({
+                    error: "Для динамічної ціни оберіть автомобіль (vehicleId обовʼязковий)",
+                });
+                return;
+            }
             prepaymentAmount = await computePrepaymentForCalcBooking(
                 userId,
                 Number(b["vehicleId"]),
-                startTime
+                startTime,
+                durationMinutes
             );
         } else if (bookingType === BookingType.DEPOSIT) {
             const rawDeposit = b["prepaymentAmount"];
@@ -165,7 +181,7 @@ export const createBooking: RequestHandler = async (req, res, next) => {
                 rawDeposit != null ? Number(rawDeposit) : Number.NaN;
             prepaymentAmount = Number.isFinite(fromBody) && fromBody >= 0
                 ? Math.round(fromBody * 100) / 100
-                : Number(process.env["DEPOSIT_AMOUNT_UAH"] ?? 50);
+                : Number(process.env["DEPOSIT_AMOUNT_UAH"] ?? 200);
         } else {
             prepaymentAmount =
                 b["prepaymentAmount"] != null ? Number(b["prepaymentAmount"]) : 0;
@@ -179,7 +195,7 @@ export const createBooking: RequestHandler = async (req, res, next) => {
                 },
             },
             startTime,
-            endTime: new Date(String(b["endTime"])),
+            endTime,
             prepaymentAmount,
             bookingType,
         };

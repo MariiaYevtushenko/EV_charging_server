@@ -47,6 +47,51 @@ export const getStationUpcomingBookings: RequestHandler = async (req, res, next)
   }
 };
 
+/** GET .../available-booking-slots?portNumber&date=YYYY-MM-DD&slotMinutes&durationMinutes */
+export const getAvailableBookingSlots: RequestHandler = async (req, res, next) => {
+  try {
+    const stationId = Number(req.params["stationId"]);
+    const portNumber = Number(req.query["portNumber"]);
+    const dateStr = typeof req.query["date"] === "string" ? req.query["date"] : "";
+    const slotMinutes = Number(req.query["slotMinutes"] ?? 30);
+    const durationMinutes = Number(req.query["durationMinutes"]);
+    if (!Number.isFinite(stationId) || !Number.isFinite(portNumber)) {
+      res.status(400).json({ error: "stationId та portNumber обовʼязкові" });
+      return;
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      res.status(400).json({ error: "date має бути YYYY-MM-DD" });
+      return;
+    }
+    if (!Number.isFinite(slotMinutes) || slotMinutes < 15 || slotMinutes > 120) {
+      res.status(400).json({ error: "slotMinutes має бути від 15 до 120" });
+      return;
+    }
+    if (!Number.isFinite(durationMinutes) || durationMinutes < slotMinutes || durationMinutes > 24 * 60) {
+      res.status(400).json({ error: "durationMinutes некоректний" });
+      return;
+    }
+    const result = await stationService.getAvailableBookingSlots(
+      stationId,
+      portNumber,
+      dateStr,
+      slotMinutes,
+      durationMinutes
+    );
+    if (result.kind === "NOT_FOUND") {
+      res.status(404).json({ error: "Станція не знайдена" });
+      return;
+    }
+    if (result.kind === "BAD_PORT") {
+      res.status(400).json({ error: "Порт не належить цій станції" });
+      return;
+    }
+    res.json({ slots: result.slots });
+  } catch (e) {
+    next(e);
+  }
+};
+
 export const getStationEnergyAnalytics: RequestHandler = async (req, res, next) => {
   try {
     const stationId = Number(req.params["stationId"]);

@@ -11,8 +11,8 @@ CREATE OR REPLACE FUNCTION GetAvailableBookingSlots(
 )
 RETURNS TABLE(available_start TIMESTAMP, available_end TIMESTAMP) AS $$
 DECLARE
-  v_total_duration INTERVAL := (p_slot_size_minutes * p_units) * interval '1 minute';
-  v_step INTERVAL := p_slot_size_minutes * interval '1 minute';
+  v_total_duration INTERVAL := p_slot_size_minutes * p_units;
+  v_step INTERVAL := p_slot_size_minutes;
 BEGIN
   RETURN QUERY
   WITH FreeSlotsStarts AS (

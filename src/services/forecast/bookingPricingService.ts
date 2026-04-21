@@ -106,10 +106,19 @@ export async function getPricePerKwhForInstant(startTime: Date): Promise<number>
   return await getForecastPrice(period, startTime);
 }
 
+function assumedChargeKwFromEnv(): number {
+  const n = Number(process.env["CHARGE_KW_ASSUMED"] ?? 7);
+  return Number.isFinite(n) && n > 0 ? n : 7;
+}
+
+/**
+ * Передплата CALC: мінімум з (тривалість × орієнтовна кВт зарядки) і ємності акумулятора, × ₴/кВт·год.
+ */
 export async function computePrepaymentForCalcBooking(
   userId: number,
   vehicleId: number,
-  startTime: Date
+  startTime: Date,
+  durationMinutes: number
 ): Promise<number> {
   const vehicle = await db.vehicle.findFirst({
     where: { id: vehicleId, userId },
@@ -117,6 +126,14 @@ export async function computePrepaymentForCalcBooking(
   if (!vehicle) {
     throw new HttpError(404, "Автомобіль не знайдено або не ваш");
   }
+  const hours = Math.max(0, durationMinutes) / 60;
+  const capKwh = Number(vehicle.batteryCapacity);
+  if (!Number.isFinite(capKwh) || capKwh <= 0) {
+    throw new HttpError(400, "У авто не задано коректну ємність акумулятора (batteryCapacity)");
+  }
+  const chargeKw = assumedChargeKwFromEnv();
+  const rawKwh = hours * chargeKw;
+  const kwh = Math.min(rawKwh, capKwh);
   const price = await getPricePerKwhForInstant(startTime);
-  return roundMoney(Number(vehicle.batteryCapacity) * price);
+  return roundMoney(kwh * price);
 }

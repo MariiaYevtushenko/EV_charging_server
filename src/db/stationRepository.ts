@@ -26,6 +26,52 @@ function buildStationListOrderBy(sort: ParsedStationListSort): Prisma.StationOrd
 
 const db = prisma as unknown as PrismaClient;
 
+/** Якщо SQL-функція getavailablebookingslots недоступна — той самий алгоритм у Prisma (локальний день). */
+async function getAvailableBookingSlotsJsFallback(
+  stationId: number,
+  portNumber: number,
+  bookingDate: string,
+  slotMinutes: number,
+  units: number
+): Promise<{ available_start: Date; available_end: Date }[]> {
+  const parts = bookingDate.split("-").map((x) => Number(x));
+  if (parts.length !== 3 || parts.some((n) => !Number.isFinite(n))) return [];
+  const y = parts[0]!;
+  const mo = parts[1]!;
+  const d = parts[2]!;
+  const dayStart = new Date(y, mo - 1, d, 0, 0, 0, 0);
+  const dayEnd = new Date(y, mo - 1, d + 1, 0, 0, 0, 0);
+  const stepMs = slotMinutes * 60 * 1000;
+  const totalMs = stepMs * units;
+
+  const booked = await db.booking.findMany({
+    where: {
+      stationId,
+      portNumber,
+      status: "BOOKED",
+      startTime: { lt: dayEnd },
+      endTime: { gt: dayStart },
+    },
+    select: { startTime: true, endTime: true },
+  });
+
+  const overlaps = (a0: Date, a1: Date, b0: Date, b1: Date) => a0 < b1 && a1 > b0;
+
+  const out: { available_start: Date; available_end: Date }[] = [];
+  const windowStart = new Date(y, mo - 1, d, 7, 0, 0, 0);
+  const windowEnd = new Date(y, mo - 1, d, 22, 0, 0, 0);
+
+  for (let t = windowStart.getTime(); t + totalMs <= windowEnd.getTime(); t += stepMs) {
+    const available_start = new Date(t);
+    const available_end = new Date(t + totalMs);
+    const conflict = booked.some((b) =>
+      overlaps(available_start, available_end, b.startTime, b.endTime)
+    );
+    if (!conflict) out.push({ available_start, available_end });
+  }
+  return out;
+}
+
 // Межі «сьогодні» для списку станцій 
 export function getStationListTodayBounds(): { start: Date; end: Date } {
   const start = new Date();
@@ -457,6 +503,40 @@ export const stationRepository = {
     });
   },
 
+
+  /** Вільні інтервали на порту за днем — функція БД GetAvailableBookingSlots (03_booking_slots.sql). */
+  async getAvailableBookingSlots(
+    stationId: number,
+    portNumber: number,
+    bookingDate: string,
+    slotMinutes: number,
+    durationMinutes: number
+  ): Promise<{ available_start: Date; available_end: Date }[]> {
+    const units = Math.floor(durationMinutes / slotMinutes);
+    if (!Number.isFinite(units) || units < 1 || durationMinutes % slotMinutes !== 0) {
+      return [];
+    }
+    try {
+      return await db.$queryRaw<{ available_start: Date; available_end: Date }[]>`
+        SELECT available_start, available_end
+        FROM getavailablebookingslots(
+          ${stationId}::int,
+          ${portNumber}::int,
+          ${bookingDate}::date,
+          (${slotMinutes}::int * interval '1 minute'),
+          ${units}::int
+        )
+      `;
+    } catch {
+      return await getAvailableBookingSlotsJsFallback(
+        stationId,
+        portNumber,
+        bookingDate,
+        slotMinutes,
+        units
+      );
+    }
+  },
 
   // Отримання майбутніх бронювань станції
   async listUpcomingBookingsForStation(stationId: number, take = 200) {

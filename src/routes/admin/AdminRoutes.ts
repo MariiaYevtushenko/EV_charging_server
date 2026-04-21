@@ -18,6 +18,7 @@ import {
 } from "../../controllers/admin/adminController.js";
 import {
   getForecastBias,
+  getForecastPredictions,
   postIngestTariff,
   postRunForecastModel,
   postUpdateBias,
@@ -55,6 +56,7 @@ adminRouter.get("/network/payments", getNetworkPayments);
 
 adminRouter.get("/forecast/bias", getForecastBias);
 adminRouter.put("/forecast/bias", putForecastBias);
+adminRouter.get("/forecast/predictions", getForecastPredictions);
 
 adminRouter.get("/tariffs", getTariffsList);
 adminRouter.get("/tariffs/today", getTariffsToday);

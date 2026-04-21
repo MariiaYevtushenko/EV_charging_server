@@ -5,6 +5,7 @@ import {
   getForecastBiasForAdmin,
   setForecastBiasForAdmin,
 } from "../../services/forecast/forecastBiasAdminService.js";
+import { listTariffPredictionsForAdmin } from "../../services/forecast/forecastPredictionsAdminService.js";
 
 /** POST /api/admin/forecast/ingest-tariff — зберегти денні тарифи (cron / ручний). */
 export const postIngestTariff: RequestHandler = async (_req, res, next) => {
@@ -39,6 +40,24 @@ export const postUpdateBias: RequestHandler = async (_req, res, next) => {
       return;
     }
     res.json({ ok: true, stdout, stderr });
+  } catch (e) {
+    next(e);
+  }
+};
+
+/** GET /api/admin/forecast/predictions?days=21 — серія прогнозованих цін (tariff_prediction + bias). */
+export const getForecastPredictions: RequestHandler = async (req, res, next) => {
+  try {
+    const raw = req.query["days"];
+    let days = 21;
+    if (raw !== undefined) {
+      const n = Number(raw);
+      if (Number.isFinite(n) && n >= 1 && n <= 90) {
+        days = Math.floor(n);
+      }
+    }
+    const data = await listTariffPredictionsForAdmin(days);
+    res.json(data);
   } catch (e) {
     next(e);
   }

@@ -102,7 +102,8 @@ export const userRepository = {
   },
   async deleteBooking(userId: number, bookingId: number): Promise<Booking> {
     await db.booking.findFirstOrThrow({ where: { id: bookingId, userId } });
-    return await db.booking.delete({
+    await db.$executeRaw`CALL cancelbooking(${bookingId}::int)`;
+    return await db.booking.findUniqueOrThrow({
       where: { id: bookingId },
     });
   },

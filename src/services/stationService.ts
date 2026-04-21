@@ -14,6 +14,12 @@ export type StationUpcomingBookingDto = {
   vehicleLicensePlate: string | null;
 };
 
+/** GET /api/stations/:id/available-booking-slots — рядки з SQL GetAvailableBookingSlots. */
+export type AvailableBookingSlotDto = {
+  start: string;
+  end: string;
+};
+
 /** GET /api/stations/:id/analytics-energy */
 export type StationEnergyPeriod = "1d" | "7d" | "30d";
 
@@ -327,6 +333,42 @@ export const stationService = {
     if (!existing) return false;
     await stationRepository.deleteStationById(stationId);
     return true;
+  },
+
+  /**
+   * Вільні стартові інтервали бронювання на порту за календарним днем (функція БД).
+   * NOT_FOUND — немає станції; BAD_PORT — порт не з цієї станції.
+   */
+  async getAvailableBookingSlots(
+    stationId: number,
+    portNumber: number,
+    bookingDate: string,
+    slotMinutes: number,
+    durationMinutes: number
+  ): Promise<
+    | { kind: "NOT_FOUND" }
+    | { kind: "BAD_PORT" }
+    | { kind: "OK"; slots: AvailableBookingSlotDto[] }
+  > {
+    const station = await stationRepository.findByIdWithPorts(stationId);
+    if (!station) return { kind: "NOT_FOUND" };
+    if (!station.ports.some((p) => p.portNumber === portNumber)) {
+      return { kind: "BAD_PORT" };
+    }
+    const rows = await stationRepository.getAvailableBookingSlots(
+      stationId,
+      portNumber,
+      bookingDate,
+      slotMinutes,
+      durationMinutes
+    );
+    return {
+      kind: "OK",
+      slots: rows.map((r) => ({
+        start: r.available_start.toISOString(),
+        end: r.available_end.toISOString(),
+      })),
+    };
   },
 
   async getStationUpcomingBookings(stationId: number): Promise<StationUpcomingBookingDto[] | null> {
