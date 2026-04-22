@@ -1,13 +1,32 @@
+import prisma from "../../prisma.config.js";
 import { runAiEngine } from "./forecastRunner.js";
 
 let intervalHandle: ReturnType<typeof setInterval> | undefined;
 let runLock = false;
 
+async function hasTariffRowsForForecast(): Promise<boolean> {
+  const n = await prisma.tariff.count();
+  return n > 0;
+}
+
 /**
  * Запуск Python `forecast/ai_engine.py` (SARIMA → tariff_prediction).
  * Не кидає вгору — лише логує (щоб падіння Python не валило API).
+ * Без рядків у `tariff` прогноз не запускається (історія для SARIMA відсутня).
  */
-async function runForecastModelOnce(source: string): Promise<void> {
+export async function runForecastModelOnce(source: string): Promise<void> {
+  try {
+    if (!(await hasTariffRowsForForecast())) {
+      console.warn(
+        `[forecast] неможливо сформувати прогноз (${source}): відсутні дані в таблиці tariff`,
+      );
+      return;
+    }
+  } catch (e) {
+    console.error(`[forecast] перевірка tariff не вдалася (${source})`, e);
+    return;
+  }
+
   if (runLock) {
     console.warn(`[forecast] skip (${source}): попередній запуск ще виконується`);
     return;
@@ -58,9 +77,12 @@ const START_DELAY_MS = (() => {
 /**
  * Автозапуск моделі прогнозу тарифів разом із сервером і за таймером.
  *
+ * Перед кожним запуском перевіряється таблиця `tariff`: якщо порожня — Python не викликається,
+ * у лог пишеться, що неможливо сформувати прогноз (немає даних).
+ *
  * - `FORECAST_AUTO_RUN=false` — вимкнути все
  * - `FORECAST_RUN_ON_START=false` — не запускати одразу після старту (лише інтервал)
- * - `FORECAST_INTERVAL_HOURS` — період повтору (за замовчуванням 24)
+ * - `FORECAST_INTERVAL_HOURS` — період повтору (за замовчуванням 24 = щодня оновлення прогнозу в БД)
  * - `FORECAST_START_DELAY_SEC` — затримка першого запуску після listen (сек, за замовч. 5)
  */
 export function startForecastModelScheduler(): void {

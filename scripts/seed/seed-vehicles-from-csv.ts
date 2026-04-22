@@ -19,6 +19,13 @@ import type {
 } from "./types/vehicleSpecCsv.js";
 import { TruncateStr } from "./utils/stringUtils.js";
 import { resolveDataFile as resolveDataFileFromDirs } from "./resolveDataFile.js";
+import {
+  createSeedMarkTimer,
+  seedError,
+  seedLog,
+  seedNowIso,
+  seedWarn,
+} from "./seedLog.js";
 
 export type { SeedVehiclesFromCsvResult } from "./types/vehicleSpecCsv.js";
 
@@ -130,11 +137,16 @@ export async function SeedVehiclesFromCsv(
   }
 
   const vehiclesPath = ResolveDataFile(VEHICLE_SPEC_CSV_BASE_NAMES);
+  const timer = createSeedMarkTimer("SEED_VEHICLES_CSV");
+  seedLog("SEED_VEHICLES_CSV", "старт SeedVehiclesFromCsv", {
+    csv: path.basename(vehiclesPath),
+    external_tx: options?.client != null,
+  });
 
   const rows = ReadCsv(vehiclesPath);
 
   if (rows.length === 0) {
-    console.warn("seed-vehicles-from-csv: CSV порожній, пропуск.");
+    seedWarn("SEED_VEHICLES_CSV", "CSV порожній — вихід без змін.");
     return { inserted: 0, skippedUsers: 0, specRows: 0 };
   }
 
@@ -142,6 +154,7 @@ export async function SeedVehiclesFromCsv(
   const client =
     options?.client ?? new Client({ connectionString: databaseUrl! });
   if (ownClient) await client.connect();
+  timer.mark(ownClient ? "pg.Client підключено" : "використовується зовнішній client");
 
   let inserted = 0;
   let skippedUsers = 0;
@@ -155,11 +168,27 @@ export async function SeedVehiclesFromCsv(
     );
     const userIds = usersRes.rows.map((r) => r.id);
     const n = rows.length;
+    seedLog("SEED_VEHICLES_CSV", "контекст", {
+      spec_rows_in_csv: n,
+      user_role_USER_count: userIds.length,
+    });
+    timer.mark("вибірка ev_user (USER) завершена");
 
     const runInserts = async () => {
       let specIdx = 0;
+      let usersProcessed = 0;
 
       for (const uid of userIds) {
+        usersProcessed++;
+        if (usersProcessed % 200 === 0) {
+          seedLog("SEED_VEHICLES_CSV", "прогрес прив’язки авто до USER", {
+            users_processed: usersProcessed,
+            of_users: userIds.length,
+            inserted_so_far: inserted,
+            skipped_users_so_far: skippedUsers,
+          });
+        }
+
         const hasVehicle = await client.query<{ c: number }>(
           `SELECT COUNT(*)::int AS c
           FROM vehicle
@@ -207,24 +236,34 @@ export async function SeedVehiclesFromCsv(
     };
 
     if (ownClient) {
+      seedLog("SEED_VEHICLES_CSV", "BEGIN (внутрішня транзакція)");
       await client.query("BEGIN");
       try {
         await runInserts();
         await client.query("COMMIT");
+        seedLog("SEED_VEHICLES_CSV", "COMMIT");
       } catch (e) {
         await client.query("ROLLBACK").catch(() => {
-          console.error("[ERROR] ROLLBACK failed");
+          seedError("SEED_VEHICLES_CSV", "ROLLBACK не вдався (критично для цілісності БД).", e);
         });
         throw e;
       }
     } else {
+      seedLog("SEED_VEHICLES_CSV", "вставки в межах зовнішньої транзакції (без внутрішнього BEGIN/COMMIT)");
       await runInserts();
     }
 
+    timer.mark("вставки vehicle завершено");
     await SyncVehicleSequence(client);
-    console.log(
-      `[INFO] seed-vehicles-from-csv: ${inserted} авто з ${path.basename(vehiclesPath)}; користувачів з уже наявним авто (пропуск): ${skippedUsers}.`,
-    );
+    timer.mark("SyncVehicleSequence (setval)");
+    seedLog("SEED_VEHICLES_CSV", "готово", {
+      inserted,
+      skipped_users_with_existing_vehicle: skippedUsers,
+      csv_file: path.basename(vehiclesPath),
+      spec_rows: n,
+      total_ms: timer.elapsedMs(),
+      finished_at: seedNowIso(),
+    });
     return { inserted, skippedUsers, specRows: n };
   } finally {
     if (ownClient) await client.end();

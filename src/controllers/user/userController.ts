@@ -172,6 +172,7 @@ export const createBooking: RequestHandler = async (req, res, next) => {
             prepaymentAmount = await computePrepaymentForCalcBooking(
                 userId,
                 Number(b["vehicleId"]),
+                stationId,
                 startTime,
                 durationMinutes
             );

@@ -18,6 +18,13 @@ import {
 } from "./stationSeedInserts.js";
 import { SplitStreetHouse, TruncateStr } from "./utils/stringUtils.js";
 import { getDataSearchDirs, resolveDataFile as resolveDataFileFromDirs } from "./resolveDataFile.js";
+import {
+  createSeedMarkTimer,
+  seedError,
+  seedLog,
+  seedNowIso,
+  seedWarn,
+} from "./seedLog.js";
 
 const { Client } = pg;
 
@@ -163,10 +170,25 @@ export function loadDefaultEvStationCsvRows(): {
  * Вставка location / station / port / connector_type з уже прочитаного CSV.
  * Без BEGIN/COMMIT — викликати всередині транзакції батька.
  */
+export type SeedEvStationsFromCsvResult = {
+  stationDone: number;
+  skippedInvalidCsvRow: number;
+  skippedInsertLocationFailed: number;
+  portsInserted: number;
+  csvRowCount: number;
+  uniqueConnectorCodes: number;
+};
+
 export async function SeedEvStationsFromCsv(
   client: pg.Client,
   stationRows: EvStationCsvRow[],
-): Promise<{ stationDone: number }> {
+): Promise<SeedEvStationsFromCsvResult> {
+  const csvRowCount = stationRows.length;
+  const timer = createSeedMarkTimer("SEED_STATIONS_CSV");
+  seedLog("SEED_STATIONS_CSV", "старт SeedEvStationsFromCsv", {
+    csv_rows: csvRowCount,
+  });
+
   const connectorCodes = CollectConnectorCodes(stationRows);
   if (connectorCodes.length === 0) {
     throw new Error(
@@ -176,18 +198,25 @@ export async function SeedEvStationsFromCsv(
 
   const connectorIdByCode =
     await UpsertConnectorTypesAndLoadIdMap(client, connectorCodes);
+  timer.mark("UpsertConnectorTypesAndLoadIdMap");
 
-  console.log(
-    "connector_type (з унікальних значень connector_types у CSV → коди):",
-    Object.keys(connectorIdByCode).join(", "),
-  );
+  seedLog("SEED_STATIONS_CSV", "connector_type з CSV (унікальні коди)", {
+    codes: Object.keys(connectorIdByCode).join(", "),
+    count: connectorCodes.length,
+  });
 
   let stationDone = 0;
+  let skippedInvalidCsvRow = 0;
+  let skippedInsertLocationFailed = 0;
+  let portsInserted = 0;
 
   for (const row of stationRows) {
     const loc = GetLocationDataFromRow(row);
 
-    if (loc == null) continue;
+    if (loc == null) {
+      skippedInvalidCsvRow++;
+      continue;
+    }
 
     const locationId = await InsertLocation(client, {
       lon: loc.lon,
@@ -198,7 +227,10 @@ export async function SeedEvStationsFromCsv(
       houseNumber: loc.houseNumber,
     });
 
-    if (locationId == null) continue;
+    if (locationId == null) {
+      skippedInsertLocationFailed++;
+      continue;
+    }
 
     await InsertStation(client, {
       stationId: loc.extId,
@@ -216,50 +248,121 @@ export async function SeedEvStationsFromCsv(
       connectorCodes: rowConnectorCodes,
       connectorIdByCode,
     });
+    portsInserted += numPorts;
 
     stationDone++;
     if (stationDone % 500 === 0) {
-      console.log(`Stations seeded: ${stationDone}/${stationRows.length}`);
+      seedLog("SEED_STATIONS_CSV", "прогрес вставки станцій", {
+        stationDone,
+        csv_rows: csvRowCount,
+        ports_so_far: portsInserted,
+      });
     }
   }
 
-  console.log(
-    `[LOG] Stations seeded: ${stationDone}/${stationRows.length} (ports created per num_connectors).`,
-  );
-  return { stationDone };
+  timer.mark("цикл CSV завершено");
+  seedLog("SEED_STATIONS_CSV", "підсумок SeedEvStationsFromCsv", {
+    stations_inserted: stationDone,
+    csv_rows: csvRowCount,
+    skipped_invalid_row: skippedInvalidCsvRow,
+    skipped_location_insert: skippedInsertLocationFailed,
+    ports_inserted: portsInserted,
+    unique_connector_codes: connectorCodes.length,
+    ms: timer.elapsedMs(),
+  });
+
+  if (skippedInvalidCsvRow > 0) {
+    seedWarn("SEED_STATIONS_CSV", "рядки CSV пропущено (невалідний id/lat/lon)", {
+      skipped_invalid_row: skippedInvalidCsvRow,
+    });
+  }
+  if (skippedInsertLocationFailed > 0) {
+    seedWarn("SEED_STATIONS_CSV", "рядки пропущено після InsertLocation (locationId=null)", {
+      skipped_location_insert: skippedInsertLocationFailed,
+    });
+  }
+
+  return {
+    stationDone,
+    skippedInvalidCsvRow,
+    skippedInsertLocationFailed,
+    portsInserted,
+    csvRowCount,
+    uniqueConnectorCodes: connectorCodes.length,
+  };
 }
 
 async function main(): Promise<void> {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
-    console.error("[ERROR] Missing DATABASE_URL in environment (.env)");
+    seedError("SEED_FROM_CSV", "Missing DATABASE_URL in environment (.env)");
     process.exit(1);
   }
 
+  const timer = createSeedMarkTimer("SEED_FROM_CSV");
+  seedLog("SEED_FROM_CSV", "старт npm run seed (лише станції з CSV)", {
+    database_hint: (() => {
+      try {
+        const u = new URL(databaseUrl);
+        const port = u.port || (u.protocol === "postgresql:" ? "5432" : "");
+        return `${u.protocol}//${u.hostname}${port ? `:${port}` : ""}${u.pathname}`;
+      } catch {
+        return "(parse error)";
+      }
+    })(),
+  });
+
   const { rows: stationRows, filePath: stationsPath } = loadDefaultEvStationCsvRows();
 
-  console.log("[LOG] stations CSV:", stationsPath);
-  console.log("[LOG] search dirs:", getDataSearchDirs(SERVER_ROOT).join(", "));
-
-  console.log(`[LOG] Loaded ${stationRows.length} station rows.`);
+  seedLog("SEED_FROM_CSV", "джерело даних", {
+    csv_path: stationsPath,
+    search_dirs: getDataSearchDirs(SERVER_ROOT).join(" | "),
+    loaded_rows: stationRows.length,
+  });
+  timer.mark("CSV прочитано з диска");
 
   const client = new Client({ connectionString: databaseUrl });
   await client.connect();
+  timer.mark("PostgreSQL підключено");
 
   try {
+    seedLog("SEED_FROM_CSV", "BEGIN (одна транзакція: станції + setval sequences)");
     await client.query("BEGIN");
-    await SeedEvStationsFromCsv(client, stationRows);
-    await client.query("COMMIT");
-    await SyncLocationStationSequences(client);
+    const summary = await SeedEvStationsFromCsv(client, stationRows);
+    timer.mark("SeedEvStationsFromCsv завершено", {
+      stations_inserted: summary.stationDone,
+      ports_inserted: summary.portsInserted,
+    });
 
-    console.log("[LOG] Done. Повний порядок користувачів/авто — npm run seed:all (seed-all-data.ts).");
+    seedLog("SEED_FROM_CSV", "SyncLocationStationSequences (location, station)");
+    await SyncLocationStationSequences(client);
+    timer.mark("sequences синхронізовано");
+
+    await client.query("COMMIT");
+    seedLog(
+      "SEED_FROM_CSV",
+      "COMMIT — дані зафіксовано. Для повного пайплайну (користувачі, авто, тарифи, демо-транзакції) використовуйте npm run seed:all.",
+      { total_ms: timer.elapsedMs(), finished_at: seedNowIso() },
+    );
   } catch (e) {
     await client.query("ROLLBACK").catch(() => {});
-    console.error(`[ERROR] ${e}`);
+    seedError(
+      "SEED_FROM_CSV",
+      "ROLLBACK через помилку (станції в цій транзакції не збережені).",
+      e,
+    );
     process.exitCode = 1;
   } finally {
     await client.end();
+    seedLog("SEED_FROM_CSV", "pg.Client закрито");
   }
 }
 
-void main();
+/** Лише при прямому `tsx scripts/seed/seed-from-csv.ts` / `npm run seed` — не при імпорті з `seed-all-data.ts`. */
+const argv1 = process.argv[1];
+const isMainSeedFromCsv =
+  argv1 !== undefined && path.resolve(argv1) === path.resolve(__filename);
+
+if (isMainSeedFromCsv) {
+  void main();
+}

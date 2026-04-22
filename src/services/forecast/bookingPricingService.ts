@@ -2,6 +2,7 @@ import prisma from "../../prisma.config.js";
 import type { PrismaClient } from "../../../generated/prisma/index.js";
 import { TariffPeriod } from "../../../generated/prisma/index.js";
 import { HttpError } from "../../lib/httpError.js";
+import { stationRepository } from "../../db/stationRepository.js";
 
 const db = prisma as unknown as PrismaClient;
 
@@ -111,12 +112,21 @@ function assumedChargeKwFromEnv(): number {
   return Number.isFinite(n) && n > 0 ? n : 7;
 }
 
+function localYmdFromDate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 /**
  * Передплата CALC: мінімум з (тривалість × орієнтовна кВт зарядки) і ємності акумулятора, × ₴/кВт·год.
+ * До прогнозу тарифу додається надбавка за завантаженістю станції в календарний день початку бронювання.
  */
 export async function computePrepaymentForCalcBooking(
   userId: number,
   vehicleId: number,
+  stationId: number,
   startTime: Date,
   durationMinutes: number
 ): Promise<number> {
@@ -135,5 +145,11 @@ export async function computePrepaymentForCalcBooking(
   const rawKwh = hours * chargeKw;
   const kwh = Math.min(rawKwh, capKwh);
   const price = await getPricePerKwhForInstant(startTime);
-  return roundMoney(kwh * price);
+  const load = await stationRepository.getStationBookingDayLoad(
+    stationId,
+    localYmdFromDate(startTime)
+  );
+  const surcharge = load?.surchargeUahPerKwh ?? 0;
+  const effectivePrice = roundMoney(price + surcharge);
+  return roundMoney(kwh * effectivePrice);
 }

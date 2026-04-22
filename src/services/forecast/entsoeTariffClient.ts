@@ -154,10 +154,35 @@ export async function fetchEntsoeDayNightKwh(
     periodEnd: formatEntsoeDate(end),
   });
   const url = `${base}?${params.toString()}`;
-  const response = await fetch(url, { signal: AbortSignal.timeout(60_000) });
-  if (!response.ok) {
-    throw new Error(`ENTSO-E HTTP ${response.status}`);
+  const maxRetries = Math.max(
+    1,
+    Math.min(30, Number(process.env["ENTSOE_HTTP_MAX_RETRIES"] ?? "10")),
+  );
+  const backoffMs = Math.max(
+    500,
+    Number(process.env["ENTSOE_429_BACKOFF_MS"] ?? "3000"),
+  );
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    const response = await fetch(url, { signal: AbortSignal.timeout(60_000) });
+    if (response.status === 429) {
+      const ra = response.headers.get("retry-after");
+      const sec =
+        ra != null && /^\d+$/.test(ra.trim()) ? Number(ra.trim()) : null;
+      const waitMs = Math.min(
+        120_000,
+        sec != null && sec > 0 ? sec * 1000 : backoffMs * (attempt + 1),
+      );
+      await new Promise((r) => setTimeout(r, waitMs));
+      continue;
+    }
+    if (!response.ok) {
+      throw new Error(`ENTSO-E HTTP ${response.status}`);
+    }
+    const xml = await response.text();
+    return parseEntsoeA44XmlToDayNightKwh(xml, fallbackKwh);
   }
-  const xml = await response.text();
-  return parseEntsoeA44XmlToDayNightKwh(xml, fallbackKwh);
+  throw new Error(
+    `ENTSO-E HTTP 429 (rate limit): вичерпано ${maxRetries} спроб. Збільшіть ENTSOE_429_BACKOFF_MS або ENTSOE_SEED_DELAY_MS у tariffIngestService, зменшіть TARIFF_SEED_DAYS.`,
+  );
 }

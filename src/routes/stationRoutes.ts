@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getAllStations,
   getAvailableBookingSlots,
+  getStationBookingDayLoad,
   getStationDashboard as getStation,
   getStationEnergyAnalytics,
   getStationUpcomingBookings,
@@ -27,6 +28,7 @@ stationRouter.get("/", getAllStations);
 stationRouter.post("/", createStation);
 stationRouter.get("/:stationId/dashboard", getStation);
 stationRouter.get("/:stationId/upcoming-bookings", getStationUpcomingBookings);
+stationRouter.get("/:stationId/booking-day-load", getStationBookingDayLoad);
 stationRouter.get("/:stationId/available-booking-slots", getAvailableBookingSlots);
 stationRouter.get("/:stationId/analytics-energy", getStationEnergyAnalytics);
 

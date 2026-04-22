@@ -3,6 +3,8 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { runForecastModelOnce } from "../services/forecast/forecastScheduler.js";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SERVER_ROOT = path.join(__dirname, "..", "..");
 
@@ -75,6 +77,7 @@ devSeedRouter.post("/seed-from-csv", requireDevSeed, async (_req, res, next) => 
     }
     await runSeedScript();
     seedAlreadyRunThisProcess = true;
+    void runForecastModelOnce("після dev SEED (seed-all-data)");
     res.json({
       ok: true,
       message:

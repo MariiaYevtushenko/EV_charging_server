@@ -16,12 +16,13 @@ export const SEED_ENV_DEFAULTS = {
   MASSIVE_USER_COUNT: 1700,
   DEMO_BOOKINGS_COUNT: 3200,
   SESSION_FROM_BOOKING_SHARE: 0.5,
-  /** Має покривати горизонт дат сесій/броней у сиді (~200 днів у минуле). */
-  TARIFF_SEED_DAYS: 220,
+  /** Скільки календарних днів тарифів підтягувати з API (anchor=end). Має ≥ глибини дат броней/сесій у SQL-сиді. */
+  TARIFF_SEED_DAYS: 1200,
 } as const;
 
 const TARIFF_DAYS_MIN = 1;
-const TARIFF_DAYS_MAX = 366;
+/** Верхня межа для `TARIFF_SEED_DAYS` (довга історія для прогнозу). */
+const TARIFF_DAYS_MAX = 1200;
 
 function parseIntWithFallback(
   key: string,

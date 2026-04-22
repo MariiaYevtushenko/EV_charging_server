@@ -1,7 +1,15 @@
 import prisma from "../prisma.config.js";
 import type { PrismaClient } from "../../generated/prisma/index.js";
 import { TariffPeriod } from "../../generated/prisma/index.js";
+import {
+  DEFAULT_DAY_FALLBACK,
+  DEFAULT_NIGHT_FALLBACK,
+} from "../utils/tariffEnv.js";
 import { localDateAtNoon } from "../utils/tariffDateUtils.js";
+import {
+  sanitizeTariffDayNightUah,
+  sanitizeTariffSingleUah,
+} from "../utils/tariffPriceSanitize.js";
 
 const db = prisma as unknown as PrismaClient;
 
@@ -38,6 +46,7 @@ export const tariffRepository = {
     dayPricePerKwh: number,
     nightPricePerKwh: number
   ): Promise<void> {
+    const s = sanitizeTariffDayNightUah(dayPricePerKwh, nightPricePerKwh);
     const effectiveDate = localDateAtNoon(calendarDay);
     await db.tariff.upsert({
       where: {
@@ -48,10 +57,10 @@ export const tariffRepository = {
       },
       create: {
         tariffType: TariffPeriod.DAY,
-        pricePerKwh: dayPricePerKwh,
+        pricePerKwh: s.day,
         effectiveDate,
       },
-      update: { pricePerKwh: dayPricePerKwh },
+      update: { pricePerKwh: s.day },
     });
     await db.tariff.upsert({
       where: {
@@ -62,10 +71,10 @@ export const tariffRepository = {
       },
       create: {
         tariffType: TariffPeriod.NIGHT,
-        pricePerKwh: nightPricePerKwh,
+        pricePerKwh: s.night,
         effectiveDate,
       },
-      update: { pricePerKwh: nightPricePerKwh },
+      update: { pricePerKwh: s.night },
     });
   },
 
@@ -75,6 +84,11 @@ export const tariffRepository = {
     tariffType: TariffPeriod,
     pricePerKwh: number
   ): Promise<void> {
+    const fb =
+      tariffType === TariffPeriod.DAY
+        ? DEFAULT_DAY_FALLBACK
+        : DEFAULT_NIGHT_FALLBACK;
+    const p = sanitizeTariffSingleUah(pricePerKwh, fb);
     const effectiveDate = localDateAtNoon(calendarDay);
     await db.tariff.upsert({
       where: {
@@ -85,10 +99,10 @@ export const tariffRepository = {
       },
       create: {
         tariffType,
-        pricePerKwh,
+        pricePerKwh: p,
         effectiveDate,
       },
-      update: { pricePerKwh },
+      update: { pricePerKwh: p },
     });
   },
 };

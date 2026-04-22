@@ -418,4 +418,19 @@ export const stationService = {
     const sessions = await stationRepository.findSessionsForStationInRange(stationId, from, to);
     return buildStationEnergyAnalytics(sessions, from, to, bucketCount, period, bucket);
   },
+
+  /** Завантаженість за днем бронювання + надбавка ₴/кВт·год (для динамічної ціни). */
+  async getStationBookingDayLoad(
+    stationId: number,
+    dateYmd: string
+  ): Promise<{
+    loadPct: number;
+    bookedMinutes: number;
+    capacityMinutes: number;
+    surchargeUahPerKwh: number;
+  } | null> {
+    const exists = await stationRepository.findByIdWithPorts(stationId);
+    if (!exists) return null;
+    return stationRepository.getStationBookingDayLoad(stationId, dateYmd);
+  },
 };

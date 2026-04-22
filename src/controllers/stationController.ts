@@ -47,6 +47,30 @@ export const getStationUpcomingBookings: RequestHandler = async (req, res, next)
   }
 };
 
+/** GET .../booking-day-load?date=YYYY-MM-DD — завантаженість станції за днем + надбавка до тарифу */
+export const getStationBookingDayLoad: RequestHandler = async (req, res, next) => {
+  try {
+    const stationId = Number(req.params["stationId"]);
+    const dateStr = typeof req.query["date"] === "string" ? req.query["date"] : "";
+    if (!Number.isFinite(stationId)) {
+      res.status(400).json({ error: "stationId некоректний" });
+      return;
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      res.status(400).json({ error: "date має бути YYYY-MM-DD" });
+      return;
+    }
+    const data = await stationService.getStationBookingDayLoad(stationId, dateStr);
+    if (!data) {
+      res.status(404).json({ error: "Станцію не знайдено" });
+      return;
+    }
+    res.json(data);
+  } catch (e) {
+    next(e);
+  }
+};
+
 /** GET .../available-booking-slots?portNumber&date=YYYY-MM-DD&slotMinutes&durationMinutes */
 export const getAvailableBookingSlots: RequestHandler = async (req, res, next) => {
   try {

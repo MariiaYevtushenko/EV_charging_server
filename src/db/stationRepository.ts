@@ -556,4 +556,69 @@ export const stationRepository = {
     });
   },
 
+  /**
+   * Завантаженість станції в календарний день: сума перетинів бронювань (хв) / (порти × вікно 7–22 год).
+   * Надбавка до ₴/кВт·год: (loadPct/100) * STATION_LOAD_MAX_SURCHARGE_UAH_PER_KWH (env, за замовч. 2).
+   */
+  async getStationBookingDayLoad(
+    stationId: number,
+    dateYmd: string
+  ): Promise<{
+    loadPct: number;
+    bookedMinutes: number;
+    capacityMinutes: number;
+    surchargeUahPerKwh: number;
+  } | null> {
+    const parts = dateYmd.split("-").map(Number);
+    if (parts.length !== 3 || parts.some((n) => !Number.isFinite(n))) return null;
+    const y = parts[0]!;
+    const mo = parts[1]!;
+    const d = parts[2]!;
+    const dayStart = new Date(y, mo - 1, d, 0, 0, 0, 0);
+    const dayEnd = new Date(y, mo - 1, d + 1, 0, 0, 0, 0);
+
+    const station = await db.station.findUnique({
+      where: { id: stationId },
+      select: { _count: { select: { ports: true } } },
+    });
+    if (!station) return null;
+
+    const portCount = station._count.ports;
+    const WINDOW_START_HOUR = 7;
+    const WINDOW_END_HOUR = 22;
+    const windowMinutes = (WINDOW_END_HOUR - WINDOW_START_HOUR) * 60;
+    const capacityMinutes = portCount * windowMinutes;
+
+    const bookings = await db.booking.findMany({
+      where: {
+        stationId,
+        status: "BOOKED",
+        startTime: { lt: dayEnd },
+        endTime: { gt: dayStart },
+      },
+      select: { startTime: true, endTime: true },
+    });
+
+    let bookedMinutes = 0;
+    for (const b of bookings) {
+      const s = Math.max(b.startTime.getTime(), dayStart.getTime());
+      const e = Math.min(b.endTime.getTime(), dayEnd.getTime());
+      if (e > s) bookedMinutes += (e - s) / 60000;
+    }
+
+    const loadPct =
+      capacityMinutes <= 0 ? 0 : Math.min(100, (bookedMinutes / capacityMinutes) * 100);
+
+    const maxS = Number(process.env["STATION_LOAD_MAX_SURCHARGE_UAH_PER_KWH"] ?? "2");
+    const cap = Number.isFinite(maxS) && maxS >= 0 ? maxS : 2;
+    const surchargeUahPerKwh = Math.round((loadPct / 100) * cap * 10000) / 10000;
+
+    return {
+      loadPct: Math.round(loadPct * 100) / 100,
+      bookedMinutes: Math.round(bookedMinutes * 100) / 100,
+      capacityMinutes,
+      surchargeUahPerKwh,
+    };
+  },
+
 };

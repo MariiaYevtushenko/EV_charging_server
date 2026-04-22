@@ -2,7 +2,7 @@
  * Заповнює таблицю `tariff`: на кожен календарний день **два** рядки — TariffPeriod **DAY** і **NIGHT**
  * (денний 07:00–23:00 та нічний 23:00–07:00 у логіці застосунку).
  *
- * Діапазон: останні **TARIFF_SEED_DAYS** днів (за замовчуванням **90**), `anchor: end` — включно з сьогодні.
+ * Діапазон: останні **TARIFF_SEED_DAYS** днів (за замовчуванням **1200** з `seedEnvConfig`), `anchor: end` — включно з сьогодні.
  * Кількість днів: env `TARIFF_SEED_DAYS` або аргумент CLI.
  *
  * Після запуску — звіт у `SeedTariffsFromApi.txt` (поруч зі скриптом).
@@ -19,6 +19,12 @@ import {
   SeedTariffsFromApi,
   type SeedTariffsFromApiResult,
 } from "../../src/services/forecast/tariffIngestService.js";
+import {
+  createSeedMarkTimer,
+  seedError,
+  seedLog,
+  seedNowIso,
+} from "./seedLog.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,10 +32,10 @@ const REPORT_FILE = path.join(__dirname, "SeedTariffsFromApi.txt");
 
 const arg = process.argv[2];
 const fromEnv = process.env["TARIFF_SEED_DAYS"];
-const days = arg != null && arg !== "" ? Number(arg) : Number(fromEnv ?? 90);
+const days = arg != null && arg !== "" ? Number(arg) : Number(fromEnv ?? 1200);
 
-if (!Number.isFinite(days) || days < 1 || days > 366) {
-  console.error("Days must be between 1 and 366.");
+if (!Number.isFinite(days) || days < 1 || days > 1200) {
+  console.error("Days must be between 1 and 1200.");
   process.exit(1);
 }
 
@@ -47,7 +53,7 @@ function WriteSeedReport(result: SeedTariffsFromApiResult): void {
       ? `аргумент CLI (${arg})`
       : fromEnv != null && String(fromEnv).trim() !== ""
         ? `TARIFF_SEED_DAYS у .env (${String(fromEnv).trim()})`
-        : "не задано TARIFF_SEED_DAYS → у скрипті береться 90";
+        : "не задано TARIFF_SEED_DAYS → у скрипті береться 1200";
 
   const lines = [
     `SeedTariffsFromApi — ${new Date().toISOString()}`,
@@ -64,11 +70,15 @@ function WriteSeedReport(result: SeedTariffsFromApiResult): void {
     `  TARIFF_API_URL: ${process.env["TARIFF_API_URL"] ? "задано" : "не задано"}`,
     ...(result.mode === "entsoe"
       ? [
-          "  Примітка: entsoe = ENTSO-E XML A44, один HTTP-запит на кожен календарний день.",
+          "  Примітка: entsoe = ENTSO-E XML A44; за замовчуванням кілька паралельних запитів (TARIFF_SEED_FETCH_CONCURRENCY).",
           "  TARIFF_API_PER_DAY не перемикає цей режим (потрібен лише для власного JSON API з ?date=).",
           `  TARIFF_API_PER_DAY у .env: ${EnvValue("TARIFF_API_PER_DAY")}`,
         ]
-      : [`  TARIFF_API_PER_DAY: ${EnvValue("TARIFF_API_PER_DAY")}`]),
+      : result.mode === "snapshot"
+        ? [
+            "  Примітка: snapshot — дані з JSON (TARIFF_SEED_USE_SNAPSHOT_FIRST), без запитів до API.",
+          ]
+        : [`  TARIFF_API_PER_DAY: ${EnvValue("TARIFF_API_PER_DAY")}`]),
     `  TARIFF_DAY_PRICE: ${EnvValue("TARIFF_DAY_PRICE")}`,
     `  TARIFF_NIGHT_PRICE: ${EnvValue("TARIFF_NIGHT_PRICE")}`,
     "",
@@ -77,16 +87,36 @@ function WriteSeedReport(result: SeedTariffsFromApiResult): void {
 }
 
 async function main(): Promise<void> {
+  const timer = createSeedMarkTimer("SEED_TARIFFS_API");
+  seedLog("SEED_TARIFFS_API", "старт окремого скрипта (запис через saveHistoricalTariff / репозиторій, не транзакція seed:all)", {
+    days,
+    days_source:
+      arg != null && arg !== ""
+        ? "cli_arg"
+        : fromEnv != null && String(fromEnv).trim() !== ""
+          ? "env_TARIFF_SEED_DAYS"
+          : "default_1200",
+    TARIFF_API_URL_set: Boolean(process.env["TARIFF_API_URL"]?.trim()),
+    anchor: "end",
+  });
   try {
     const r = await SeedTariffsFromApi(days, new Date(), { anchor: "end" });
-    console.log(
-      `Tariff seed: wrote ${r.daysWritten} calendar day(s) (DAY + NIGHT rows each, last ${days} days), mode=${r.mode}.`,
-    );
+    timer.mark("SeedTariffsFromApi завершено");
+    seedLog("SEED_TARIFFS_API", "результат", {
+      days_written: r.daysWritten,
+      mode: r.mode,
+      calendar_days_requested: days,
+      note: "на кожен день — 2 рядки tariff (DAY + NIGHT)",
+      total_ms: timer.elapsedMs(),
+      finished_at: seedNowIso(),
+    });
     WriteSeedReport(r);
-    console.log(`Звіт: ${REPORT_FILE}`);
+    seedLog("SEED_TARIFFS_API", "звіт записано на диск", { file: REPORT_FILE });
     process.exit(0);
   } catch (e: unknown) {
-    console.error(e);
+    seedError("SEED_TARIFFS_API", "помилка сиду тарифів", e, {
+      total_ms: timer.elapsedMs(),
+    });
     process.exit(1);
   }
 }

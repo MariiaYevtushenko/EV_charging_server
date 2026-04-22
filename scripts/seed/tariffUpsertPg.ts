@@ -1,5 +1,6 @@
 import type pg from "pg";
 import { localDateAtNoon } from "../../src/utils/tariffDateUtils.js";
+import { sanitizeTariffDayNightUah } from "../../src/utils/tariffPriceSanitize.js";
 
 /**
  * Те саме, що tariffRepository.upsertDayNightForCalendarDay, але через pg.Client
@@ -11,6 +12,7 @@ export async function upsertTariffDayNightForCalendarDayPg(
   dayPricePerKwh: number,
   nightPricePerKwh: number,
 ): Promise<void> {
+  const s = sanitizeTariffDayNightUah(dayPricePerKwh, nightPricePerKwh);
   const effectiveDate = localDateAtNoon(calendarDay);
 
   await client.query(
@@ -22,7 +24,7 @@ export async function upsertTariffDayNightForCalendarDayPg(
       price_per_kwh = EXCLUDED.price_per_kwh,
       updated_at = CURRENT_TIMESTAMP
     `,
-    [dayPricePerKwh, effectiveDate],
+    [s.day, effectiveDate],
   );
 
   await client.query(
@@ -34,6 +36,6 @@ export async function upsertTariffDayNightForCalendarDayPg(
       price_per_kwh = EXCLUDED.price_per_kwh,
       updated_at = CURRENT_TIMESTAMP
     `,
-    [nightPricePerKwh, effectiveDate],
+    [s.night, effectiveDate],
   );
 }
