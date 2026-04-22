@@ -37,7 +37,3 @@ function runPython(scriptName: string): Promise<{ code: number; stdout: string; 
 export async function runAiEngine(): Promise<{ code: number; stdout: string; stderr: string }> {
   return runPython("ai_engine.py");
 }
-
-export async function runUpdateBias(): Promise<{ code: number; stdout: string; stderr: string }> {
-  return runPython("update_bias.py");
-}

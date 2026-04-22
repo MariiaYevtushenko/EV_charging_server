@@ -1,7 +1,8 @@
 import { userRepository } from "../../db/user/userRepository.js";
+import { HttpError } from "../../lib/httpError.js";
+import { parseUserAnalyticsPeriod, queryUserAnalytics } from "../../db/user/userAnalyticsRepository.js";
 import type { EvUser, Vehicle, Booking, Bill, UserRole, PaymentMethod } from "../../../generated/prisma/index.js";
 import type { Prisma } from "../../../generated/prisma/index.js";
-import { HttpError } from "../../lib/httpError.js";
 import {
   AssertValidEmail,
   AssertValidName,
@@ -80,6 +81,15 @@ export const userService = {
   async getVehicle(userId: number, vehicleId: number): Promise<Vehicle> {
     return await userRepository.getVehicle(userId, vehicleId);
   },
+
+  /** Агрегати з БД (session + bill) для картки авто. */
+  async getVehicleAggregates(userId: number, vehicleId: number) {
+    const data = await userRepository.getVehicleAggregates(userId, vehicleId);
+    if (!data) {
+      throw new HttpError(404, "Авто не знайдено або недоступне");
+    }
+    return { vehicleId, ...data };
+  },
   async updateVehicle(
     userId: number,
     vehicleId: number,
@@ -138,5 +148,11 @@ export const userService = {
   async payPendingBill(userId: number, billId: number, paymentMethod: PaymentMethod): Promise<Bill> {
     await userRepository.payPendingBill(userId, billId, paymentMethod);
     return await userRepository.getBill(userId, billId);
+  },
+
+  /** Аналітика з SQL VIEW (View.sql) + агрегати за періодом 7d | 30d | all. */
+  async getUserAnalytics(userId: number, periodQuery: string | undefined) {
+    const period = parseUserAnalyticsPeriod(periodQuery);
+    return await queryUserAnalytics(userId, period);
   },
 };

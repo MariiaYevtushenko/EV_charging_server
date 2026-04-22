@@ -499,6 +499,7 @@ export const stationRepository = {
       select: {
         startTime: true,
         kwhConsumed: true,
+        bill: { select: { calculatedAmount: true } },
       },
     });
   },

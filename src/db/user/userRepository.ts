@@ -241,4 +241,66 @@ export const userRepository = {
       return updated;
     });
   },
+
+  /**
+   * Агрегати сесій / kWh / суми bill для авто користувача (фільтр за `session.start_time`).
+   * `all` — увесь час; `today` — з початку локальної календарної доби сервера.
+   */
+  async getVehicleAggregates(
+    userId: number,
+    vehicleId: number
+  ): Promise<{
+    all: { sessionCount: number; kwhTotal: number; revenueUah: number };
+    today: { sessionCount: number; kwhTotal: number; revenueUah: number };
+    last7d: { sessionCount: number; kwhTotal: number; revenueUah: number };
+    last30d: { sessionCount: number; kwhTotal: number; revenueUah: number };
+  } | null> {
+    const v = await db.vehicle.findFirst({
+      where: { id: vehicleId, userId },
+      select: { id: true },
+    });
+    if (!v) return null;
+
+    const now = new Date();
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
+    const d7 = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const d30 = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    const roundKwh = (n: number) => Math.round(n * 1000) / 1000;
+    const roundMoney = (n: number) => Math.round(n * 100) / 100;
+
+    const forRange = async (from: Date | null) => {
+      const sessionWhere: Prisma.SessionWhereInput = {
+        userId,
+        vehicleId,
+        ...(from ? { startTime: { gte: from } } : {}),
+      };
+      const [sAgg, bAgg] = await Promise.all([
+        db.session.aggregate({
+          where: sessionWhere,
+          _count: { id: true },
+          _sum: { kwhConsumed: true },
+        }),
+        db.bill.aggregate({
+          where: { session: sessionWhere },
+          _sum: { calculatedAmount: true },
+        }),
+      ]);
+      return {
+        sessionCount: sAgg._count.id,
+        kwhTotal: roundKwh(Number(sAgg._sum.kwhConsumed ?? 0)),
+        revenueUah: roundMoney(Number(bAgg._sum.calculatedAmount ?? 0)),
+      };
+    };
+
+    const [all, today, last7d, last30d] = await Promise.all([
+      forRange(null),
+      forRange(todayStart),
+      forRange(d7),
+      forRange(d30),
+    ]);
+
+    return { all, today, last7d, last30d };
+  },
 };

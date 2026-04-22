@@ -1,7 +1,7 @@
 -- Відповідає DB_script.MD (port: PK (station_id, port_number), bill замість payment)
--- Ідемпотентні процедури: ../db/SEED_users.sql (SeedMassiveUsers — масовий ev_user); forecast_bias — ../db/SEED_forecast_bias.sql (SeedBias)
+-- Ідемпотентні процедури: ../db/SEED_users.sql (SeedMassiveUsers — масовий ev_user)
 -- 1. ОЧИЩЕННЯ
-TRUNCATE bill, session, booking, vehicle, tariff, tariff_prediction, forecast_bias, port, station, location, ev_user, connector_type RESTART IDENTITY CASCADE;
+TRUNCATE bill, session, booking, vehicle, tariff, tariff_prediction, port, station, location, ev_user, connector_type RESTART IDENTITY CASCADE;
 
 -- 2. КОНЕКТОРИ
 INSERT INTO connector_type (name) VALUES
@@ -68,6 +68,3 @@ INSERT INTO session (user_id, vehicle_id, station_id, port_number, booking_id, s
 -- 11. РАХУНКИ (bill)
 INSERT INTO bill (session_id, calculated_amount, price_per_kwh_at_time, payment_method, payment_status, paid_at) VALUES
 (1, 468.45, 13.50, 'APPLE_PAY', 'SUCCESS', NOW() - INTERVAL '55 minutes');
-
-INSERT INTO forecast_bias (tariff_type, bias_value) VALUES ('DAY', 0), ('NIGHT', 0)
-ON CONFLICT (tariff_type) DO NOTHING;

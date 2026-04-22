@@ -30,6 +30,31 @@ export const tariffRepository = {
     });
   },
 
+  /**
+   * Денна та нічна ціна (грн/кВт·год з `tariff.price_per_kwh`), що діють на календарний день:
+   * останній рядок з `effective_date <=` полудня цього дня для кожного типу періоду.
+   */
+  async resolveEffectiveDayNightUah(calendarDay: Date): Promise<{
+    dayPriceUah: number;
+    nightPriceUah: number;
+  }> {
+    const boundary = localDateAtNoon(calendarDay);
+    const [dayRow, nightRow] = await Promise.all([
+      db.tariff.findFirst({
+        where: { tariffType: TariffPeriod.DAY, effectiveDate: { lte: boundary } },
+        orderBy: { effectiveDate: "desc" },
+      }),
+      db.tariff.findFirst({
+        where: { tariffType: TariffPeriod.NIGHT, effectiveDate: { lte: boundary } },
+        orderBy: { effectiveDate: "desc" },
+      }),
+    ]);
+    return {
+      dayPriceUah: dayRow ? Number(dayRow.pricePerKwh) : 0,
+      nightPriceUah: nightRow ? Number(nightRow.pricePerKwh) : 0,
+    };
+  },
+
   /** Найпізніша календарна дата серед усіх рядків тарифу (DAY/NIGHT мають однакову дату). */
   async maxEffectiveDate(): Promise<Date | null> {
     const agg = await db.tariff.aggregate({

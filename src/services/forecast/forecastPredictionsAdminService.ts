@@ -35,7 +35,7 @@ function dateKeyFromDb(dt: Date): string {
 
 export type ForecastPredictionPointDto = {
   date: string;
-  /** Прогноз SARIMA + корекція bias (як у бронюванні), грн/кВт·год */
+  /** Прогноз SARIMA (tariff_prediction), грн/кВт·год */
   dayUah: number | null;
   nightUah: number | null;
 };
@@ -48,26 +48,18 @@ export type ForecastPredictionsResponseDto = {
 };
 
 /**
- * Наступні `days` календарних днів від завтра: прогнози з tariff_prediction
- * зі зміщенням з forecast_bias (день/ніч окремо).
+ * Наступні `days` календарних днів від завтра: прогнози з tariff_prediction.
  */
 export async function listTariffPredictionsForAdmin(days: number): Promise<ForecastPredictionsResponseDto> {
   const safeDays = Math.min(90, Math.max(1, Math.floor(days)));
   const start = startOfTomorrowLocal();
   const end = addCalendarDays(start, safeDays - 1);
 
-  const [rows, biasDayRow, biasNightRow] = await Promise.all([
-    db.tariffPrediction.findMany({
-      where: {
-        targetDate: { gte: start, lte: end },
-      },
-    }),
-    db.forecastBias.findUnique({ where: { tariffType: TariffPeriod.DAY } }),
-    db.forecastBias.findUnique({ where: { tariffType: TariffPeriod.NIGHT } }),
-  ]);
-
-  const biasDay = biasDayRow ? Number(biasDayRow.biasValue) : 0;
-  const biasNight = biasNightRow ? Number(biasNightRow.biasValue) : 0;
+  const rows = await db.tariffPrediction.findMany({
+    where: {
+      targetDate: { gte: start, lte: end },
+    },
+  });
 
   const byDate = new Map<string, { day?: number; night?: number }>();
   for (const r of rows) {
@@ -94,8 +86,8 @@ export async function listTariffPredictionsForAdmin(days: number): Promise<Forec
     const nightRaw = raw?.night;
     points.push({
       date: key,
-      dayUah: dayRaw != null ? Math.max(0, round2(dayRaw + biasDay)) : null,
-      nightUah: nightRaw != null ? Math.max(0, round2(nightRaw + biasNight)) : null,
+      dayUah: dayRaw != null ? Math.max(0, round2(dayRaw)) : null,
+      nightUah: nightRaw != null ? Math.max(0, round2(nightRaw)) : null,
     });
   }
 

@@ -193,15 +193,6 @@ model TariffPrediction {
   @@map("tariff_prediction")
 }
 
-model ForecastBias {
-  id         Int          @id @default(autoincrement())
-  tariffType TariffPeriod @unique @map("tariff_type")
-  biasValue  Decimal      @map("bias_value") @db.Decimal(10, 4)
-  updatedAt  DateTime     @updatedAt @map("updated_at")
-
-  @@map("forecast_bias")
-}
-
 model Booking {
   id               Int           @id @default(autoincrement())
   userId           Int?          @map("user_id")

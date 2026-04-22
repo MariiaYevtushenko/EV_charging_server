@@ -8,6 +8,7 @@ import {
   getStationUpcomingBookings,
   getStationsMap,
 } from "../controllers/stationController.js";
+import { getPublicTodayTariffs } from "../controllers/tariffPublicController.js";
 import {
   createStation,
   updateStation,
@@ -24,6 +25,7 @@ import { createPort, updatePort, deletePort } from "../controllers/portControlle
 export const stationRouter = Router();
 
 stationRouter.get("/map", getStationsMap);
+stationRouter.get("/tariffs/today", getPublicTodayTariffs);
 stationRouter.get("/", getAllStations);
 stationRouter.post("/", createStation);
 stationRouter.get("/:stationId/dashboard", getStation);

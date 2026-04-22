@@ -68,6 +68,22 @@ export const getVehicle: RequestHandler = async (req, res, next) => {
     }
 };
 
+/** GET — агреговані сесії / kWh / суми bill по авто (узгоджено з аналітикою в БД). */
+export const getVehicleAggregates: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = Number(req.params["userId"]);
+        const vehicleId = Number(req.params["vehicleId"]);
+        if (!Number.isFinite(userId) || userId <= 0 || !Number.isFinite(vehicleId) || vehicleId <= 0) {
+            res.status(400).json({ error: "Некоректні ідентифікатори" });
+            return;
+        }
+        const data = await userService.getVehicleAggregates(userId, vehicleId);
+        res.json(data);
+    } catch (e) {
+        next(e);
+    }
+};
+
 export const updateVehicle: RequestHandler = async (req, res, next) => {
     try {
         const userId = Number(req.params["userId"]);
@@ -345,6 +361,23 @@ export const updatePayment: RequestHandler = async (req, res, next) => {
 };
 
 /** POST body: { paymentMethod: 'CARD' | 'APPLE_PAY' | 'GOOGLE_PAY' } — для рахунку зі статусом PENDING. */
+/** GET ?period=7d|30d|all — дані з VIEW та підсумки за обраним вікном. */
+export const getUserAnalytics: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = Number(req.params["userId"]);
+        if (!Number.isFinite(userId) || userId <= 0) {
+            res.status(400).json({ error: "Некоректний ідентифікатор користувача" });
+            return;
+        }
+        const q = req.query["period"];
+        const periodStr = typeof q === "string" ? q : undefined;
+        const data = await userService.getUserAnalytics(userId, periodStr);
+        res.json(data);
+    } catch (e) {
+        next(e);
+    }
+};
+
 export const postPayBill: RequestHandler = async (req, res, next) => {
     try {
         const userId = Number(req.params["userId"]);

@@ -26,6 +26,10 @@ export type StationEnergyPeriod = "1d" | "7d" | "30d";
 export type StationEnergyAnalyticsPointDto = {
   bucketStart: string;
   kwh: number;
+  /** Кількість сесій, що почалися в цьому інтервалі. */
+  sessions: number;
+  /** Сума `bill.calculated_amount` по сесіях у відрі (грн). */
+  revenueUah: number;
 };
 
 export type StationEnergyAnalyticsDto = {
@@ -34,6 +38,7 @@ export type StationEnergyAnalyticsDto = {
   points: StationEnergyAnalyticsPointDto[];
   totalKwh: number;
   sessionCount: number;
+  totalRevenueUah: number;
 };
 
 function addMs(d: Date, ms: number): Date {
@@ -41,7 +46,11 @@ function addMs(d: Date, ms: number): Date {
 }
 
 function buildStationEnergyAnalytics(
-  sessions: { startTime: Date; kwhConsumed: unknown }[],
+  sessions: {
+    startTime: Date;
+    kwhConsumed: unknown;
+    bill: { calculatedAmount: unknown } | null;
+  }[],
   from: Date,
   to: Date,
   bucketCount: number,
@@ -51,26 +60,35 @@ function buildStationEnergyAnalytics(
   const ms = to.getTime() - from.getTime();
   const bucketMs = ms / bucketCount;
   const kwhArr = Array.from({ length: bucketCount }, () => 0);
+  const sessArr = Array.from({ length: bucketCount }, () => 0);
+  const revArr = Array.from({ length: bucketCount }, () => 0);
   for (const s of sessions) {
     const t = s.startTime.getTime();
     if (t < from.getTime() || t > to.getTime()) continue;
     let idx = Math.floor((t - from.getTime()) / bucketMs);
     if (idx >= bucketCount) idx = bucketCount - 1;
     if (idx < 0) continue;
-    const prev = kwhArr[idx] ?? 0;
-    kwhArr[idx] = prev + Number(s.kwhConsumed);
+    kwhArr[idx] = (kwhArr[idx] ?? 0) + Number(s.kwhConsumed);
+    sessArr[idx] = (sessArr[idx] ?? 0) + 1;
+    const raw = s.bill?.calculatedAmount;
+    const amt = raw != null ? Number(raw) : 0;
+    revArr[idx] = (revArr[idx] ?? 0) + (Number.isFinite(amt) ? amt : 0);
   }
   const points: StationEnergyAnalyticsPointDto[] = kwhArr.map((kwh, i) => ({
     bucketStart: new Date(from.getTime() + i * bucketMs).toISOString(),
     kwh: Math.round(kwh * 1000) / 1000,
+    sessions: sessArr[i] ?? 0,
+    revenueUah: Math.round((revArr[i] ?? 0) * 100) / 100,
   }));
   const totalKwh = Math.round(kwhArr.reduce((a, b) => a + b, 0) * 1000) / 1000;
+  const totalRevenueUah = Math.round(revArr.reduce((a, b) => a + b, 0) * 100) / 100;
   return {
     period,
     bucket,
     points,
     totalKwh,
     sessionCount: sessions.length,
+    totalRevenueUah,
   };
 }
 

@@ -41,13 +41,6 @@ export function tariffPeriodForInstant(d: Date): TariffPeriod {
   return night ? TariffPeriod.NIGHT : TariffPeriod.DAY;
 }
 
-async function getBias(period: TariffPeriod): Promise<number> {
-  const row = await db.forecastBias.findUnique({
-    where: { tariffType: period },
-  });
-  return row ? Number(row.biasValue) : 0;
-}
-
 /** Остання ціна з tariff для типу періоду на дату target (effective_date ≤ день target). */
 async function getHistoricalPrice(
   period: TariffPeriod,
@@ -87,16 +80,15 @@ async function getForecastPrice(
       targetDate_tariffType: { targetDate, tariffType: period },
     },
   });
-  const bias = await getBias(period);
   if (pred) {
-    return Math.max(0, roundMoney(Number(pred.predictedPrice) + bias));
+    return Math.max(0, roundMoney(Number(pred.predictedPrice)));
   }
   return roundMoney(await getHistoricalPrice(period, bookingLocalDay));
 }
 
 /**
  * Ціна ₴/кВт·год для моменту початку бронювання:
- * сьогодні — з tariff; інша дата — з tariff_prediction (+ bias), інакше fallback на історію.
+ * сьогодні — з tariff; інша дата — з tariff_prediction, інакше fallback на історію.
  */
 export async function getPricePerKwhForInstant(startTime: Date): Promise<number> {
   const now = new Date();
