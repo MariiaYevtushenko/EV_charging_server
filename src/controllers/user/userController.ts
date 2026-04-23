@@ -379,7 +379,7 @@ export const updatePayment: RequestHandler = async (req, res, next) => {
 };
 
 /** POST body: { paymentMethod: 'CARD' | 'APPLE_PAY' | 'GOOGLE_PAY' } — для рахунку зі статусом PENDING. */
-/** GET ?period=7d|30d|all — дані з VIEW та підсумки за обраним вікном. */
+/** GET ?period=today|7d|30d|all — VIEW (View.sql) + агрегати з User_analytics.sql. */
 export const getUserAnalytics: RequestHandler = async (req, res, next) => {
     try {
         const userId = Number(req.params["userId"]);

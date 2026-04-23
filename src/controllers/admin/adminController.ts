@@ -238,10 +238,17 @@ export const getDashboard: RequestHandler = async (_req, res, next) => {
     }
 };
 
-/** Дані з SQL VIEW (View.sql) для сторінки аналітики глобального адміна. */
-export const getAnalyticsViews: RequestHandler = async (_req, res, next) => {
+/** Дані з SQL VIEW (View.sql) + Station_admin_analytics.sql; query `stationId` — деталізація по станції; `period` — вікно як у користувача (today|7d|30d|all). */
+export const getAnalyticsViews: RequestHandler = async (req, res, next) => {
     try {
-        const data = await adminService.getAnalyticsViews();
+        const raw = req.query["stationId"];
+        const stationId =
+            typeof raw === "string" && /^\d+$/.test(raw.trim())
+                ? Number.parseInt(raw.trim(), 10)
+                : undefined;
+        const periodRaw = req.query["period"];
+        const stationPeriod = typeof periodRaw === "string" ? periodRaw : undefined;
+        const data = await adminService.getAnalyticsViews(stationId, stationPeriod);
         res.json(data);
     } catch (e) {
         next(e);

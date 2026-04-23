@@ -3,5 +3,7 @@
   2. 02_session_billing.sql — розрахунок суми сесії (читання)
   3. 03_booking_slots.sql   — вільні слоти бронювання
   4. 04_reports.sql         — звіти та аналітика
-  5. User_analytics.sql     — аналітика кінцевого користувача (період + VIEW)
+  5. User_analytics.sql          — аналітика кінцевого користувача (період + VIEW)
+  6. Station_admin_analytics.sql — аналітика адміна станцій (мережа + станція)
+  7. Global_admin_analytics.sql — аналітика глобального адміна (мережа за періодом)
 Далі: ../Procedures.sql (мутації: bill, старт сесії, скасування броні)

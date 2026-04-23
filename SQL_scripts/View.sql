@@ -1,22 +1,17 @@
 
--- Станція: сесії та виручка по кожному порту, останні 30 днів.
+-- Станція: по порту (останні 30 днів). Джерело — View_StationPortStatsLast30Days у Station_admin_analytics.sql
+-- (застосуйте спочатку functions/Station_admin_analytics.sql, потім View.sql).
 CREATE OR REPLACE VIEW View_StationPerformance AS
 SELECT
-    s.id AS station_id,
-    s.name AS station_name,
-    p.port_number,
-    COUNT(sess.id) AS total_sessions,
-    COALESCE(SUM(sess.kwh_consumed), 0) AS total_energy,
-    COALESCE(SUM(b.calculated_amount), 0) AS total_revenue
-FROM station s
-JOIN port p ON s.id = p.station_id
-LEFT JOIN session sess
-  ON sess.station_id = p.station_id
- AND sess.port_number = p.port_number
- AND sess.start_time >= now() - interval '30 days'
-LEFT JOIN bill b ON sess.id = b.session_id
-GROUP BY s.id, s.name, p.port_number;
+  station_id,
+  station_name,
+  port_number,
+  total_sessions,
+  total_energy,
+  total_revenue
+FROM view_stationportstatslast30days;
 
+-- View_StationSessionStatsLast30Days: визначення в SQL_scripts/functions/Station_admin_analytics.sql
 
 -- Користувач: суми з bill за поточний і попередній 7-денний відрізок; kWh з початку місяця (усі сесії).
 CREATE OR REPLACE VIEW View_UserAnalyticsComparison AS
@@ -164,37 +159,3 @@ FROM ev_user u
 LEFT JOIN session s ON u.id = s.user_id
 LEFT JOIN bill b ON s.id = b.session_id
 GROUP BY u.id, u.name, u.surname;
-
-
--- Моніторинг: активні сесії зарядки.
-CREATE OR REPLACE VIEW View_ActiveSessions AS
-SELECT
-    s.id AS session_id,
-    s.user_id,
-    s.station_id,
-    s.port_number,
-    s.vehicle_id,
-    s.start_time,
-    s.kwh_consumed,
-    st.name AS station_name
-FROM session s
-JOIN station st ON st.id = s.station_id
-WHERE s.status = 'ACTIVE';
-
-
--- Моніторинг: майбутні бронювання BOOKED (інтервал ще не закінчився).
-CREATE OR REPLACE VIEW View_UpcomingBookings AS
-SELECT
-    b.id AS booking_id,
-    b.user_id,
-    b.station_id,
-    b.port_number,
-    b.start_time,
-    b.end_time,
-    b.booking_type,
-    b.prepayment_amount,
-    st.name AS station_name
-FROM booking b
-JOIN station st ON st.id = b.station_id
-WHERE b.status = 'BOOKED'
-  AND b.end_time > now();

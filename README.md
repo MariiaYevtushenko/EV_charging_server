@@ -12,75 +12,19 @@ npm run dev
 
 Схема БД і SQL-скрипти — у [`../db/`](../db/). Додаткова документація — у [`../docs/`](../docs/).
 
+## Аналітика адміна станцій
 
+- SQL: [`SQL_scripts/functions/Station_admin_analytics.sql`](SQL_scripts/functions/Station_admin_analytics.sql)
+- API: `GET /api/admin/analytics/views?stationId=<id>` (опційно; без параметра — мережеві KPI за 30 днів)
+- Порядок скриптів: [`SQL_scripts/functions/ORDER.txt`](SQL_scripts/functions/ORDER.txt)
 
+## Аналітика глобального адміна (ADMIN)
 
-
-
-
-адмін станцій
-. Ефективність портів
-які порти використовуються більше типи конекторів
-1. Завантаженість станцій
-utilization rate (% часу зайняті)
-активні порти
-idle time
-
-👉 ключове питання:
-
-“чи станції простоюють?”
-
-🔋 2. Сесії
-кількість сесій
-середня тривалість
-середня енергія
-📅 3. Бронювання
-кількість бронювань
-% використаних
-no-show rate
-
-👉 дуже важливо для операцій
-
-💰 4. Дохід по станціях
-revenue per station
-revenue per port
-середній чек
-📍 5. ТОП / АНТИ-Топ станцій
-найпопулярніші
-найменш використовувані
-
-6. Пікові години
-heatmap (година × день) ( стовпчаста )
-
-
-
-
-АДМІН
-. Загальний дохід
-total revenue
-по днях / місяцях
-growth rate
-⚡ 2. Загальне споживання
-total kWh
-по містах / станціях
-4. Бронювання (глобально)
-total bookings
-conversion (booking → session)
-no-show rate
-🔌 5. Сесії
-total sessions
-середня тривалість
-середня енергія
-
-📊 7. Тарифи
-який тариф дає більше грошей
-популярність тарифів
-
-5. Location intelligence
-де вигідно відкривати нові станції
-
-👉 на основі:
-
-попиту
-перевантаження
-гео-даних ( топ 10 місць)
+- **SQL (функції, 30 днів):** [`SQL_scripts/functions/Global_admin_analytics.sql`](SQL_scripts/functions/Global_admin_analytics.sql)  
+  Сесії (кількість, середня тривалість, середній kWh, виручка, середній чек), виручка **по станціях і по портах**, **пікові години** (день тижня × година), **денна динаміка** виручки/kWh, **проксі день/ніч** тарифу (за годиною старту сесії), **гарячі міста** (навантаження), метрики **зв’язку бронювань і сесій** (конверсія).
+- **SQL (мережа + опційно станція):** [`Station_admin_analytics.sql`](SQL_scripts/functions/Station_admin_analytics.sql) — KPI бронювань, ТОП / «анти-ТОП» станцій за сесіями; у відповіді API поле `stationAdminSnapshot`.
+- **SQL VIEW:** [`SQL_scripts/View.sql`](SQL_scripts/View.sql) — глобальний дашборд, міста, сегменти користувачів, активні сесії тощо.
+- **API:** `GET /api/admin/analytics/views` — усі VIEW + `stationAdminSnapshot` + **`globalAdminSnapshot`**; опційно `?stationId=` для деталізації по станції.
+- **API:** `GET /api/admin/dashboard` — короткий зріз мережі (Prisma).
+- Порядок SQL-файлів: [`SQL_scripts/functions/ORDER.txt`](SQL_scripts/functions/ORDER.txt).
+- Ролі та доступ: [`README_ROLES.md`](../README_ROLES.md).

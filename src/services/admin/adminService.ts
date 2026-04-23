@@ -646,7 +646,10 @@ export const adminService = {
         return adminRepository.getDashboardNetworkStats();
     },
 
-    async getAnalyticsViews(): Promise<AdminAnalyticsViewsPayload> {
-        return queryAllAnalyticsViews();
+    async getAnalyticsViews(
+        stationId?: number | null,
+        stationPeriod?: string
+    ): Promise<AdminAnalyticsViewsPayload> {
+        return queryAllAnalyticsViews(stationId ?? undefined, stationPeriod);
     },
 }   

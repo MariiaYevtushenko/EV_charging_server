@@ -1,5 +1,15 @@
 import prisma from "../../prisma.config.js";
 import type { PrismaClient } from "../../../generated/prisma/index.js";
+import {
+  parseStationAdminAnalyticsPeriod,
+  queryStationAdminAnalyticsSnapshot,
+  type StationAdminAnalyticsPeriod,
+  type StationAdminSnapshot,
+} from "./stationAdminAnalyticsRepository.js";
+import {
+  queryGlobalAdminAnalyticsSnapshot,
+  type GlobalAdminSnapshot,
+} from "./globalAdminAnalyticsRepository.js";
 
 const db = prisma as unknown as PrismaClient;
 
@@ -63,11 +73,19 @@ export type AdminAnalyticsViewsPayload = {
   userSegments: Record<string, unknown>[];
   activeSessions: Record<string, unknown>[];
   upcomingBookings: Record<string, unknown>[];
+  /** Функції з Station_admin_analytics.sql (мережа + опційно stationId). */
+  stationAdminSnapshot: StationAdminSnapshot;
+  /** Функції з Global_admin_analytics.sql (мережа за період). */
+  globalAdminSnapshot: GlobalAdminSnapshot;
   /** Якщо true — хоча б один запит повернув порожньо через помилку (view може бути не застосовано). */
   partial: boolean;
 };
 
-export async function queryAllAnalyticsViews(): Promise<AdminAnalyticsViewsPayload> {
+export async function queryAllAnalyticsViews(
+  stationId?: number,
+  stationPeriodRaw?: string
+): Promise<AdminAnalyticsViewsPayload> {
+  const stationPeriod: StationAdminAnalyticsPeriod = parseStationAdminAnalyticsPeriod(stationPeriodRaw);
   let partial = false;
 
   const run = async (name: string, limit: number) => {
@@ -90,6 +108,8 @@ export async function queryAllAnalyticsViews(): Promise<AdminAnalyticsViewsPaylo
     userSegments,
     activeSessions,
     upcomingBookings,
+    stationSnap,
+    globalSnap,
   ] = await Promise.all([
     run(VIEW.adminGlobalDashboard, 2),
     run(VIEW.stationPerformance, 3000),
@@ -100,6 +120,8 @@ export async function queryAllAnalyticsViews(): Promise<AdminAnalyticsViewsPaylo
     run(VIEW.adminUserSegments, 3000),
     run(VIEW.activeSessions, 500),
     run(VIEW.upcomingBookings, 500),
+    queryStationAdminAnalyticsSnapshot(stationId, stationPeriod),
+    queryGlobalAdminAnalyticsSnapshot(),
   ]);
 
   const globalDashboard = globalRows[0] ?? null;
@@ -114,6 +136,8 @@ export async function queryAllAnalyticsViews(): Promise<AdminAnalyticsViewsPaylo
     userSegments,
     activeSessions,
     upcomingBookings,
-    partial,
+    stationAdminSnapshot: stationSnap,
+    globalAdminSnapshot: globalSnap,
+    partial: partial || stationSnap.partial || globalSnap.partial,
   };
 }

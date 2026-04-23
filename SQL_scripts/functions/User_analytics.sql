@@ -1,4 +1,4 @@
-
+-- ВСЕ ОК
 -- -----------------------------------------------------------------------------
 -- Зведення по сесіях: енергія, витрати, середні, найчастіша станція
 -- -----------------------------------------------------------------------------
@@ -66,6 +66,7 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 
 
+-- ВСЕ ОК
 -- -----------------------------------------------------------------------------
 -- Графік споживання / витрат по днях
 -- -----------------------------------------------------------------------------
@@ -259,25 +260,3 @@ BEGIN
   LIMIT lim;
 END;
 $$ LANGUAGE plpgsql STABLE;
-
-
--- -----------------------------------------------------------------------------
--- VIEW: сесія + рахунок + станція (зручно для ad-hoc звітів по user_id)
--- -----------------------------------------------------------------------------
-CREATE OR REPLACE VIEW View_UserSessionBillBase AS
-SELECT
-  s.id AS session_id,
-  s.user_id,
-  s.vehicle_id,
-  s.station_id,
-  st.name AS station_name,
-  s.start_time,
-  s.end_time,
-  s.status AS session_status,
-  s.kwh_consumed,
-  b.calculated_amount,
-  b.payment_status
-FROM session s
-LEFT JOIN bill b ON b.session_id = s.id
-JOIN station st ON st.id = s.station_id
-WHERE s.user_id IS NOT NULL;

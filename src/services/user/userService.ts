@@ -1,6 +1,6 @@
 import { userRepository } from "../../db/user/userRepository.js";
-import { HttpError } from "../../lib/httpError.js";
 import { parseUserAnalyticsPeriod, queryUserAnalytics } from "../../db/user/userAnalyticsRepository.js";
+import { HttpError } from "../../lib/httpError.js";
 import type {
   EvUser,
   Vehicle,
@@ -173,7 +173,6 @@ export const userService = {
     return await userRepository.getBill(userId, billId);
   },
 
-  /** Аналітика з SQL VIEW (View.sql) + агрегати за періодом 7d | 30d | all. */
   async getUserAnalytics(userId: number, periodQuery: string | undefined) {
     const period = parseUserAnalyticsPeriod(periodQuery);
     return await queryUserAnalytics(userId, period);
