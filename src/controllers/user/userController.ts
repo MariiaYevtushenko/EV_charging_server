@@ -326,6 +326,24 @@ export const updateSession: RequestHandler = async (req, res, next) => {
     }
 };
 
+/** POST body: { kwhConsumed: number } — завершити ACTIVE-сесію, bill і порт USED→FREE через тригер SessionCompletedFinalizeBill. */
+export const completeSession: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = Number(req.params["userId"]);
+        const sessionId = Number(req.params["sessionId"]);
+        const raw = (req.body as Record<string, unknown>)?.["kwhConsumed"];
+        const kwhConsumed = typeof raw === "number" ? raw : Number(raw);
+        if (!Number.isFinite(kwhConsumed) || kwhConsumed < 0) {
+            res.status(400).json({ error: "kwhConsumed має бути невід'ємним числом" });
+            return;
+        }
+        const session = await userService.completeActiveSession(userId, sessionId, kwhConsumed);
+        res.json(session);
+    } catch (e) {
+        next(e);
+    }
+};
+
 export const getPayments: RequestHandler = async (req, res, next) => {
     try {
         const userId = Number(req.params["userId"]);

@@ -1,7 +1,5 @@
-
--- -----------------------------------------------------------------------------
--- GetAvailableBookingSlots — вільні інтервали на порту за днем
--- -----------------------------------------------------------------------------
+-- Отримання списку вільних стотів для порту станції на обраний день
+-- вказується тривалість слоту(мінімальний) сесії та кількість слотів
 CREATE OR REPLACE FUNCTION GetAvailableBookingSlots(
   p_station_id INT,
   p_port_number INT,
@@ -14,6 +12,8 @@ DECLARE
   v_total_duration INTERVAL := p_slot_size_minutes * p_units;
   v_step INTERVAL := p_slot_size_minutes;
 BEGIN
+
+-- Слоти для початку сесій
   RETURN QUERY
   WITH FreeSlotsStarts AS (
     SELECT generate_series(
@@ -22,6 +22,11 @@ BEGIN
       v_step
     ) AS s_start
   )
+
+  -- обрати  всі слоти що не перетинаються з бронюваннями
+  -- перевіряються всі попередні бронювання з потенційним слотом  так щоб вони не перетиналися
+  -- якщо немає перетину, то слот NOT EXIST (false) -> додати в результат
+  -- якщо є перетину, то слот EXIST (true) -> не додати в результат
   SELECT
     fss.s_start,
     fss.s_start + v_total_duration

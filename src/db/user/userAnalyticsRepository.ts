@@ -1,6 +1,14 @@
-import { Prisma } from "../../../generated/prisma/index.js";
 import prisma from "../../prisma.config.js";
 import type { PrismaClient } from "../../../generated/prisma/index.js";
+import {
+  sqlGetUserBookingStatsForPeriod,
+  sqlGetUserEnergySpendByDay,
+  sqlGetUserEnergySpendByMonth,
+  sqlGetUserSessionEnergySpendSummary,
+  sqlGetUserTopStationsByEnergy,
+  type UserBookingPeriodStatsRow,
+  type SummarySqlRow,
+} from "./userSqlAnalyticsFunctions.js";
 
 const db = prisma as unknown as PrismaClient;
 
@@ -57,20 +65,49 @@ function serializeRow(row: Record<string, unknown>): Record<string, unknown> {
   return o;
 }
 
-function periodFilterSql(period: UserAnalyticsPeriod): Prisma.Sql {
-  if (period === "all") return Prisma.sql`TRUE`;
-  if (period === "7d") return Prisma.sql`s.start_time >= now() - interval '7 days'`;
-  return Prisma.sql`s.start_time >= now() - interval '30 days'`;
-}
-
-function previousPeriodFilterSql(period: UserAnalyticsPeriod): Prisma.Sql | null {
+/** Вікна [from, to) для підсумків / графіків, узгоджено з SQL-функціями в User_analytics.sql */
+function analyticsPeriodWindows(period: UserAnalyticsPeriod): {
+  current: { from: Date; to: Date };
+  previous: { from: Date; to: Date } | null;
+} {
+  const anchor = new Date();
   if (period === "7d") {
-    return Prisma.sql`s.start_time >= now() - interval '14 days' AND s.start_time < now() - interval '7 days'`;
+    return {
+      current: {
+        from: new Date(anchor.getTime() - 7 * 86400000),
+        to: anchor,
+      },
+      previous: {
+        from: new Date(anchor.getTime() - 14 * 86400000),
+        to: new Date(anchor.getTime() - 7 * 86400000),
+      },
+    };
   }
   if (period === "30d") {
-    return Prisma.sql`s.start_time >= now() - interval '60 days' AND s.start_time < now() - interval '30 days'`;
+    return {
+      current: {
+        from: new Date(anchor.getTime() - 30 * 86400000),
+        to: anchor,
+      },
+      previous: {
+        from: new Date(anchor.getTime() - 60 * 86400000),
+        to: new Date(anchor.getTime() - 30 * 86400000),
+      },
+    };
   }
-  return null;
+  return {
+    current: { from: new Date(0), to: new Date(anchor.getTime() + 86400000) },
+    previous: null,
+  };
+}
+
+function summaryFromSqlRow(r: SummarySqlRow | null | undefined): SummaryRow | undefined {
+  if (!r) return undefined;
+  return {
+    session_count: r.total_sessions,
+    total_kwh: r.total_kwh,
+    total_spent: r.total_revenue,
+  };
 }
 
 async function selectFromViewWhereUser(
@@ -107,6 +144,34 @@ function toSummary(row: SummaryRow | undefined): { sessionCount: number; totalKw
   };
 }
 
+export type UserBookingPeriodPayload = {
+  totalBookings: number;
+  cntBooked: number;
+  cntCompleted: number;
+  cntMissed: number;
+  cntCancelled: number;
+  pctCompleted: number | null;
+};
+
+function mapBookingPeriodStats(row: UserBookingPeriodStatsRow | null): UserBookingPeriodPayload | null {
+  if (!row) return null;
+  const pct = row.pct_completed;
+  const pctNum =
+    pct == null || pct === ""
+      ? null
+      : typeof pct === "number"
+        ? pct
+        : Number(String(pct));
+  return {
+    totalBookings: Number(row.total_bookings ?? 0),
+    cntBooked: Number(row.cnt_booked ?? 0),
+    cntCompleted: Number(row.cnt_completed ?? 0),
+    cntMissed: Number(row.cnt_missed ?? 0),
+    cntCancelled: Number(row.cnt_cancelled ?? 0),
+    pctCompleted: pctNum != null && Number.isFinite(pctNum) ? pctNum : null,
+  };
+}
+
 export type UserAnalyticsPayload = {
   period: UserAnalyticsPeriod;
   comparison: Record<string, unknown> | null;
@@ -118,6 +183,8 @@ export type UserAnalyticsPayload = {
   previousPeriodSummary: { sessionCount: number; totalKwh: number; totalSpent: number } | null;
   trend: { bucket: string; label: string; kwh: number; spend: number }[];
   stationsInPeriod: { stationId: number; stationName: string; kwh: number; spent: number }[];
+  /** Бронювання за той самий інтервал, що й periodSummary (`GetUserBookingStatsForPeriod`). */
+  bookingPeriod: UserBookingPeriodPayload | null;
   partial: boolean;
 };
 
@@ -133,8 +200,7 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     }
   };
 
-  const timeFilter = periodFilterSql(period);
-  const prevFilter = previousPeriodFilterSql(period);
+  const wins = analyticsPeriodWindows(period);
 
   const [
     comparisonRows,
@@ -146,6 +212,7 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     prevAgg,
     trendSeries,
     stationsBreakdown,
+    bookingPeriodRow,
   ] = await Promise.all([
     safe("comparison", () => selectFromViewWhereUser("userAnalyticsComparison", userId, 5), []),
     safe("vehicleStats", () => selectFromViewWhereUser("userVehicleStats", userId, 500), []),
@@ -154,34 +221,19 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     safe("upcomingBookings", () => selectFromViewWhereUser("upcomingBookings", userId, 200), []),
     safe(
       "periodAgg",
-      async () => {
-        const rows = await db.$queryRaw<SummaryRow[]>(Prisma.sql`
-          SELECT
-            COUNT(s.id)::bigint AS session_count,
-            COALESCE(SUM(s.kwh_consumed), 0) AS total_kwh,
-            COALESCE(SUM(b.calculated_amount), 0) AS total_spent
-          FROM session s
-          LEFT JOIN bill b ON b.session_id = s.id
-          WHERE s.user_id = ${userId} AND ${timeFilter}
-        `);
-        return rows[0];
-      },
+      async () =>
+        summaryFromSqlRow(
+          await sqlGetUserSessionEnergySpendSummary(userId, wins.current.from, wins.current.to)
+        ),
       undefined
     ),
     safe(
       "prevAgg",
       async () => {
-        if (!prevFilter) return undefined;
-        const rows = await db.$queryRaw<SummaryRow[]>(Prisma.sql`
-          SELECT
-            COUNT(s.id)::bigint AS session_count,
-            COALESCE(SUM(s.kwh_consumed), 0) AS total_kwh,
-            COALESCE(SUM(b.calculated_amount), 0) AS total_spent
-          FROM session s
-          LEFT JOIN bill b ON b.session_id = s.id
-          WHERE s.user_id = ${userId} AND ${prevFilter}
-        `);
-        return rows[0];
+        if (!wins.previous) return undefined;
+        return summaryFromSqlRow(
+          await sqlGetUserSessionEnergySpendSummary(userId, wins.previous.from, wins.previous.to)
+        );
       },
       undefined
     ),
@@ -189,52 +241,37 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
       "trend",
       async () => {
         if (period === "all") {
-          const raw = await db.$queryRaw<{ bucket: string; kwh: unknown; spend: unknown }[]>(Prisma.sql`
-            SELECT
-              to_char(date_trunc('month', s.start_time), 'YYYY-MM') AS bucket,
-              COALESCE(SUM(s.kwh_consumed), 0) AS kwh,
-              COALESCE(SUM(b.calculated_amount), 0) AS spend
-            FROM session s
-            LEFT JOIN bill b ON b.session_id = s.id
-            WHERE s.user_id = ${userId}
-            GROUP BY date_trunc('month', s.start_time), to_char(date_trunc('month', s.start_time), 'YYYY-MM')
-            ORDER BY date_trunc('month', s.start_time)
-            LIMIT 48
-          `);
-          return raw.map((r) => {
-            const parts = r.bucket.split("-").map(Number);
-            const y = parts[0] ?? 1970;
-            const mo = parts[1] ?? 1;
-            const label = new Date(y, mo - 1, 1).toLocaleDateString("uk-UA", { month: "short", year: "numeric" });
+          const raw = await sqlGetUserEnergySpendByMonth(userId, wins.current.from, wins.current.to);
+          const sliced = raw.slice(-48);
+          return sliced.map((r) => {
+            const ms = r.month_start instanceof Date ? r.month_start : new Date(String(r.month_start));
+            const bucket = `${ms.getFullYear()}-${String(ms.getMonth() + 1).padStart(2, "0")}`;
+            const label = Number.isNaN(ms.getTime())
+              ? bucket
+              : ms.toLocaleDateString("uk-UA", { month: "short", year: "numeric" });
             return {
-              bucket: r.bucket,
+              bucket,
               label,
-              kwh: Number(serializeCell(r.kwh) ?? 0) || 0,
-              spend: Number(serializeCell(r.spend) ?? 0) || 0,
+              kwh: Number(serializeCell(r.total_kwh) ?? 0) || 0,
+              spend: Number(serializeCell(r.total_revenue) ?? 0) || 0,
             };
           });
         }
-        const raw = await db.$queryRaw<{ bucket: string; kwh: unknown; spend: unknown }[]>(Prisma.sql`
-          SELECT
-            to_char(date_trunc('day', s.start_time), 'YYYY-MM-DD') AS bucket,
-            COALESCE(SUM(s.kwh_consumed), 0) AS kwh,
-            COALESCE(SUM(b.calculated_amount), 0) AS spend
-          FROM session s
-          LEFT JOIN bill b ON b.session_id = s.id
-          WHERE s.user_id = ${userId} AND ${timeFilter}
-          GROUP BY date_trunc('day', s.start_time), to_char(date_trunc('day', s.start_time), 'YYYY-MM-DD')
-          ORDER BY date_trunc('day', s.start_time)
-        `);
+        const raw = await sqlGetUserEnergySpendByDay(userId, wins.current.from, wins.current.to);
         return raw.map((r) => {
-          const d = new Date(`${r.bucket}T12:00:00`);
+          const bucket =
+            r.day_bucket instanceof Date
+              ? r.day_bucket.toISOString().slice(0, 10)
+              : String(r.day_bucket).slice(0, 10);
+          const d = new Date(`${bucket}T12:00:00`);
           const label = Number.isNaN(d.getTime())
-            ? r.bucket
+            ? bucket
             : d.toLocaleDateString("uk-UA", { day: "numeric", month: "short" });
           return {
-            bucket: r.bucket,
+            bucket,
             label,
-            kwh: Number(serializeCell(r.kwh) ?? 0) || 0,
-            spend: Number(serializeCell(r.spend) ?? 0) || 0,
+            kwh: Number(serializeCell(r.total_kwh) ?? 0) || 0,
+            spend: Number(serializeCell(r.total_revenue) ?? 0) || 0,
           };
         });
       },
@@ -243,31 +280,17 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     safe(
       "stationsInPeriod",
       async () => {
-        const raw = await db.$queryRaw<
-          { station_id: number; station_name: string; kwh: unknown; spent: unknown }[]
-        >(Prisma.sql`
-          SELECT
-            st.id AS station_id,
-            st.name AS station_name,
-            COALESCE(SUM(s.kwh_consumed), 0) AS kwh,
-            COALESCE(SUM(b.calculated_amount), 0) AS spent
-          FROM session s
-          JOIN station st ON st.id = s.station_id
-          LEFT JOIN bill b ON b.session_id = s.id
-          WHERE s.user_id = ${userId} AND ${timeFilter}
-          GROUP BY st.id, st.name
-          ORDER BY SUM(s.kwh_consumed) DESC NULLS LAST
-          LIMIT 20
-        `);
+        const raw = await sqlGetUserTopStationsByEnergy(userId, wins.current.from, wins.current.to, 20);
         return raw.map((r) => ({
           stationId: r.station_id,
           stationName: r.station_name,
-          kwh: Number(serializeCell(r.kwh) ?? 0) || 0,
-          spent: Number(serializeCell(r.spent) ?? 0) || 0,
+          kwh: Number(serializeCell(r.total_kwh) ?? 0) || 0,
+          spent: Number(serializeCell(r.total_revenue) ?? 0) || 0,
         }));
       },
       []
     ),
+    safe("bookingPeriod", async () => sqlGetUserBookingStatsForPeriod(userId, wins.current.from, wins.current.to), null),
   ]);
 
   const comparison = comparisonRows[0] ?? null;
@@ -280,9 +303,10 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     activeSessions,
     upcomingBookings,
     periodSummary: toSummary(periodAgg),
-    previousPeriodSummary: prevFilter ? toSummary(prevAgg) : null,
+    previousPeriodSummary: wins.previous ? toSummary(prevAgg) : null,
     trend: trendSeries,
     stationsInPeriod: stationsBreakdown,
+    bookingPeriod: mapBookingPeriodStats(bookingPeriodRow),
     partial,
   };
 }

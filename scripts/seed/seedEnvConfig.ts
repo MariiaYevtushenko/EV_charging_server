@@ -3,6 +3,8 @@
 export const SEED_ENV = {
   MASSIVE_USER_COUNT: "SEED_MASSIVE_USER_COUNT",
   DEMO_BOOKINGS_COUNT: "SEED_DEMO_BOOKINGS_COUNT",
+  /** Максимальна глибина в минуле (календарних днів) для дат минулих бронювань у SeedBookings. */
+  DEMO_BOOKINGS_DAYS_BACK: "SEED_DEMO_BOOKINGS_DAYS_BACK",
   /** Цільова кількість рядків `session`; якщо не задано — як `SEED_DEMO_BOOKINGS_COUNT`. */
   DEMO_SESSIONS_COUNT: "SEED_DEMO_SESSIONS_COUNT",
   
@@ -15,6 +17,7 @@ export const SEED_ENV = {
 export const SEED_ENV_DEFAULTS = {
   MASSIVE_USER_COUNT: 1700,
   DEMO_BOOKINGS_COUNT: 3200,
+  DEMO_BOOKINGS_DAYS_BACK: 120,
   SESSION_FROM_BOOKING_SHARE: 0.5,
   /** Скільки календарних днів тарифів підтягувати з API (anchor=end). Має ≥ глибини дат броней/сесій у SQL-сиді. */
   TARIFF_SEED_DAYS: 1200,
@@ -85,6 +88,15 @@ export function getSeedDemoBookingsCount(): number {
     SEED_ENV.DEMO_BOOKINGS_COUNT,
     SEED_ENV_DEFAULTS.DEMO_BOOKINGS_COUNT,
     { min: 1 },
+  );
+}
+
+/** Глибина в минуле для дат минулих бронювань (1…1200 календарних днів). */
+export function getSeedDemoBookingsDaysBack(): number {
+  return parseIntWithFallback(
+    SEED_ENV.DEMO_BOOKINGS_DAYS_BACK,
+    SEED_ENV_DEFAULTS.DEMO_BOOKINGS_DAYS_BACK,
+    { min: 1, max: 1200 },
   );
 }
 

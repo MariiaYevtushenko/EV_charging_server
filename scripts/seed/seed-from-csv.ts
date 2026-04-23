@@ -232,11 +232,12 @@ export async function SeedEvStationsFromCsv(
       continue;
     }
 
+    const stationStatus = stationStatusForCsvSeed(loc.extId);
     await InsertStation(client, {
       stationId: loc.extId,
       locationId,
       name: loc.title,
-      status: stationStatusForCsvSeed(loc.extId),
+      status: stationStatus,
     });
 
     const numPorts = Math.max(1, parseInt(String(row.num_connectors ?? "1"), 10) || 1);
@@ -247,6 +248,7 @@ export async function SeedEvStationsFromCsv(
       numPorts,
       connectorCodes: rowConnectorCodes,
       connectorIdByCode,
+      stationStatus,
     });
     portsInserted += numPorts;
 

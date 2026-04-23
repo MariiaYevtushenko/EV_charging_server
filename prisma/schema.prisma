@@ -20,7 +20,7 @@ enum UserRole {
 enum StationStatus {
   WORK
   ARCHIVED
-  NO_CONNECTION
+  NOT_WORKING
   FIX
 
   @@map("station_status")
@@ -28,9 +28,9 @@ enum StationStatus {
 
 enum PortStatus {
   FREE
-  BOOKED
   USED
   REPAIRED
+  NOT_WORKING
 
   @@map("port_status")
 }

@@ -7,7 +7,7 @@
  * Демо-логіни не вставляються (окремо / вручну).
  *
  * Числові параметри сиду — змінні оточення (дефолти в `scripts/seed/seedEnvConfig.ts`),
- * зокрема `SEED_DEMO_SESSIONS_COUNT` та `SEED_SESSION_FROM_BOOKING_SHARE` для демо-сесій.
+ * зокрема `SEED_DEMO_SESSIONS_COUNT`, `SEED_SESSION_FROM_BOOKING_SHARE`, `SEED_DEMO_BOOKINGS_DAYS_BACK`.
  *
  * Опційно: `SEED_OPTIONAL_SQL_PROCEDURES=true` — лише для кроку 2 (`SeedMassiveUsers`): якщо
  * процедура відсутня, крок пропускається (savepoint). Крок 5 (`SeedBookingsSessionsBills`) завжди
@@ -26,6 +26,7 @@ import { SeedVehiclesFromCsv, SyncVehicleSequence } from "./seed/seed-vehicles-f
 import { upsertTariffDayNightForCalendarDayPg } from "./seed/tariffUpsertPg.js";
 import {
   getSeedDemoBookingsCount,
+  getSeedDemoBookingsDaysBack,
   getSeedDemoSessionsCount,
   getSeedMassiveUserCount,
   getSeedSessionFromBookingShare,
@@ -258,18 +259,21 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
     const bookingCount = getSeedDemoBookingsCount();
     const sessionTarget = getSeedDemoSessionsCount();
     const sessionFromBookingShare = getSeedSessionFromBookingShare();
+    const bookingsDaysBack = getSeedDemoBookingsDaysBack();
 
     seedLog("SEED_ALL_DATA:5", "CALL SeedBookingsSessionsBills", {
       bookings: bookingCount,
       sessions: sessionTarget,
       from_booking_share: sessionFromBookingShare,
+      bookings_days_back: bookingsDaysBack,
       sql_file: "db/Seed_demo_bookings_sessions_bills.sql",
     });
     /** Без savepoint/«опційного пропуску»: інакше при помилці процедури транзакція все одно дійшла б до COMMIT з уже вставленими станціями. */
-    await client.query("CALL SeedBookingsSessionsBills($1, $2, $3)", [
+    await client.query("CALL SeedBookingsSessionsBills($1, $2, $3, $4)", [
       bookingCount,
       sessionTarget,
       sessionFromBookingShare,
+      bookingsDaysBack,
     ]);
     const demoCounts = await client.query<{
       b: string;

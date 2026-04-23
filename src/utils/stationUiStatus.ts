@@ -7,9 +7,10 @@ export function parseStationStatus(raw: unknown): StationStatus {
     case "WORK":
     case "working":
       return "WORK";
+    case "NOT_WORKING":
     case "NO_CONNECTION":
     case "offline":
-      return "NO_CONNECTION";
+      return "NOT_WORKING";
     case "FIX":
     case "maintenance":
       return "FIX";

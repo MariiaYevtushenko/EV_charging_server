@@ -535,7 +535,7 @@ export const adminRepository = {
   },
 
   /**
-   * Завершити активну сесію: COMPLETED, end_time, kwh; створити/оновити bill через SQL UpsertBillForSession.
+   * Завершити активну сесію: COMPLETED, end_time, kwh; створити/оновити bill через SQL CreateFinalBill.
    */
   async completeActiveNetworkSession(sessionId: number, kwhConsumed?: number): Promise<void> {
     await db.$transaction(async (tx) => {
@@ -564,7 +564,7 @@ export const adminRepository = {
       });
 
       await tx.$executeRawUnsafe(
-        `SELECT upsertbillforsession($1::int, NULL::payment_method, 'PENDING'::payment_status)`,
+        `CALL createfinalbill($1::int, 'PENDING'::payment_status)`,
         sessionId
       );
     });

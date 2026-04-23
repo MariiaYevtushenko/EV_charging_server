@@ -153,7 +153,7 @@ export const getNetworkSession: RequestHandler = async (req, res, next) => {
     }
 };
 
-/** Завершити активну сесію (COMPLETED + bill через UpsertBillForSession). */
+/** Завершити активну сесію (COMPLETED + bill через CreateFinalBill). */
 export const postCompleteNetworkSession: RequestHandler = async (req, res, next) => {
     try {
         const sessionId = Number(req.params["sessionId"]);

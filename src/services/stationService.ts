@@ -1,5 +1,7 @@
 import { buildStationsListWhere, stationRepository } from "../db/stationRepository.js";
+import { randomDefaultPortMaxPowerKw } from "../utils/defaultPortMaxPowerKw.js";
 import type { ParsedStationListSort } from "../lib/stationListSort.js";
+import { rethrowIfStationStatusBlockedByActiveSession } from "../lib/stationStatusDbConflict.js";
 import type { Prisma, Station, StationStatus } from "../../generated/prisma/index.js";
 
 /** GET /api/stations/:id/upcoming-bookings */
@@ -138,7 +140,7 @@ export type StationsPageStatusCounts = {
 function mapDbStatusCounts(db: Record<StationStatus, number>): StationsPageStatusCounts {
   return {
     working: db.WORK,
-    offline: db.NO_CONNECTION,
+    offline: db.NOT_WORKING,
     maintenance: db.FIX,
     archived: db.ARCHIVED,
   };
@@ -240,7 +242,7 @@ export const stationService = {
           ? codes.map((name, idx) => ({
               id: r.id * 10000 + idx + 1,
               portNumber: idx + 1,
-              maxPower: 22,
+              maxPower: randomDefaultPortMaxPowerKw(),
               connectorCategory: name,
               status: "FREE",
             }))
@@ -330,11 +332,19 @@ export const stationService = {
   },
 
   async updateStation(stationId: number, station: Station): Promise<Station> {
-    return await stationRepository.updateStation(stationId, station);
+    try {
+      return await stationRepository.updateStation(stationId, station);
+    } catch (e) {
+      rethrowIfStationStatusBlockedByActiveSession(e);
+    }
   },
 
   async archiveStation(stationId: number): Promise<Station> {
-    return await stationRepository.archiveStation(stationId);
+    try {
+      return await stationRepository.archiveStation(stationId);
+    } catch (e) {
+      rethrowIfStationStatusBlockedByActiveSession(e);
+    }
   },
 
   async unarchiveStation(stationId: number): Promise<Station> {
@@ -342,7 +352,11 @@ export const stationService = {
   },
 
   async updateStationStatus(stationId: number, status: StationStatus): Promise<Station> {
-    return await stationRepository.updateStationStatus(stationId, status);
+    try {
+      return await stationRepository.updateStationStatus(stationId, status);
+    } catch (e) {
+      rethrowIfStationStatusBlockedByActiveSession(e);
+    }
   },
 
   /** Повертає false, якщо станції немає. */

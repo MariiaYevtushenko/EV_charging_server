@@ -9,6 +9,7 @@ import type {
   PaymentMethod,
   Prisma,
 } from "../../../generated/prisma/index.js";
+import { sqlGetVehicleReportForPeriod } from "./userSqlAnalyticsFunctions.js";
 
 const db = prisma as unknown as PrismaClient;
 
@@ -243,8 +244,9 @@ export const userRepository = {
   },
 
   /**
-   * Агрегати сесій / kWh / суми bill для авто користувача (фільтр за `session.start_time`).
-   * `all` — увесь час; `today` — з початку локальної календарної доби сервера.
+   * Агрегати для авто: за наявності викликає SQL `GetVehicleReportForPeriod`
+   * (лише COMPLETED + bill.payment_status = SUCCESS) за `session.start_time` у [from, to).
+   * Якщо функція в БД відсутня — fallback на Prisma (усі сесії + суми bill як раніше).
    */
   async getVehicleAggregates(
     userId: number,
@@ -264,8 +266,22 @@ export const userRepository = {
     const now = new Date();
     const todayStart = new Date(now);
     todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(todayStart);
+    todayEnd.setDate(todayEnd.getDate() + 1);
     const d7 = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const d30 = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const farFuture = new Date(now.getFullYear() + 50, 11, 31);
+
+    const [allSql, todaySql, last7dSql, last30dSql] = await Promise.all([
+      sqlGetVehicleReportForPeriod(vehicleId, new Date(0), farFuture),
+      sqlGetVehicleReportForPeriod(vehicleId, todayStart, todayEnd),
+      sqlGetVehicleReportForPeriod(vehicleId, d7, now),
+      sqlGetVehicleReportForPeriod(vehicleId, d30, now),
+    ]);
+
+    if (allSql != null && todaySql != null && last7dSql != null && last30dSql != null) {
+      return { all: allSql, today: todaySql, last7d: last7dSql, last30d: last30dSql };
+    }
 
     const roundKwh = (n: number) => Math.round(n * 1000) / 1000;
     const roundMoney = (n: number) => Math.round(n * 100) / 100;

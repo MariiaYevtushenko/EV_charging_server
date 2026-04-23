@@ -1,7 +1,15 @@
 import { userRepository } from "../../db/user/userRepository.js";
 import { HttpError } from "../../lib/httpError.js";
 import { parseUserAnalyticsPeriod, queryUserAnalytics } from "../../db/user/userAnalyticsRepository.js";
-import type { EvUser, Vehicle, Booking, Bill, UserRole, PaymentMethod } from "../../../generated/prisma/index.js";
+import type {
+  EvUser,
+  Vehicle,
+  Booking,
+  Bill,
+  UserRole,
+  PaymentMethod,
+} from "../../../generated/prisma/index.js";
+import { SessionStatus } from "../../../generated/prisma/index.js";
 import type { Prisma } from "../../../generated/prisma/index.js";
 import {
   AssertValidEmail,
@@ -128,6 +136,21 @@ export const userService = {
   },
   async updateSession(userId: number, sessionId: number, data: Prisma.SessionUpdateInput) {
     return await userRepository.updateSession(userId, sessionId, data);
+  },
+
+  /** Завершити ACTIVE-сесію: COMPLETED + kWh + end_time; bill і порт USED→FREE — тригер SessionCompletedFinalizeBill. */
+  async completeActiveSession(userId: number, sessionId: number, kwhConsumed: number) {
+    const existing = await userRepository.getSession(userId, sessionId);
+    if (existing.status !== SessionStatus.ACTIVE) {
+      throw new HttpError(409, "Сесія не активна або вже завершена");
+    }
+    const kwh = Math.round(kwhConsumed * 1000) / 1000;
+    await userRepository.updateSession(userId, sessionId, {
+      status: SessionStatus.COMPLETED,
+      endTime: new Date(),
+      kwhConsumed: kwh,
+    });
+    return await userRepository.getSession(userId, sessionId);
   },
   async deleteSession(userId: number, sessionId: number) {
     return await userRepository.deleteSession(userId, sessionId);

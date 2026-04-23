@@ -1,19 +1,22 @@
 
--- -----------------------------------------------------------------------------
--- GetTariffPricePerKwhAt — актуальна ціна кВт·год для типу періоду на дату
--- -----------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION GetTariffPricePerKwhAt(p_at TIMESTAMP, p_tariff_type tariff_period)
+-- Отримання ціни тарифу на обраний момент (день/ніч за годиною p_date_at).
+CREATE OR REPLACE FUNCTION GetTariffPricePerKwhAt(
+  p_date_at TIMESTAMP
+)
 RETURNS DECIMAL(10, 2) AS $$
 DECLARE
   v_day DATE;
   v_price DECIMAL(10, 2);
+  v_tariff_type tariff_period;
 BEGIN
-  v_day := (p_at)::date;
+  v_day := (p_date_at)::date;
+
+  v_tariff_type := GetTariffPeriodType(p_date_at);
 
   SELECT t.price_per_kwh
   INTO v_price
   FROM tariff t
-  WHERE t.tariff_type = p_tariff_type AND t.effective_date <= v_day
+  WHERE t.tariff_type = v_tariff_type AND t.effective_date <= v_day
   ORDER BY t.effective_date DESC
   LIMIT 1;
 
@@ -27,9 +30,9 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 
 -- -----------------------------------------------------------------------------
--- GetTariffType — денний / нічний тариф за годиною (07:00–23:00 / решта)
+-- GetTariffPeriodType — денний / нічний тариф за годиною (07:00–23:00 / решта)
 -- -----------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION GetTariffType(p_time TIMESTAMP)
+CREATE OR REPLACE FUNCTION GetTariffPeriodType(p_time TIMESTAMP)
 RETURNS tariff_period AS $$
 DECLARE
   v_t TIME;

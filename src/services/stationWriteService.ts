@@ -2,7 +2,9 @@ import prisma from "../prisma.config.js";
 import type { PrismaClient } from "../../generated/prisma/index.js";
 import type { StationStatus } from "../../generated/prisma/index.js";
 import { stationRepository } from "../db/stationRepository.js";
+import { rethrowIfStationStatusBlockedByActiveSession } from "../lib/stationStatusDbConflict.js";
 import { parseConnectorCategory } from "../utils/connectorCategory.js";
+import { randomDefaultPortMaxPowerKw } from "../utils/defaultPortMaxPowerKw.js";
 import { parseStationStatus } from "../utils/stationUiStatus.js";
 import { stationService } from "./stationService.js";
 
@@ -158,25 +160,29 @@ export const stationWriteService = {
     const row = await stationRepository.findByIdWithPorts(stationId);
     if (!row) return null;
 
-    await db.$transaction(async (tx) => {
-      await updateLocation(
-        tx,
-        row.locationId,
-        input.lat,
-        input.lng,
-        input.country,
-        input.city,
-        input.street,
-        input.houseNumber
-      );
-      await tx.station.update({
-        where: { id: stationId },
-        data: { name: input.name, status: input.status },
+    try {
+      await db.$transaction(async (tx) => {
+        await updateLocation(
+          tx,
+          row.locationId,
+          input.lat,
+          input.lng,
+          input.country,
+          input.city,
+          input.street,
+          input.houseNumber
+        );
+        await tx.station.update({
+          where: { id: stationId },
+          data: { name: input.name, status: input.status },
+        });
+        if (input.ports !== undefined) {
+          await syncPorts(tx, stationId, input.ports);
+        }
       });
-      if (input.ports !== undefined) {
-        await syncPorts(tx, stationId, input.ports);
-      }
-    });
+    } catch (e) {
+      rethrowIfStationStatusBlockedByActiveSession(e);
+    }
 
     return stationService.getStationDashboard(stationId);
   },
@@ -201,7 +207,7 @@ export function parseCreateStationBody(body: Record<string, unknown>): CreateSta
         const connectorCategory = String(o["connectorCategory"] ?? "Type 2");
         return {
           portNumber: Number.isFinite(portNumber) ? portNumber : idx + 1,
-          maxPower: Number.isFinite(maxPower) ? maxPower : 22,
+          maxPower: Number.isFinite(maxPower) ? maxPower : randomDefaultPortMaxPowerKw(),
           connectorCategory,
         };
       })
@@ -240,7 +246,7 @@ export function parseUpdateStationBody(body: Record<string, unknown>): UpdateSta
           const connectorCategory = String(o["connectorCategory"] ?? "Type 2");
           return {
             portNumber: Number.isFinite(portNumber) ? portNumber : idx + 1,
-            maxPower: Number.isFinite(maxPower) ? maxPower : 22,
+            maxPower: Number.isFinite(maxPower) ? maxPower : randomDefaultPortMaxPowerKw(),
             connectorCategory,
           };
         })

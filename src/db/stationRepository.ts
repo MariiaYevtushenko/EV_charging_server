@@ -3,7 +3,7 @@ import { Prisma } from "../../generated/prisma/index.js";
 import type { PrismaClient, Station, StationStatus } from "../../generated/prisma/index.js";
 import type { ParsedStationListSort } from "../lib/stationListSort.js";
 
-const ALL_STATION_STATUSES: StationStatus[] = ["WORK", "NO_CONNECTION", "FIX", "ARCHIVED"];
+const ALL_STATION_STATUSES: StationStatus[] = ["WORK", "NOT_WORKING", "FIX", "ARCHIVED"];
 
 function buildStationListOrderBy(sort: ParsedStationListSort): Prisma.StationOrderByWithRelationInput {
   const dir = sort.dir;

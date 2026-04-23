@@ -81,3 +81,37 @@ BEGIN
   ORDER BY 1 DESC;
 END;
 $$ LANGUAGE plpgsql STABLE;
+
+
+-- -----------------------------------------------------------------------------
+-- GetVehicleReportForPeriod — підсумки по авто за [p_date_from, p_date_to)
+-- Лише завершені сесії (COMPLETED) з успішною оплатою (bill.payment_status = SUCCESS).
+-- start_time сесії в межах періоду; kWh та сума з bill.
+-- -----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION GetVehicleReportForPeriod(
+  p_vehicle_id INT,
+  p_date_from TIMESTAMP,
+  p_date_to TIMESTAMP
+)
+RETURNS TABLE(
+  total_sessions BIGINT,
+  total_kwh NUMERIC,
+  total_revenue NUMERIC
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    COUNT(s.id)::BIGINT AS total_sessions,
+    COALESCE(SUM(s.kwh_consumed), 0) AS total_kwh_consumed,
+    COALESCE(SUM(b.calculated_amount), 0) AS total_revenue_amount
+  FROM session s
+  INNER JOIN bill b ON b.session_id = s.id
+  WHERE s.vehicle_id = p_vehicle_id
+    AND s.start_time >= p_date_from
+    AND s.start_time < p_date_to
+    AND s.status = 'COMPLETED'::session_status
+    AND b.payment_status = 'SUCCESS'::payment_status;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+-- Детальна аналітика для USER (період, графіки, броні, авто, ТОП станцій): див. User_analytics.sql

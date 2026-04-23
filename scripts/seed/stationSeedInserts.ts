@@ -6,45 +6,53 @@ import type { Client } from "pg";
 import type { ConnectorCode } from "./types/evStationsCsv.js";
 
 /** Значення `port_status` у БД (db/EV_Charging_DB.sql). */
-export type PortStatusDb = "FREE" | "BOOKED" | "USED" | "REPAIRED";
+export type PortStatusDb = "FREE" | "USED" | "REPAIRED" | "NOT_WORKING";
 
 /**
- * Статус порту для сиду CSV: порт 1 і 3+ — FREE; порт 2 — BOOKED / USED / REPAIRED / FREE
- * залежно від `station_id` (детерміновано, без випадковості).
+ * Статус порту для сиду CSV за статусом станції:
+ * - FIX → усі порти REPAIRED
+ * - NOT_WORKING / ARCHIVED → усі NOT_WORKING
+ * - WORK → порт 1 і 3+ FREE; порт 2 інколи USED (детерміновано), без REPAIRED (щоб SeedBookings міг обрати порт)
  */
 export function portStatusForCsvSeed(
   stationId: number,
   portNumber: number,
+  stationStatus: StationStatusDb,
 ): PortStatusDb {
+  if (stationStatus === "FIX") {
+    return "REPAIRED";
+  }
+  if (stationStatus === "NOT_WORKING" || stationStatus === "ARCHIVED") {
+    return "NOT_WORKING";
+  }
   if (portNumber !== 2) return "FREE";
   switch (Math.abs(stationId) % 4) {
     case 0:
-      return "BOOKED";
+      return "FREE";
     case 1:
       return "USED";
-    case 2:
-      return "REPAIRED";
     default:
       return "FREE";
   }
 }
 
-/** `station_status` у db/EV_Charging_DB.sql (узгоджено з Prisma StationStatus без ARCHIVED у чистому DDL). */
-export type StationStatusDb = "WORK" | "NO_CONNECTION" | "FIX";
+/** `station_status` у PostgreSQL / Prisma. */
+export type StationStatusDb = "WORK" | "NOT_WORKING" | "FIX" | "ARCHIVED";
 
 /**
  * Для демо потрібна більшість станцій у WORK (інакше SeedBookings не знайде порти).
- * ~80% WORK, по ~10% NO_CONNECTION та FIX (детерміновано від id).
+ * ~70% WORK, ~10% ARCHIVED / NOT_WORKING / FIX (детерміновано від id).
  */
 export function stationStatusForCsvSeed(stationId: number): StationStatusDb {
   const m = Math.abs(stationId) % 10;
-  if (m < 8) return "WORK";
-  if (m === 8) return "NO_CONNECTION";
+  if (m < 7) return "WORK";
+  if (m === 7) return "ARCHIVED";
+  if (m === 8) return "NOT_WORKING";
   return "FIX";
 }
 
 /** Діапазон кВт для випадкового `port.max_power` (узгоджено з DECIMAL(5,2) у схемі). */
-export const PORT_MAX_POWER_KW_MIN = 11;
+export const PORT_MAX_POWER_KW_MIN = 20;
 export const PORT_MAX_POWER_KW_MAX = 150;
 
 /** Випадкова потужність порту кВт (два знаки після коми). */
@@ -161,6 +169,7 @@ export async function InsertPortsForStation(
     numPorts: number;
     connectorCodes: readonly ConnectorCode[];
     connectorIdByCode: Record<string, number>;
+    stationStatus: StationStatusDb;
   },
 ): Promise<void> {
   const codes = params.connectorCodes.length > 0 ? params.connectorCodes : ["TYPE_2"] as const;
@@ -170,7 +179,7 @@ export async function InsertPortsForStation(
     const ctId = params.connectorIdByCode[cat] ?? params.connectorIdByCode["TYPE_2"] ?? 0;
 
     const maxPowerKw = randomPortMaxPowerKw();
-    const status = portStatusForCsvSeed(params.stationId, p);
+    const status = portStatusForCsvSeed(params.stationId, p, params.stationStatus);
 
     await client.query(
       `

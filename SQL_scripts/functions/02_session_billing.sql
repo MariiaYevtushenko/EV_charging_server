@@ -1,7 +1,4 @@
-
--- -----------------------------------------------------------------------------
--- GetFinalSessionAmount — сума до сплати та ціна kВт·год для сесії
--- -----------------------------------------------------------------------------
+-- Отримання суми до сплати та ціни кВт·год для сесії
 CREATE OR REPLACE FUNCTION GetFinalSessionAmount(p_session_id INT)
 RETURNS TABLE(calculated_amount DECIMAL(10, 2), price_per_kwh DECIMAL(10, 2)) AS $$
 DECLARE
@@ -17,6 +14,7 @@ DECLARE
 BEGIN
   IF p_session_id IS NULL THEN
     RAISE EXCEPTION 'Сесія не може бути NULL';
+    RETURN;
   END IF;
 
   SELECT s.id, s.booking_id, s.kwh_consumed, s.start_time
@@ -24,21 +22,23 @@ BEGIN
   FROM session s
   WHERE s.id = p_session_id;
 
-  IF v_session_id IS NULL THEN
-    RAISE EXCEPTION 'Сесія не знайдена';
-  END IF;
+
 
   SELECT b.prepayment_amount, b.booking_type
   INTO v_prepayment, v_booking_type
   FROM booking b
   WHERE b.id = v_booking_id;
 
+-- Якщо бронювання типу CALC, то v_prepayment - ціна за електрику (прогнозована в квт год)
   IF v_booking_type IS NOT NULL AND v_booking_type = 'CALC'::booking_type THEN
     v_tariff_price := v_prepayment;
    
   ELSE
-    v_tariff_type := GetTariffType(v_start_time);
+ - Якщо це  бронювання типу DEPOSIT або просто сесія без бронювання
+    v_tariff_type := GetTariffPeriodType(v_start_time);
     v_tariff_price := GetTariffPricePerKwhAt(v_start_time, v_tariff_type);
+
+     -- Якщо бронювання типу DEPOSIT, то v_prepayment - передплата
     IF v_booking_id IS NOT NULL THEN
        v_prepayment := v_prepayment;    
     END IF;

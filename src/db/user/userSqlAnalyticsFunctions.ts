@@ -1,0 +1,158 @@
+import prisma from "../../prisma.config.js";
+import type { PrismaClient } from "../../../generated/prisma/index.js";
+
+const db = prisma as unknown as PrismaClient;
+
+function num(v: unknown): number {
+  if (typeof v === "number" && Number.isFinite(v)) return v;
+  if (typeof v === "bigint") return Number(v);
+  if (v != null && typeof v === "object" && "toString" in v) {
+    const n = Number(String(v));
+    return Number.isFinite(n) ? n : 0;
+  }
+  if (typeof v === "string") {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+  }
+  return 0;
+}
+
+/** Рядок з `GetVehicleReportForPeriod` (завершені сесії + bill SUCCESS). */
+export async function sqlGetVehicleReportForPeriod(
+  vehicleId: number,
+  from: Date,
+  to: Date
+): Promise<{ sessionCount: number; kwhTotal: number; revenueUah: number } | null> {
+  try {
+    const rows = await db.$queryRawUnsafe<
+      { total_sessions: bigint | number | null; total_kwh: unknown; total_revenue: unknown }[]
+    >(
+      `SELECT * FROM getvehiclereportforperiod($1::int, $2::timestamptz, $3::timestamptz)`,
+      vehicleId,
+      from,
+      to
+    );
+    const r = rows[0];
+    if (!r) return { sessionCount: 0, kwhTotal: 0, revenueUah: 0 };
+    return {
+      sessionCount: Number(r.total_sessions ?? 0),
+      kwhTotal: Math.round(num(r.total_kwh) * 1000) / 1000,
+      revenueUah: Math.round(num(r.total_revenue) * 100) / 100,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export type SummarySqlRow = {
+  total_sessions: bigint | number | null;
+  total_kwh: unknown;
+  total_revenue: unknown;
+};
+
+/** Зведення `GetUserSessionEnergySpendSummary` — одна строка (може бути всі нулі). */
+export async function sqlGetUserSessionEnergySpendSummary(
+  userId: number,
+  from: Date,
+  to: Date
+): Promise<SummarySqlRow | null> {
+  try {
+    const rows = await db.$queryRawUnsafe<SummarySqlRow[]>(
+      `SELECT total_sessions, total_kwh, total_revenue FROM getusersessionenergyspendsummary($1::int, $2::timestamptz, $3::timestamptz)`,
+      userId,
+      from,
+      to
+    );
+    return rows[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function sqlGetUserEnergySpendByDay(
+  userId: number,
+  from: Date,
+  to: Date
+): Promise<{ day_bucket: Date | string; session_count: bigint | number; total_kwh: unknown; total_revenue: unknown }[]> {
+  try {
+    return await db.$queryRawUnsafe<
+      { day_bucket: Date | string; session_count: bigint | number; total_kwh: unknown; total_revenue: unknown }[]
+    >(
+      `SELECT day_bucket, session_count, total_kwh, total_revenue FROM getuserenergyspendbyday($1::int, $2::timestamptz, $3::timestamptz) ORDER BY day_bucket ASC`,
+      userId,
+      from,
+      to
+    );
+  } catch {
+    return [];
+  }
+}
+
+export async function sqlGetUserEnergySpendByMonth(
+  userId: number,
+  from: Date,
+  to: Date
+): Promise<
+  { month_start: Date | string; session_count: bigint | number; total_kwh: unknown; total_revenue: unknown }[]
+> {
+  try {
+    return await db.$queryRawUnsafe<
+      { month_start: Date | string; session_count: bigint | number; total_kwh: unknown; total_revenue: unknown }[]
+    >(
+      `SELECT month_start, session_count, total_kwh, total_revenue FROM getuserenergyspendbymonth($1::int, $2::timestamptz, $3::timestamptz) ORDER BY month_start ASC`,
+      userId,
+      from,
+      to
+    );
+  } catch {
+    return [];
+  }
+}
+
+export async function sqlGetUserTopStationsByEnergy(
+  userId: number,
+  from: Date,
+  to: Date,
+  limit: number
+): Promise<{ station_id: number; station_name: string; total_kwh: unknown; total_revenue: unknown }[]> {
+  try {
+    return await db.$queryRawUnsafe<
+      { station_id: number; station_name: string; total_kwh: unknown; total_revenue: unknown }[]
+    >(
+      `SELECT station_id, station_name, session_count, total_kwh, total_revenue FROM getusertopstationsbyenergy($1::int, $2::timestamptz, $3::timestamptz, $4::int)`,
+      userId,
+      from,
+      to,
+      limit
+    );
+  } catch {
+    return [];
+  }
+}
+
+export type UserBookingPeriodStatsRow = {
+  total_bookings: bigint | number | null;
+  cnt_booked: bigint | number | null;
+  cnt_completed: bigint | number | null;
+  cnt_missed: bigint | number | null;
+  cnt_cancelled: bigint | number | null;
+  pct_completed: unknown;
+};
+
+export async function sqlGetUserBookingStatsForPeriod(
+  userId: number,
+  from: Date,
+  to: Date
+): Promise<UserBookingPeriodStatsRow | null> {
+  try {
+    const rows = await db.$queryRawUnsafe<UserBookingPeriodStatsRow[]>(
+      `SELECT * FROM getuserbookingstatsforperiod($1::int, $2::timestamptz, $3::timestamptz)`,
+      userId,
+      from,
+      to
+    );
+    return rows[0] ?? null;
+  } catch {
+    return null;
+  }
+}
