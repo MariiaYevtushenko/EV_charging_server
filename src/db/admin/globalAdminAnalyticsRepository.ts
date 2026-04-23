@@ -4,8 +4,12 @@ import type { PrismaClient } from "../../../generated/prisma/index.js";
 const db = prisma as unknown as PrismaClient;
 
 const DEFAULT_PERIOD_DAYS = 30;
-const CITY_HOTSPOT_LIMIT = 15;
-const PORT_ROW_LIMIT = 500;
+const MIN_PERIOD_DAYS = 1;
+const MAX_PERIOD_DAYS = 365;
+function clampPeriodDays(days: number): number {
+  if (!Number.isFinite(days)) return DEFAULT_PERIOD_DAYS;
+  return Math.min(MAX_PERIOD_DAYS, Math.max(MIN_PERIOD_DAYS, Math.floor(days)));
+}
 
 function serializeCell(v: unknown): unknown {
   if (v == null) return v;
@@ -37,8 +41,9 @@ function serializeRow(row: Record<string, unknown>): Record<string, unknown> {
 }
 
 function periodWindow(days: number): { from: Date; to: Date } {
+  const d = clampPeriodDays(days);
   const to = new Date();
-  const from = new Date(to.getTime() - Math.max(1, Math.min(365, days)) * 86400000);
+  const from = new Date(to.getTime() - d * 86400000);
   return { from, to };
 }
 
@@ -47,14 +52,15 @@ export type GlobalAdminSnapshot = {
   periodFrom: string;
   periodTo: string;
   partial: boolean;
+  /** GetSummarySessionStatisticByPeriod — сесії, kWh, прибуток, середні показники, середній чек. */
   networkSessionStats: Record<string, unknown> | null;
-  networkRevenueByStation: Record<string, unknown>[];
-  networkRevenueByPort: Record<string, unknown>[];
-  networkPeakHours: Record<string, unknown>[];
   networkRevenueTrendDaily: Record<string, unknown>[];
-  networkDayNightRevenue: Record<string, unknown>[];
-  networkCityHotspots: Record<string, unknown>[];
-  networkBookingSessionMetrics: Record<string, unknown> | null;
+  /** GetAdminSessionStatsByBookingKindForPeriod — без броні / CALC / DEPOSIT. */
+  networkSessionStatsByBookingKind: Record<string, unknown>[];
+  /** View_Admin_SessionStatisticByPortType_30 (останні 30 днів, не залежить від повзунка періоду). */
+  networkPortTypeStats: Record<string, unknown>[];
+  /** View_Admin_Top10MostProfitableCountries_30 (останні 30 днів, не залежить від повзунка періоду). */
+  networkTopCountries: Record<string, unknown>[];
 };
 
 async function safeQuery<T extends Record<string, unknown>>(
@@ -81,60 +87,22 @@ async function safeQueryOne(
   return rows[0] ?? null;
 }
 
-export async function queryGlobalAdminAnalyticsSnapshot(): Promise<GlobalAdminSnapshot> {
+export async function queryGlobalAdminAnalyticsSnapshot(periodDays: number = DEFAULT_PERIOD_DAYS): Promise<GlobalAdminSnapshot> {
   let partial = false;
   const mark = () => {
     partial = true;
   };
 
-  const { from, to } = periodWindow(DEFAULT_PERIOD_DAYS);
+  const days = clampPeriodDays(periodDays);
+  const { from, to } = periodWindow(days);
 
-  const [
-    networkSessionStats,
-    networkRevenueByStation,
-    networkRevenueByPort,
-    networkPeakHours,
-    networkRevenueTrendDaily,
-    networkDayNightRevenue,
-    networkCityHotspots,
-    networkBookingSessionMetrics,
-  ] = await Promise.all([
+  const [networkSessionStats, networkRevenueTrendDaily, networkSessionStatsByBookingKind, networkPortTypeStats, networkTopCountries] =
+    await Promise.all([
     safeQueryOne(
       "networkSessionStats",
       () =>
         db.$queryRawUnsafe<Record<string, unknown>[]>(
-          `SELECT * FROM getadminnetworksessionstatsforperiod($1::timestamptz, $2::timestamptz)`,
-          from,
-          to
-        ),
-      mark
-    ),
-    safeQuery(
-      "networkRevenueByStation",
-      () =>
-        db.$queryRawUnsafe<Record<string, unknown>[]>(
-          `SELECT * FROM getadminnetworkrevenuebystationforperiod($1::timestamptz, $2::timestamptz)`,
-          from,
-          to
-        ),
-      mark
-    ),
-    safeQuery(
-      "networkRevenueByPort",
-      () =>
-        db.$queryRawUnsafe<Record<string, unknown>[]>(
-          `SELECT * FROM getadminnetworkrevenuebyportforperiod($1::timestamptz, $2::timestamptz, $3::int)`,
-          from,
-          to,
-          PORT_ROW_LIMIT
-        ),
-      mark
-    ),
-    safeQuery(
-      "networkPeakHours",
-      () =>
-        db.$queryRawUnsafe<Record<string, unknown>[]>(
-          `SELECT * FROM getadminnetworkpeakhourbuckets($1::timestamptz, $2::timestamptz)`,
+          `SELECT * FROM getsummarysessionstatisticbyperiod($1::timestamptz, $2::timestamptz)`,
           from,
           to
         ),
@@ -144,57 +112,43 @@ export async function queryGlobalAdminAnalyticsSnapshot(): Promise<GlobalAdminSn
       "networkRevenueTrendDaily",
       () =>
         db.$queryRawUnsafe<Record<string, unknown>[]>(
-          `SELECT * FROM getadminnetworkrevenuetrenddailyforperiod($1::timestamptz, $2::timestamptz)`,
+          `SELECT * FROM getadminrevenuetrendbydays($1::timestamptz, $2::timestamptz)`,
           from,
           to
         ),
       mark
     ),
     safeQuery(
-      "networkDayNightRevenue",
+      "networkSessionStatsByBookingKind",
       () =>
         db.$queryRawUnsafe<Record<string, unknown>[]>(
-          `SELECT * FROM getadminnetworkdaynightrevenueproxyforperiod($1::timestamptz, $2::timestamptz)`,
+          `SELECT * FROM getadminsessionstatsbybookingkindforperiod($1::timestamptz, $2::timestamptz)`,
           from,
           to
         ),
       mark
     ),
     safeQuery(
-      "networkCityHotspots",
-      () =>
-        db.$queryRawUnsafe<Record<string, unknown>[]>(
-          `SELECT * FROM getadminnetworkcityhotspotsforperiod($1::timestamptz, $2::timestamptz, $3::int)`,
-          from,
-          to,
-          CITY_HOTSPOT_LIMIT
-        ),
+      "networkPortTypeStats",
+      () => db.$queryRawUnsafe<Record<string, unknown>[]>(`SELECT * FROM view_admin_sessionstatisticbyporttype_30`),
       mark
     ),
-    safeQueryOne(
-      "networkBookingSessionMetrics",
-      () =>
-        db.$queryRawUnsafe<Record<string, unknown>[]>(
-          `SELECT * FROM getadminnetworkbookingsessionmetricsforperiod($1::timestamptz, $2::timestamptz)`,
-          from,
-          to
-        ),
+    safeQuery(
+      "networkTopCountries",
+      () => db.$queryRawUnsafe<Record<string, unknown>[]>(`SELECT * FROM view_admintop10mostprofitablecountries_30`),
       mark
     ),
   ]);
 
   return {
-    periodDays: DEFAULT_PERIOD_DAYS,
+    periodDays: days,
     periodFrom: from.toISOString(),
     periodTo: to.toISOString(),
     partial,
     networkSessionStats,
-    networkRevenueByStation,
-    networkRevenueByPort,
-    networkPeakHours,
     networkRevenueTrendDaily,
-    networkDayNightRevenue,
-    networkCityHotspots,
-    networkBookingSessionMetrics,
+    networkSessionStatsByBookingKind,
+    networkPortTypeStats,
+    networkTopCountries,
   };
 }

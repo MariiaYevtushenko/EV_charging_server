@@ -5,6 +5,7 @@ import {
   getStationBookingDayLoad,
   getStationDashboard as getStation,
   getStationEnergyAnalytics,
+  getStationSessionSqlStats,
   getStationUpcomingBookings,
   getStationsMap,
 } from "../controllers/stationController.js";
@@ -33,6 +34,7 @@ stationRouter.get("/:stationId/upcoming-bookings", getStationUpcomingBookings);
 stationRouter.get("/:stationId/booking-day-load", getStationBookingDayLoad);
 stationRouter.get("/:stationId/available-booking-slots", getAvailableBookingSlots);
 stationRouter.get("/:stationId/analytics-energy", getStationEnergyAnalytics);
+stationRouter.get("/:stationId/session-sql-stats", getStationSessionSqlStats);
 
 stationRouter.put("/:stationId", updateStation);
 stationRouter.post("/:stationId/archive", archiveStation);

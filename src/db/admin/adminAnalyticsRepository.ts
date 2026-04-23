@@ -1,9 +1,7 @@
 import prisma from "../../prisma.config.js";
 import type { PrismaClient } from "../../../generated/prisma/index.js";
 import {
-  parseStationAdminAnalyticsPeriod,
   queryStationAdminAnalyticsSnapshot,
-  type StationAdminAnalyticsPeriod,
   type StationAdminSnapshot,
 } from "./stationAdminAnalyticsRepository.js";
 import {
@@ -18,10 +16,11 @@ const VIEW = {
   adminGlobalDashboard: "view_adminglobaldashboard",
   stationPerformance: "view_stationperformance",
   userAnalyticsComparison: "view_useranalyticscomparison",
-  userVehicleStats: "view_uservehiclestats",
   userStationLoyalty: "view_userstationloyalty",
   adminCityPerformance: "view_admin_city_performance",
   adminUserSegments: "view_admin_user_segments",
+  /** Global_admin_analytics.sql — сесії за 30 днів по типу конектора (мережа). */
+  adminSessionStatisticByPortType30: "view_admin_sessionstatisticbyporttype_30",
   activeSessions: "view_activesessions",
   upcomingBookings: "view_upcomingbookings",
 } as const;
@@ -67,12 +66,13 @@ export type AdminAnalyticsViewsPayload = {
   globalDashboard: Record<string, unknown> | null;
   stationPerformance: Record<string, unknown>[];
   userAnalyticsComparison: Record<string, unknown>[];
-  userVehicleStats: Record<string, unknown>[];
   userStationLoyalty: Record<string, unknown>[];
   cityPerformance: Record<string, unknown>[];
   userSegments: Record<string, unknown>[];
   activeSessions: Record<string, unknown>[];
   upcomingBookings: Record<string, unknown>[];
+  /** VIEW View_Admin_SessionStatisticByPortType_30 — мережа, останні 30 днів. */
+  sessionStatsByPortType30d: Record<string, unknown>[];
   /** Функції з Station_admin_analytics.sql (мережа + опційно stationId). */
   stationAdminSnapshot: StationAdminSnapshot;
   /** Функції з Global_admin_analytics.sql (мережа за період). */
@@ -81,12 +81,25 @@ export type AdminAnalyticsViewsPayload = {
   partial: boolean;
 };
 
-export async function queryAllAnalyticsViews(
-  stationId?: number,
-  stationPeriodRaw?: string
-): Promise<AdminAnalyticsViewsPayload> {
-  const stationPeriod: StationAdminAnalyticsPeriod = parseStationAdminAnalyticsPeriod(stationPeriodRaw);
+/** Параметри зрізу `stationAdminSnapshot` (GET /api/admin/analytics/views). */
+export type AdminStationViewsQuery = Partial<{
+  stationId: number;
+  period: string;
+  topPeriod: string;
+  fewestPeriod: string;
+  sessionStatsPage: number;
+  sessionStatsPageSize: number;
+  portStatsPage: number;
+  portStatsPageSize: number;
+  peakStationId: number;
+  peakPeriod: string;
+  /** Кількість днів для `globalAdminSnapshot` (функції Global_admin_analytics.sql), 1–365. */
+  globalPeriodDays: number;
+}>;
+
+export async function queryAllAnalyticsViews(stationQuery?: AdminStationViewsQuery): Promise<AdminAnalyticsViewsPayload> {
   let partial = false;
+  const globalPeriodDays = stationQuery?.globalPeriodDays ?? 30;
 
   const run = async (name: string, limit: number) => {
     try {
@@ -102,26 +115,26 @@ export async function queryAllAnalyticsViews(
     globalRows,
     stationPerformance,
     userAnalyticsComparison,
-    userVehicleStats,
     userStationLoyalty,
     cityPerformance,
     userSegments,
     activeSessions,
     upcomingBookings,
+    sessionStatsByPortType30d,
     stationSnap,
     globalSnap,
   ] = await Promise.all([
     run(VIEW.adminGlobalDashboard, 2),
     run(VIEW.stationPerformance, 3000),
     run(VIEW.userAnalyticsComparison, 8000),
-    run(VIEW.userVehicleStats, 8000),
     run(VIEW.userStationLoyalty, 800),
     run(VIEW.adminCityPerformance, 500),
     run(VIEW.adminUserSegments, 3000),
     run(VIEW.activeSessions, 500),
     run(VIEW.upcomingBookings, 500),
-    queryStationAdminAnalyticsSnapshot(stationId, stationPeriod),
-    queryGlobalAdminAnalyticsSnapshot(),
+    run(VIEW.adminSessionStatisticByPortType30, 200),
+    queryStationAdminAnalyticsSnapshot(stationQuery),
+    queryGlobalAdminAnalyticsSnapshot(globalPeriodDays),
   ]);
 
   const globalDashboard = globalRows[0] ?? null;
@@ -130,12 +143,12 @@ export async function queryAllAnalyticsViews(
     globalDashboard,
     stationPerformance,
     userAnalyticsComparison,
-    userVehicleStats,
     userStationLoyalty,
     cityPerformance,
     userSegments,
     activeSessions,
     upcomingBookings,
+    sessionStatsByPortType30d,
     stationAdminSnapshot: stationSnap,
     globalAdminSnapshot: globalSnap,
     partial: partial || stationSnap.partial || globalSnap.partial,

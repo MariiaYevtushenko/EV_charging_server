@@ -234,6 +234,8 @@ export type UserAnalyticsPayload = {
     current: { sessionCount: number; totalKwh: number; totalSpentUah: number };
     previous: { sessionCount: number; totalKwh: number; totalSpentUah: number };
   };
+  /** Динаміка графіків: `month` = GetUserEnergySpendByMonth (лише «Увесь час»), `day` = GetUserEnergySpendByDay (сьогодні / 7 / 30 днів). */
+  trendGranularity: "day" | "month";
   trend: { bucket: string; label: string; kwh: number; spend: number }[];
   stationsInPeriod: { stationId: number; stationName: string; sessionCount: number; kwh: number; spent: number }[];
   vehicleSpendInPeriod: {
@@ -286,6 +288,7 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     safe(
       "trend",
       async () => {
+        // «Увесь час» — місячні відрами (GetUserEnergySpendByMonth). Інакше — по добі (GetUserEnergySpendByDay): сьогодні, 7, 30 днів.
         if (period === "all") {
           const raw = await sqlGetUserEnergySpendByMonth(userId, wins.current.from, wins.current.to);
           return raw.map((r) => {
@@ -389,6 +392,8 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     };
   });
 
+  const trendGranularity: "day" | "month" = period === "all" ? "month" : "day";
+
   return {
     period,
     comparison: comparisonRows[0] ?? null,
@@ -399,6 +404,7 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     periodSessionDetail,
     kpiVsPrevCalendarMonth,
     calendarMonthKpis,
+    trendGranularity,
     trend: trendRows,
     stationsInPeriod,
     vehicleSpendInPeriod,

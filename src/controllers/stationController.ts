@@ -137,6 +137,27 @@ export const getStationEnergyAnalytics: RequestHandler = async (req, res, next) 
   }
 };
 
+/** GET /api/stations/:stationId/session-sql-stats?period=today|7d|30d|all — GetStationSessionStatsForPeriod */
+export const getStationSessionSqlStats: RequestHandler = async (req, res, next) => {
+  try {
+    const stationId = Number(req.params["stationId"]);
+    if (!Number.isFinite(stationId)) {
+      res.status(400).json({ error: "Station id is required" });
+      return;
+    }
+    const raw = req.query["period"];
+    const period = typeof raw === "string" ? raw : undefined;
+    const data = await stationService.getStationSessionSqlStats(stationId, period);
+    if (!data) {
+      res.status(404).json({ error: "Station not found" });
+      return;
+    }
+    res.json(data);
+  } catch (e) {
+    next(e);
+  }
+};
+
 const MAP_BOUNDS_DEFAULT_LIMIT = 2500;
 const MAP_BOUNDS_MAX_LIMIT = 5000;
 

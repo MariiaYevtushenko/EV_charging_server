@@ -1,7 +1,9 @@
 
 -- Станція: по порту (останні 30 днів). Джерело — View_StationPortStatsLast30Days у Station_admin_analytics.sql
 -- (застосуйте спочатку functions/Station_admin_analytics.sql, потім View.sql).
-CREATE OR REPLACE VIEW View_StationPerformance AS
+-- DROP потрібен, якщо раніше station_name був varchar(100), а у джерелі тепер TEXT — REPLACE не змінює тип стовпця (42P16).
+DROP VIEW IF EXISTS View_StationPerformance CASCADE;
+CREATE VIEW View_StationPerformance AS
 SELECT
   station_id,
   station_name,
@@ -41,19 +43,7 @@ FROM lined
 GROUP BY user_id;
 
 
--- Користувач: агрегати по кожному авто (усі часи + кількість зарядок за 30 днів).
-CREATE OR REPLACE VIEW View_UserVehicleStats AS
-SELECT
-    v.user_id,
-    v.license_plate,
-    v.brand || ' ' || v.model AS car_name,
-    COUNT(s.id) AS total_charges,
-    COALESCE(SUM(s.kwh_consumed), 0) AS total_kwh,
-    COUNT(s.id) FILTER (
-        WHERE s.start_time > now() - interval '30 days') AS charges_last_30d
-FROM vehicle v
-LEFT JOIN session s ON v.id = s.vehicle_id
-GROUP BY v.user_id, v.id, v.license_plate, v.brand, v.model;
+DROP VIEW IF EXISTS View_UserVehicleStats CASCADE;
 
 
 -- Користувач: до 10 улюблених станцій за 90 днів (ранг за kWh, візитами, сумою; лише сесії з bill).
@@ -69,7 +59,7 @@ WITH users_charges AS (
     FROM session s
     JOIN station st ON s.station_id = st.id
     JOIN bill b ON s.id = b.session_id
-    WHERE s.start_time >= now() - interval '90 days'
+    WHERE s.start_time >= now() - interval ' days'
     GROUP BY s.user_id, st.id, st.name
 ),
 ranked AS (
@@ -121,7 +111,41 @@ FROM stats_current curr
 CROSS JOIN stats_previous prev;
 
 
--- Адмін: по місту — частка станцій WORK, виручка, середній чек, «інтенсивність» (сесії на станцію).
+-- Глобальний адмін: сесії за 30 днів за типом конектора порту (джерело для globalAdminAnalyticsRepository.networkPortTypeStats).
+-- Раніше було лише в functions/Global_admin_analytics.sql — застосуйте цей файл після DDL і потрібних функцій.
+CREATE OR REPLACE VIEW View_Admin_SessionStatisticByPortType_30 AS
+SELECT
+  ct.id AS connector_type_id,
+  ct.name::TEXT AS connector_type_name,
+  COUNT(s.id)::BIGINT AS total_sessions,
+  COALESCE(SUM(s.kwh_consumed), 0)::NUMERIC AS total_kwh,
+  COALESCE(SUM(b.calculated_amount), 0)::NUMERIC AS total_revenue
+FROM session s
+JOIN port p ON p.station_id = s.station_id AND p.port_number = s.port_number
+LEFT JOIN connector_type ct ON ct.id = p.connector_type_id
+LEFT JOIN bill b ON b.session_id = s.id
+WHERE s.start_time >= now() - INTERVAL '30 days'
+GROUP BY ct.id, ct.name
+ORDER BY COUNT(s.id) DESC NULLS LAST, ct.id NULLS LAST;
+
+
+-- Глобальний адмін: топ країн за прибутком за 30 днів (globalAdminAnalyticsRepository.networkTopCountries → view_admintop10mostprofitablecountries_30).
+CREATE OR REPLACE VIEW View_Admin_Top10MostProfitableCountries_30 AS
+SELECT
+  l.country AS country_name,
+  COALESCE(SUM(b.calculated_amount), 0) AS total_revenue
+FROM session s
+JOIN bill b ON b.session_id = s.id
+JOIN station st ON st.id = s.station_id
+JOIN location l ON l.id = st.location_id
+WHERE s.start_time >= now() - INTERVAL '30 days'
+  AND s.status = 'COMPLETED'::session_status
+GROUP BY l.country
+ORDER BY total_revenue DESC NULLS LAST, country_name NULLS LAST
+LIMIT 10;
+
+
+-- Адмін: по місту — частка станцій WORK, прибуток, середній чек, «інтенсивність» (сесії на станцію).
 CREATE OR REPLACE VIEW view_admin_city_performance AS
 SELECT
     l.city,

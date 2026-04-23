@@ -4,7 +4,7 @@
 -- =============================================================================
 
 
--- Порти станції за останні 30 днів: кількість сесій, спожита енергія (кВт·год), виручка з bill.
+-- Порти станції за останні 30 днів: кількість сесій, спожита енергія (кВт·год), прибуток з bill.
 
 CREATE OR REPLACE VIEW View_StationPortStatsLast30Days AS
 SELECT
@@ -26,7 +26,7 @@ LEFT JOIN bill b ON b.session_id = s.id
 GROUP BY p.station_id, st.name, p.port_number, ct.name;
 
 
--- Один рядок на станцію: сесії за останні 30 днів, середня тривалість (хв), середній kWh, виручка, середній чек (де є bill).
+-- Один рядок на станцію: сесії за останні 30 днів, середня тривалість (хв), середній kWh, прибуток, середній чек (де є bill).
 -- Замість GetStationSessionStatsForPeriod(..., now()-30d, now()) — зріз фіксований у визначенні VIEW.
 
 CREATE OR REPLACE VIEW View_StationSessionStatsLast30Days AS
@@ -158,38 +158,5 @@ AS $$
     AND s.start_time < p_date_to;
 $$;
 
-
--- Порти станції за [p_date_from, p_date_to): сесії, kWh, виручка (як View_StationPortStatsLast30Days, з датами).
-CREATE OR REPLACE FUNCTION GetStationPortMetricsForPeriod(
-  p_station_id INT,
-  p_date_from TIMESTAMP,
-  p_date_to TIMESTAMP
-)
-RETURNS TABLE(
-  port_number INT,
-  connector_name TEXT,
-  session_count BIGINT,
-  total_kwh NUMERIC,
-  total_revenue NUMERIC
-)
-LANGUAGE sql
-STABLE
-AS $$
-  SELECT
-    p.port_number,
-    COALESCE(ct.name, '—')::TEXT AS connector_name,
-    COUNT(s.id)::BIGINT AS session_count,
-    COALESCE(SUM(s.kwh_consumed), 0)::NUMERIC AS total_kwh,
-    COALESCE(SUM(b.calculated_amount), 0)::NUMERIC AS total_revenue
-  FROM port p
-  LEFT JOIN connector_type ct ON ct.id = p.connector_type_id
-  LEFT JOIN session s
-    ON s.station_id = p.station_id
-   AND s.port_number = p.port_number
-   AND s.start_time >= p_date_from
-   AND s.start_time < p_date_to
-  LEFT JOIN bill b ON b.session_id = s.id
-  WHERE p.station_id = p_station_id
-  GROUP BY p.port_number, ct.name
-  ORDER BY p.port_number;
-$$;
+-- Якщо функція була створена раніше — прибрати з БД після оновлення скрипта.
+DROP FUNCTION IF EXISTS GetStationPortMetricsForPeriod(INT, TIMESTAMP, TIMESTAMP);

@@ -6,4 +6,5 @@
   5. User_analytics.sql          — аналітика кінцевого користувача (період + VIEW)
   6. Station_admin_analytics.sql — аналітика адміна станцій (мережа + станція)
   7. Global_admin_analytics.sql — аналітика глобального адміна (мережа за періодом)
+  8. ../View.sql — зведені VIEW (у т.ч. View_Admin_Top10MostProfitableCountries_30 для «Топ країн»)
 Далі: ../Procedures.sql (мутації: bill, старт сесії, скасування броні)

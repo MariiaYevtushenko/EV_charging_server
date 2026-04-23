@@ -1,3 +1,8 @@
+import {
+  parseStationAdminAnalyticsPeriod,
+  queryGetStationSessionStatsForPeriod,
+  type StationAdminAnalyticsPeriod,
+} from "../db/admin/stationAdminAnalyticsRepository.js";
 import { buildStationsListWhere, stationRepository } from "../db/stationRepository.js";
 import { randomDefaultPortMaxPowerKw } from "../utils/defaultPortMaxPowerKw.js";
 import type { ParsedStationListSort } from "../lib/stationListSort.js";
@@ -42,6 +47,33 @@ export type StationEnergyAnalyticsDto = {
   sessionCount: number;
   totalRevenueUah: number;
 };
+
+/** GET /api/stations/:id/session-sql-stats — `GetStationSessionStatsForPeriod` (SQL). */
+export type StationSessionSqlStatsDto = {
+  period: StationAdminAnalyticsPeriod;
+  periodFrom: string;
+  periodTo: string;
+  partial: boolean;
+  totalSessions: number;
+  avgDurationMinutes: number | null;
+  avgKwh: number | null;
+  totalRevenue: number;
+  avgBillAmount: number | null;
+};
+
+function numSqlStat(v: unknown): number {
+  if (typeof v === "number" && Number.isFinite(v)) return v;
+  if (typeof v === "bigint") return Number(v);
+  if (v != null && typeof v === "object" && "toString" in v) {
+    const n = Number(String(v));
+    return Number.isFinite(n) ? n : 0;
+  }
+  if (typeof v === "string") {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+  }
+  return 0;
+}
 
 function addMs(d: Date, ms: number): Date {
   return new Date(d.getTime() + ms);
@@ -107,7 +139,7 @@ export type StationDashboardDto = {
   lng: number | null;
   createdAt: string;
   updatedAt: string;
-  /** Виручка за поточну календарну добу (грн), з рахунків SUCCESS як у мережевій аналітиці. */
+  /** Прибуток за поточну календарну добу (грн), з рахунків SUCCESS як у мережевій аналітиці. */
   todayRevenue: number;
   /** Кількість сесій з початком у поточну добу. */
   todaySessions: number;
@@ -422,6 +454,43 @@ export const stationService = {
         vehicleLicensePlate: b.vehicle?.licensePlate ?? null,
       };
     });
+  },
+
+  async getStationSessionSqlStats(
+    stationId: number,
+    periodQuery: string | undefined
+  ): Promise<StationSessionSqlStatsDto | null> {
+    const exists = await stationRepository.findByIdWithPorts(stationId);
+    if (!exists) return null;
+    const period = parseStationAdminAnalyticsPeriod(periodQuery);
+    const { row, partial, periodFrom, periodTo } = await queryGetStationSessionStatsForPeriod(stationId, period);
+    if (!row) {
+      return {
+        period,
+        periodFrom,
+        periodTo,
+        partial,
+        totalSessions: 0,
+        avgDurationMinutes: null,
+        avgKwh: null,
+        totalRevenue: 0,
+        avgBillAmount: null,
+      };
+    }
+    const avgDur = row.avg_duration_minutes;
+    const avgK = row.avg_kwh;
+    const avgBill = row.avg_bill_amount;
+    return {
+      period,
+      periodFrom,
+      periodTo,
+      partial,
+      totalSessions: Math.floor(numSqlStat(row.total_sessions)),
+      avgDurationMinutes: avgDur == null ? null : numSqlStat(avgDur),
+      avgKwh: avgK == null ? null : numSqlStat(avgK),
+      totalRevenue: numSqlStat(row.total_revenue),
+      avgBillAmount: avgBill == null ? null : numSqlStat(avgBill),
+    };
   },
 
   async getStationEnergyAnalytics(

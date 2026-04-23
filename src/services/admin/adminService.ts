@@ -23,6 +23,7 @@ import { HttpError } from "../../lib/httpError.js";
 import {
     queryAllAnalyticsViews,
     type AdminAnalyticsViewsPayload,
+    type AdminStationViewsQuery,
 } from "../../db/admin/adminAnalyticsRepository.js";
 import type {
     BookingType,
@@ -646,10 +647,7 @@ export const adminService = {
         return adminRepository.getDashboardNetworkStats();
     },
 
-    async getAnalyticsViews(
-        stationId?: number | null,
-        stationPeriod?: string
-    ): Promise<AdminAnalyticsViewsPayload> {
-        return queryAllAnalyticsViews(stationId ?? undefined, stationPeriod);
+    async getAnalyticsViews(q?: AdminStationViewsQuery): Promise<AdminAnalyticsViewsPayload> {
+        return queryAllAnalyticsViews(q);
     },
 }   

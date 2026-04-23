@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 import type { UserRole } from "../../../generated/prisma/index.js";
+import type { AdminStationViewsQuery } from "../../db/admin/adminAnalyticsRepository.js";
 import { adminService } from "../../services/admin/adminService.js";
 import { toEvUserPublic } from "../../utils/evUserPublic.js";
 import {
@@ -238,17 +239,41 @@ export const getDashboard: RequestHandler = async (_req, res, next) => {
     }
 };
 
-/** Дані з SQL VIEW (View.sql) + Station_admin_analytics.sql; query `stationId` — деталізація по станції; `period` — вікно як у користувача (today|7d|30d|all). */
+function parseOptionalPositiveIntParam(raw: unknown): number | undefined {
+    if (typeof raw !== "string" || !/^\d+$/.test(raw.trim())) return undefined;
+    const n = Number.parseInt(raw.trim(), 10);
+    return Number.isFinite(n) && n > 0 ? n : undefined;
+}
+
+/** Дані з SQL VIEW (View.sql) + Station_admin_analytics.sql; див. `AdminStationViewsQuery`. */
 export const getAnalyticsViews: RequestHandler = async (req, res, next) => {
     try {
-        const raw = req.query["stationId"];
-        const stationId =
-            typeof raw === "string" && /^\d+$/.test(raw.trim())
-                ? Number.parseInt(raw.trim(), 10)
-                : undefined;
-        const periodRaw = req.query["period"];
-        const stationPeriod = typeof periodRaw === "string" ? periodRaw : undefined;
-        const data = await adminService.getAnalyticsViews(stationId, stationPeriod);
+        const q = req.query as Record<string, string | undefined>;
+        const stationQuery: AdminStationViewsQuery = {};
+        const sid = parseOptionalPositiveIntParam(q["stationId"]);
+        if (sid !== undefined) stationQuery.stationId = sid;
+        if (q["period"] !== undefined && q["period"] !== "") stationQuery.period = q["period"];
+        if (q["topPeriod"] !== undefined && q["topPeriod"] !== "") stationQuery.topPeriod = q["topPeriod"];
+        if (q["fewestPeriod"] !== undefined && q["fewestPeriod"] !== "") stationQuery.fewestPeriod = q["fewestPeriod"];
+        const ssp = parseOptionalPositiveIntParam(q["sessionStatsPage"]);
+        if (ssp !== undefined) stationQuery.sessionStatsPage = ssp;
+        const sessionStatsPageSize = parseOptionalPositiveIntParam(q["sessionStatsPageSize"]);
+        if (sessionStatsPageSize !== undefined) stationQuery.sessionStatsPageSize = sessionStatsPageSize;
+        const psp = parseOptionalPositiveIntParam(q["portStatsPage"]);
+        if (psp !== undefined) stationQuery.portStatsPage = psp;
+        const pss = parseOptionalPositiveIntParam(q["portStatsPageSize"]);
+        if (pss !== undefined) stationQuery.portStatsPageSize = pss;
+        const peakSid = parseOptionalPositiveIntParam(q["peakStationId"]);
+        if (peakSid !== undefined) stationQuery.peakStationId = peakSid;
+        if (q["peakPeriod"] !== undefined && q["peakPeriod"] !== "") stationQuery.peakPeriod = q["peakPeriod"];
+        const gpd = parseOptionalPositiveIntParam(q["globalPeriodDays"]);
+        if (gpd !== undefined) {
+            stationQuery.globalPeriodDays = Math.min(365, Math.max(1, gpd));
+        }
+
+        const data = await adminService.getAnalyticsViews(
+            Object.keys(stationQuery).length > 0 ? stationQuery : undefined
+        );
         res.json(data);
     } catch (e) {
         next(e);
