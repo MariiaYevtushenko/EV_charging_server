@@ -160,7 +160,7 @@ export async function fetchEntsoeDayNightKwh(
   );
   const backoffMs = Math.max(
     500,
-    Number(process.env["ENTSOE_429_BACKOFF_MS"] ?? "3000"),
+    Number(process.env["ENTSOE_429_BACKOFF_MS"] ?? "6000"),
   );
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -182,7 +182,23 @@ export async function fetchEntsoeDayNightKwh(
     const xml = await response.text();
     return parseEntsoeA44XmlToDayNightKwh(xml, fallbackKwh);
   }
+  /**
+   * Після усіх спроб 429 — за замовчуванням не валимо сид: підставляємо €/кВт·год (як у відповіді A44),
+   * далі `tariffIngestService` переведе в грн через НБУ, якщо `TARIFF_API_PRICES_IN_EUR=true`.
+   * Вимкнути: `ENTSOE_429_USE_FALLBACK=false`.
+   */
+  if (String(process.env["ENTSOE_429_USE_FALLBACK"] ?? "true").toLowerCase() !== "false") {
+    const day = Number(process.env["ENTSOE_FALLBACK_EUR_PER_KWH_DAY"] ?? "0.12");
+    const night = Number(process.env["ENTSOE_FALLBACK_EUR_PER_KWH_NIGHT"] ?? "0.09");
+    console.warn(
+      `[ENTSO-E] HTTP 429 після ${maxRetries} спроб для ${calendarDay.toISOString().slice(0, 10)} — fallback €/кВт·год day=${day}, night=${night} (ENTSOE_FALLBACK_EUR_PER_KWH_*).`,
+    );
+    return {
+      day: normalizeEntsoeKwhForTariff(Number.isFinite(day) ? day : 0.12),
+      night: normalizeEntsoeKwhForTariff(Number.isFinite(night) ? night : 0.09),
+    };
+  }
   throw new Error(
-    `ENTSO-E HTTP 429 (rate limit): вичерпано ${maxRetries} спроб. Збільшіть ENTSOE_429_BACKOFF_MS або ENTSOE_SEED_DELAY_MS у tariffIngestService, зменшіть TARIFF_SEED_DAYS.`,
+    `ENTSO-E HTTP 429 (rate limit): вичерпано ${maxRetries} спроб. Збільшіть ENTSOE_429_BACKOFF_MS або ENTSOE_SEED_DELAY_MS, зменшіть TARIFF_SEED_DAYS, ENTSOE_SEED_SEQUENTIAL=true, або TARIFF_SEED_USE_SNAPSHOT_FIRST=true (scripts/seed/data/tariff_seed_snapshot.json).`,
   );
 }

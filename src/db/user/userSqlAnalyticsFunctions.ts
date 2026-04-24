@@ -203,20 +203,3 @@ export async function sqlGetUserBookingStatsForPeriod(
   }
 }
 
-export type UserSpendMonthMomRow = {
-  current_month_spend: unknown;
-  prev_month_spend: unknown;
-  pct_change: unknown;
-};
-
-export async function sqlGetUserSpendMonthOverPreviousMonth(userId: number): Promise<UserSpendMonthMomRow | null> {
-  try {
-    const rows = await db.$queryRawUnsafe<UserSpendMonthMomRow[]>(
-      `SELECT * FROM getuserspendmonthoverpreviousmonth($1::int)`,
-      userId
-    );
-    return rows[0] ?? null;
-  } catch {
-    return null;
-  }
-}

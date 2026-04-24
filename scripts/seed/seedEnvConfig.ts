@@ -19,8 +19,14 @@ export const SEED_ENV_DEFAULTS = {
   DEMO_BOOKINGS_COUNT: 3200,
   DEMO_BOOKINGS_DAYS_BACK: 120,
   SESSION_FROM_BOOKING_SHARE: 0.5,
-  /** Скільки календарних днів тарифів підтягувати з API (anchor=end). Має ≥ глибини дат броней/сесій у SQL-сиді. */
-  TARIFF_SEED_DAYS: 1200,
+  /**
+   * Скільки календарних днів тарифів підтягувати з API (anchor=end).
+   * Має бути ≥ `SEED_DEMO_BOOKINGS_DAYS_BACK` (і глибини дат у SQL-сиді).
+   * Для ENTSO-E великі значення (сотні+) дають HTTP 429 — тоді `ENTSOE_SEED_SEQUENTIAL=true`,
+   * зменшіть `TARIFF_SEED_FETCH_CONCURRENCY`, увімкніть `TARIFF_SEED_USE_SNAPSHOT_FIRST=true`
+   * або збільшіть паузи (`ENTSOE_SEED_DELAY_MS`, `ENTSOE_429_BACKOFF_MS`).
+   */
+  TARIFF_SEED_DAYS: 210,
 } as const;
 
 const TARIFF_DAYS_MIN = 1;

@@ -1,4 +1,5 @@
 import type { RequestHandler } from "express";
+import { HttpError } from "../../lib/httpError.js";
 import { userService } from "../../services/user/userService.js";
 import type { Prisma, PaymentMethod } from "../../../generated/prisma/index.js";
 import { BookingType, SessionStatus } from "../../../generated/prisma/index.js";
@@ -9,6 +10,9 @@ import { toEvUserPublic } from "../../utils/evUserPublic.js";
 export const getUser: RequestHandler = async (req, res, next) => {
     try {
         const userId = Number(req.params["userId"]);
+        if (!Number.isFinite(userId) || userId <= 0) {
+            throw new HttpError(400, "Некоректний ідентифікатор користувача");
+        }
         const user = await userService.getUser(userId);
         res.json(toEvUserPublic(user));
     }

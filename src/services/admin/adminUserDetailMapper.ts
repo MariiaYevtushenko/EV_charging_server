@@ -93,7 +93,7 @@ export type EvUserDetailPayload = Prisma.EvUserGetPayload<{
   include: typeof adminUserDetailInclude;
 }>;
 
-/** БД: BOOKED / NO_ACTION / MISSED / CANCELLED / COMPLETED / PAID — див. booking_status. */
+/** БД: BOOKED / MISSED / CANCELLED / COMPLETED — див. booking_status. */
 function mapSessionUiStatus(s: SessionStatus): AdminEndUserDto["sessions"][number]["status"] {
   switch (s) {
     case "ACTIVE":
@@ -113,10 +113,7 @@ export function mapBookingStatus(s: BookingStatus): AdminEndUserDto["bookings"][
       return "pending";
     case "COMPLETED":
       return "paid";
-    case "PAID":
-      return "paid";
     case "MISSED":
-    case "NO_ACTION":
       return "missed";
     case "CANCELLED":
       return "cancelled";

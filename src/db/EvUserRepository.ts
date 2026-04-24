@@ -5,9 +5,9 @@ import type { Prisma } from "../../generated/prisma/index.js";
 const db = prisma as unknown as PrismaClient;
 
 export const EvUsersRepository = {
-    async getUser(userId: number): Promise<EvUser> {
-        return await db.evUser.findUniqueOrThrow({
-                where: { id: userId },
+    async getUser(userId: number): Promise<EvUser | null> {
+        return await db.evUser.findUnique({
+            where: { id: userId },
         });
     },
     async updateUser(userId: number, data: Prisma.EvUserUpdateInput): Promise<EvUser> {

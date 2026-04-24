@@ -38,6 +38,7 @@ import {
 import {
   createSeedMarkTimer,
   formatSeedPgError,
+  logSeedFailureForDevelopers,
   seedError,
   seedLog,
   seedNowIso,
@@ -122,8 +123,10 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
 
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
-    seedError("SEED_ALL_DATA", "Потрібен DATABASE_URL у .env");
-    throw new Error("Missing DATABASE_URL");
+    const e = new Error("Missing DATABASE_URL");
+    seedError("SEED_ALL_DATA", "Потрібен DATABASE_URL у .env", e);
+    logSeedFailureForDevelopers(e, "перевірки конфігурації");
+    throw e;
   }
 
   seedLog("SEED_ALL_DATA", "підключення до БД", {
@@ -309,9 +312,7 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
       "ROLLBACK через помилку (зміни на цьому з’єднанні скасовано).",
       e,
     );
-    if (e instanceof Error && e.stack) {
-      console.error(`[${seedNowIso()}] [SEED_ALL_DATA] stack (скорочено):\n${e.stack.split("\n").slice(0, 12).join("\n")}`);
-    }
+    logSeedFailureForDevelopers(e, "повного сиду (seed-all-data)");
     throw e;
   } finally {
     await client.end().catch(() => {});
@@ -345,8 +346,8 @@ Env (див. scripts/seed/seedEnvConfig.ts та .env.example):
     process.exit(0);
   }
 
-  SeedAllData({ truncate: argv.includes("--truncate") }).catch((e: unknown) => {
-    console.error(e);
+  SeedAllData({ truncate: argv.includes("--truncate") }).catch(() => {
+    /* Деталі вже в stderr у catch SeedAllData (logSeedFailureForDevelopers) */
     process.exitCode = 1;
   });
 }

@@ -59,7 +59,7 @@ export type GlobalAdminSnapshot = {
   networkSessionStatsByBookingKind: Record<string, unknown>[];
   /** View_Admin_SessionStatisticByPortType_30 (останні 30 днів, не залежить від повзунка періоду). */
   networkPortTypeStats: Record<string, unknown>[];
-  /** View_Admin_Top10MostProfitableCountries_30 (останні 30 днів, не залежить від повзунка періоду). */
+  /** `view_admin_top10mostprofitablecountries_30` у PostgreSQL (View.sql). */
   networkTopCountries: Record<string, unknown>[];
 };
 
@@ -135,7 +135,7 @@ export async function queryGlobalAdminAnalyticsSnapshot(periodDays: number = DEF
     ),
     safeQuery(
       "networkTopCountries",
-      () => db.$queryRawUnsafe<Record<string, unknown>[]>(`SELECT * FROM view_admintop10mostprofitablecountries_30`),
+      () => db.$queryRawUnsafe<Record<string, unknown>[]>(`SELECT * FROM view_admin_top10mostprofitablecountries_30`),
       mark
     ),
   ]);

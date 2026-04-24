@@ -259,12 +259,12 @@ export const getAnalyticsViews: RequestHandler = async (req, res, next) => {
         if (ssp !== undefined) stationQuery.sessionStatsPage = ssp;
         const sessionStatsPageSize = parseOptionalPositiveIntParam(q["sessionStatsPageSize"]);
         if (sessionStatsPageSize !== undefined) stationQuery.sessionStatsPageSize = sessionStatsPageSize;
-        const psp = parseOptionalPositiveIntParam(q["portStatsPage"]);
-        if (psp !== undefined) stationQuery.portStatsPage = psp;
-        const pss = parseOptionalPositiveIntParam(q["portStatsPageSize"]);
-        if (pss !== undefined) stationQuery.portStatsPageSize = pss;
-        const peakSid = parseOptionalPositiveIntParam(q["peakStationId"]);
-        if (peakSid !== undefined) stationQuery.peakStationId = peakSid;
+        if (q["sessionStatsSortBy"] !== undefined && q["sessionStatsSortBy"] !== "") {
+            stationQuery.sessionStatsSortBy = q["sessionStatsSortBy"].trim();
+        }
+        if (q["sessionStatsSortDir"] !== undefined && q["sessionStatsSortDir"] !== "") {
+            stationQuery.sessionStatsSortDir = q["sessionStatsSortDir"].trim();
+        }
         if (q["peakPeriod"] !== undefined && q["peakPeriod"] !== "") stationQuery.peakPeriod = q["peakPeriod"];
         const gpd = parseOptionalPositiveIntParam(q["globalPeriodDays"]);
         if (gpd !== undefined) {

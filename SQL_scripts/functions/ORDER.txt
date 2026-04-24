@@ -2,9 +2,9 @@
   1. 01_tariff.sql          — інструменти тарифу
   2. 02_session_billing.sql — розрахунок суми сесії (читання)
   3. 03_booking_slots.sql   — вільні слоти бронювання
-  4. 04_reports.sql         — звіти та аналітика
+  4. 04_reports.sql         — GetVehicleReportForPeriod (агрегати по авто; виклик з userRepository)
   5. User_analytics.sql          — аналітика кінцевого користувача (період + VIEW)
   6. Station_admin_analytics.sql — аналітика адміна станцій (мережа + станція)
-  7. Global_admin_analytics.sql — аналітика глобального адміна (мережа за періодом)
-  8. ../View.sql — зведені VIEW (у т.ч. View_Admin_Top10MostProfitableCountries_30 для «Топ країн»)
+  7. Global_admin_analytics.sql — аналітика глобального адміна (функції за періодом)
+  8. ../View.sql — усі VIEW аналітики (глобальний дашборд, топ країн, станції/порти 30д, активні сесії, броні, …)
 Далі: ../Procedures.sql (мутації: bill, старт сесії, скасування броні)

@@ -1,76 +1,19 @@
-import prisma from "../../prisma.config.js";
-import type { PrismaClient } from "../../../generated/prisma/index.js";
 import {
   sqlGetUserBookingStatsForPeriod,
   sqlGetUserEnergySpendByDay,
   sqlGetUserEnergySpendByMonth,
   sqlGetUserSessionEnergySpendSummary,
-  sqlGetUserSpendMonthOverPreviousMonth,
   sqlGetUserTopStationsByEnergy,
   sqlGetUserVehicleEnergySpendForPeriod,
   type SummarySqlRow,
   type UserBookingPeriodStatsRow,
-  type UserSpendMonthMomRow,
 } from "./userSqlAnalyticsFunctions.js";
-
-const db = prisma as unknown as PrismaClient;
-
-const VIEW = {
-  userAnalyticsComparison: "view_useranalyticscomparison",
-  userStationLoyalty: "view_userstationloyalty",
-  activeSessions: "view_activesessions",
-  upcomingBookings: "view_upcomingbookings",
-} as const;
 
 export type UserAnalyticsPeriod = "today" | "7d" | "30d" | "all";
 
 export function parseUserAnalyticsPeriod(raw: string | undefined): UserAnalyticsPeriod {
   if (raw === "today" || raw === "7d" || raw === "30d" || raw === "all") return raw;
   return "30d";
-}
-
-function serializeCell(v: unknown): unknown {
-  if (v == null) return v;
-  if (typeof v === "bigint") return Number(v);
-  if (v instanceof Date) return v.toISOString();
-  if (typeof v === "object") {
-    const anyV = v as { toNumber?: () => number; toString?: () => string; constructor?: { name?: string } };
-    if (typeof anyV.toNumber === "function") {
-      try {
-        return anyV.toNumber();
-      } catch {
-        /* fallthrough */
-      }
-    }
-    if (anyV.constructor?.name === "Decimal" && typeof anyV.toString === "function") {
-      const n = Number(anyV.toString());
-      return Number.isFinite(n) ? n : anyV.toString();
-    }
-  }
-  return v;
-}
-
-function serializeRow(row: Record<string, unknown>): Record<string, unknown> {
-  const o: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(row)) {
-    o[k] = serializeCell(v);
-  }
-  return o;
-}
-
-async function selectFromViewWhereUser(
-  viewKey: keyof typeof VIEW,
-  userId: number,
-  limit: number
-): Promise<Record<string, unknown>[]> {
-  const viewName = VIEW[viewKey];
-  const lim = Math.min(10_000, Math.max(1, Math.floor(limit)));
-  const rows = await db.$queryRawUnsafe<Record<string, unknown>[]>(
-    `SELECT * FROM ${viewName} WHERE user_id = $1 ORDER BY 1 LIMIT $2`,
-    userId,
-    lim
-  );
-  return rows.map(serializeRow);
 }
 
 /** Вікна [from, to) для підсумків / графіків, узгоджено з SQL у User_analytics.sql */
@@ -200,27 +143,20 @@ function mapBooking(row: UserBookingPeriodStatsRow | null) {
   return total > 0 ? out : null;
 }
 
-function mapSmartInsights(row: UserSpendMonthMomRow | null): {
+function mapSmartInsightsFromCalendarSpent(currentSpentUah: number, prevSpentUah: number): {
   spendVsPrevMonthPct: number | null;
   currentMonthSpendUah: number;
   prevMonthSpendUah: number;
 } {
-  if (!row) {
-    return { spendVsPrevMonthPct: null, currentMonthSpendUah: 0, prevMonthSpendUah: 0 };
-  }
   return {
-    spendVsPrevMonthPct: row.pct_change != null ? num(row.pct_change) : null,
-    currentMonthSpendUah: num(row.current_month_spend),
-    prevMonthSpendUah: num(row.prev_month_spend),
+    spendVsPrevMonthPct: pctMom(currentSpentUah, prevSpentUah),
+    currentMonthSpendUah: currentSpentUah,
+    prevMonthSpendUah: prevSpentUah,
   };
 }
 
 export type UserAnalyticsPayload = {
   period: UserAnalyticsPeriod;
-  comparison: Record<string, unknown> | null;
-  stationLoyalty: Record<string, unknown>[];
-  activeSessions: Record<string, unknown>[];
-  upcomingBookings: Record<string, unknown>[];
   periodSummary: { sessionCount: number; totalKwh: number; totalSpent: number };
   periodSessionDetail: {
     avgKwhPerSession: number;
@@ -247,7 +183,7 @@ export type UserAnalyticsPayload = {
     totalRevenue: number;
   }[];
   bookingPeriod: ReturnType<typeof mapBooking>;
-  smartInsights: ReturnType<typeof mapSmartInsights>;
+  smartInsights: ReturnType<typeof mapSmartInsightsFromCalendarSpent>;
   partial: boolean;
 };
 
@@ -266,24 +202,8 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
   const wins = analyticsPeriodWindows(period);
   const cal = calendarMonthVsPreviousLocal();
 
-  const [
-    comparisonRows,
-    stationLoyalty,
-    activeSessions,
-    upcomingBookings,
-    periodAggRow,
-    trendRows,
-    stationRows,
-    vehicleSpendRows,
-    bookingRow,
-    spendMom,
-    calCurrRow,
-    calPrevRow,
-  ] = await Promise.all([
-    safe("comparison", () => selectFromViewWhereUser("userAnalyticsComparison", userId, 5), []),
-    safe("stationLoyalty", () => selectFromViewWhereUser("userStationLoyalty", userId, 50), []),
-    safe("activeSessions", () => selectFromViewWhereUser("activeSessions", userId, 100), []),
-    safe("upcomingBookings", () => selectFromViewWhereUser("upcomingBookings", userId, 200), []),
+  const [periodAggRow, trendRows, stationRows, vehicleSpendRows, bookingRow, calCurrRow, calPrevRow] =
+    await Promise.all([
     safe("periodAgg", () => sqlGetUserSessionEnergySpendSummary(userId, wins.current.from, wins.current.to), null),
     safe(
       "trend",
@@ -326,7 +246,6 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     safe("stationsInPeriod", () => sqlGetUserTopStationsByEnergy(userId, wins.current.from, wins.current.to, 20), []),
     safe("vehicleSpendInPeriod", () => sqlGetUserVehicleEnergySpendForPeriod(userId, wins.current.from, wins.current.to), []),
     safe("bookingPeriod", () => sqlGetUserBookingStatsForPeriod(userId, wins.current.from, wins.current.to), null),
-    safe("spendMom", () => sqlGetUserSpendMonthOverPreviousMonth(userId), null),
     safe("calCurr", () => sqlGetUserSessionEnergySpendSummary(userId, cal.current.from, cal.current.to), null),
     safe("calPrev", () => sqlGetUserSessionEnergySpendSummary(userId, cal.previous.from, cal.previous.to), null),
   ]);
@@ -396,10 +315,6 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
 
   return {
     period,
-    comparison: comparisonRows[0] ?? null,
-    stationLoyalty,
-    activeSessions,
-    upcomingBookings,
     periodSummary,
     periodSessionDetail,
     kpiVsPrevCalendarMonth,
@@ -409,7 +324,7 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     stationsInPeriod,
     vehicleSpendInPeriod,
     bookingPeriod: mapBooking(bookingRow),
-    smartInsights: mapSmartInsights(spendMom),
+    smartInsights: mapSmartInsightsFromCalendarSpent(currCal.totalSpent, prevCal.totalSpent),
     partial,
   };
 }

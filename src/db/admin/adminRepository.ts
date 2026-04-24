@@ -1,4 +1,5 @@
 import prisma from "../../prisma.config.js";
+import { callCreateFinalBillPending } from "../sql/proceduresRepository.js";
 import type { Prisma, PrismaClient, UserRole } from "../../../generated/prisma/index.js";
 import type {
   AdminUsersSortKey,
@@ -207,7 +208,7 @@ export const adminRepository = {
       case "pending":
         return { status: "BOOKED" };
       case "paid":
-        return { status: { in: ["COMPLETED", "PAID"] } };
+        return { status: "COMPLETED" };
       case "cancelled":
         return { status: "CANCELLED" };
       case "missed":
@@ -563,10 +564,7 @@ export const adminRepository = {
         },
       });
 
-      await tx.$executeRawUnsafe(
-        `CALL createfinalbill($1::int, 'PENDING'::payment_status)`,
-        sessionId
-      );
+      await callCreateFinalBillPending(tx, sessionId);
     });
   },
 

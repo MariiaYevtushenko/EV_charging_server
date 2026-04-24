@@ -314,7 +314,7 @@ export async function SeedTariffsFromApi(
     if (sequentialEntsoe) {
       const entsoePaceMs = Math.max(
         0,
-        Number(process.env["ENTSOE_SEED_DELAY_MS"] ?? "800"),
+        Number(process.env["ENTSOE_SEED_DELAY_MS"] ?? "1000"),
       );
       const rowsOut: { calendarDay: Date; day: number; night: number }[] = [];
       for (let dayOffset = 0; dayOffset < days; dayOffset++) {
@@ -345,7 +345,14 @@ export async function SeedTariffsFromApi(
     }
 
     await prefetchNbuIfEurTariffSeed(url, nbuRateCache);
-    const concurrency = getTariffSeedFetchConcurrency();
+    /** ENTSO-E жорстко лімітує запити; без явного `ENTSOE_SEED_MAX_CONCURRENCY` не паралелимо. */
+    const entsoeCapRaw = process.env["ENTSOE_SEED_MAX_CONCURRENCY"]?.trim();
+    const entsoeCap =
+      entsoeCapRaw != null && entsoeCapRaw !== ""
+        ? Math.max(1, Math.min(8, Math.floor(Number(entsoeCapRaw))))
+        : 1;
+    const concurrency = Math.min(getTariffSeedFetchConcurrency(), entsoeCap);
+    const entsoePaceMs = Math.max(0, Number(process.env["ENTSOE_SEED_DELAY_MS"] ?? "1000"));
     const calendarDays = Array.from({ length: days }, (_, dayOffset) =>
       calendarDayAtOffset(rangeStartDate, dayOffset),
     );
@@ -353,6 +360,9 @@ export async function SeedTariffsFromApi(
       calendarDays,
       concurrency,
       async (calendarDay) => {
+        if (entsoePaceMs > 0) {
+          await new Promise((r) => setTimeout(r, entsoePaceMs));
+        }
         const { day, night } = await fetchEntsoeDayNightKwh(calendarDay);
         const uah = await convertApiEurPairToUahIfNeeded(
           day,

@@ -9,13 +9,14 @@ import type {
   PaymentMethod,
   Prisma,
 } from "../../../generated/prisma/index.js";
+import { callCancelBooking } from "../sql/proceduresRepository.js";
 import { sqlGetVehicleReportForPeriod } from "./userSqlAnalyticsFunctions.js";
 
 const db = prisma as unknown as PrismaClient;
 
 export const userRepository = {
-  async getUser(userId: number): Promise<EvUser> {
-    return await db.evUser.findUniqueOrThrow({
+  async getUser(userId: number): Promise<EvUser | null> {
+    return await db.evUser.findUnique({
       where: { id: userId },
     });
   },
@@ -103,7 +104,7 @@ export const userRepository = {
   },
   async deleteBooking(userId: number, bookingId: number): Promise<Booking> {
     await db.booking.findFirstOrThrow({ where: { id: bookingId, userId } });
-    await db.$executeRaw`CALL cancelbooking(${bookingId}::int)`;
+    await callCancelBooking(db, bookingId);
     return await db.booking.findUniqueOrThrow({
       where: { id: bookingId },
     });

@@ -5,7 +5,11 @@ import { verifyPassword } from "../lib/password.js";
 
 export const EvUsersService = {
     async getUser(userId: number): Promise<EvUser> {
-        return await EvUsersRepository.getUser(userId);
+        const user = await EvUsersRepository.getUser(userId);
+        if (!user) {
+            throw new HttpError(404, "Користувача не знайдено");
+        }
+        return user;
     },
     async deleteUser(userId: number): Promise<EvUser> {
         return await EvUsersRepository.deleteUser(userId);

@@ -51,13 +51,22 @@ function buildProfileUpdate(body: unknown): Prisma.EvUserUpdateInput {
   return data;
 }
 
+async function requireEvUser(userId: number): Promise<EvUser> {
+  const user = await userRepository.getUser(userId);
+  if (!user) {
+    throw new HttpError(404, "Користувача не знайдено");
+  }
+  return user;
+}
+
 export const userService = {
   async getUser(userId: number): Promise<EvUser> {
-    return await userRepository.getUser(userId);
+    return await requireEvUser(userId);
   },
 
   /** Оновлення полів профілю з тіла запиту (без passwordHash / id). */
   async updateProfileFromBody(userId: number, body: unknown): Promise<EvUser> {
+    const existing = await requireEvUser(userId);
     const data = buildProfileUpdate(body);
     if (data.email !== undefined) {
       const email = String(data.email);
@@ -67,7 +76,7 @@ export const userService = {
       }
     }
     if (Object.keys(data).length === 0) {
-      return await userRepository.getUser(userId);
+      return existing;
     }
     return await userRepository.updateUser(userId, data);
   },
@@ -76,7 +85,7 @@ export const userService = {
     if (typeof newPassword !== "string" || newPassword.length < 6) {
       throw new HttpError(400, "Новий пароль має містити щонайменше 6 символів");
     }
-    const user = await userRepository.getUser(userId);
+    const user = await requireEvUser(userId);
     if (!verifyPassword(currentPassword, user.passwordHash)) {
       throw new HttpError(400, "Невірний поточний пароль");
     }

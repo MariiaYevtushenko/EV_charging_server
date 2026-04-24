@@ -46,6 +46,46 @@ export function seedError(
 }
 
 /** Поля типової помилки `node-postgres` / PostgreSQL для діагностики сиду. */
+/**
+ * Короткий текст для людини (CLI / «Помилка SEED»). Стек і сирі об’єкти — окремо через `logSeedFailureForDevelopers`.
+ */
+export function formatSeedFailureUserMessage(err: unknown, context = "заповнення демо-даних"): string {
+  const msg = err instanceof Error ? err.message : String(err);
+  if (/ENTSO-E HTTP 429|429 \(rate limit\)/i.test(msg)) {
+    return `Не вдалося завантажити тарифи з ENTSO-E (обмеження запитів до API). Під час ${context} скористайтесь резервним файлом (TARIFF_SEED_USE_SNAPSHOT_FIRST=true), зменшіть TARIFF_SEED_DAYS, увімкніть ENTSOE_SEED_SEQUENTIAL=true або збільште паузи в .env (див. .env.example).`;
+  }
+  if (/ENTSO-E HTTP/i.test(msg)) {
+    return `Помилка відповіді ENTSO-E під час ${context}. Перевірте TOKEN, мережу та параметри домену в .env.`;
+  }
+  if (/Для ENTSO-E потрібен TOKEN/i.test(msg)) {
+    return "Для імпорту тарифів ENTSO-E у .env потрібен TOKEN (або TARIFF_API_TOKEN / ENTSOE_SECURITY_TOKEN).";
+  }
+  if (/Missing DATABASE_URL|Потрібен DATABASE_URL/i.test(msg)) {
+    return "У .env не задано DATABASE_URL — без підключення до PostgreSQL сид не виконається.";
+  }
+  if (/TARIFF_API_URL HTTP/i.test(msg)) {
+    return `Помилка HTTP при зверненні до TARIFF_API_URL під час ${context}.`;
+  }
+  if (/ROLLBACK|ECONNREFUSED|ENOTFOUND|password authentication failed/i.test(msg)) {
+    return `Помилка бази даних або підключення під час ${context}. Перевірте DATABASE_URL і доступність PostgreSQL.`;
+  }
+  return `Помилка SEED: ${context} перервано. Нижче в консолі — технічні деталі для діагностики.`;
+}
+
+/** Повідомлення для людини + повний стек/об’єкт у stderr (для розробника). */
+export function logSeedFailureForDevelopers(err: unknown, context = "заповнення демо-даних"): void {
+  console.error("\n────────── Помилка SEED ──────────");
+  console.error(formatSeedFailureUserMessage(err, context));
+  console.error("────────── Технічні деталі ──────────");
+  if (err instanceof Error) {
+    console.error(err.message);
+    if (err.stack) console.error(err.stack);
+  } else {
+    console.error(err);
+  }
+  console.error("───────────────────────────────────\n");
+}
+
 export function formatSeedPgError(err: unknown): Record<string, string> {
   const e = err as {
     message?: string;

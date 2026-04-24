@@ -1,23 +1,3 @@
-**Таблиці**
-
-- `ev_user`  + рандомно SQL
-- `location` csv ev_stations_2025.csv
-- `station` csv ev_stations_2025.csv
-- `connector_type` csv ev_stations_2025.csv
-- `port` + csv ev_stations_2025.csv
-- `vehicle` + csv file  "electric_vehicles_spec_2025.csv.csv",
-- `tariff` - бере з апішки 
-- `booking` — демо: `db/Seed_demo_bookings_sessions_bills.sql` → `SeedBookings(n)` або повний пайплайн `SeedBookingsSessionsBills(n)` (після CSV/тарифів)
-- `session` — `SeedSessions(clear, target_count)` (після booking): ~50% без `booking_id`, ~50% за минулими бронями (не `CANCELLED` / не `MISSED` для «живих» слотів); `start_time`/`end_time` узгоджені з бронюванням або задані для walk-in
-- `bill` — `SeedBills()` (після session)
-- `tariff_prediction` - буде в процесі 
-- `forecast_bias` - буде в процесі
-
-**Транзакції (сид)**  
-Повний сид `npm run seed:all` / `seed-all-data.ts` виконується в **одній** транзакції PostgreSQL: успіх → `COMMIT`, будь-яка помилка на будь-якому кроці (зокрема `SeedBookingsSessionsBills`) → `ROLLBACK` усього (станції та інші попередні кроки не лишаються). Окремо в psql можна обгорнути `CALL SeedBookingsSessionsBills(n)` у `BEGIN` … `COMMIT` (див. коментар на початку `db/Seed_demo_bookings_sessions_bills.sql`). `SEED_OPTIONAL_SQL_PROCEDURES=true` стосується лише кроку `SeedMassiveUsers` (пропуск, якщо процедури немає); для демо-броней/сесій опційного «часткового коміту» немає. Кількості користувачів / броней / днів тарифів — змінні оточення, дефолти в `server/scripts/seed/seedEnvConfig.ts` та `server/.env.example`.
-
----
-
 CREATE TYPE user_role AS ENUM ('ADMIN', 'STATION_ADMIN', 'USER');
 CREATE TYPE station_status AS ENUM ('WORK', 'NOT_WORKING', 'FIX', 'ARCHIVED');
 CREATE TYPE port_status AS ENUM ('FREE', 'USED', 'REPAIRED', 'NOT_WORKING');
@@ -26,9 +6,8 @@ CREATE TYPE booking_status AS ENUM ('BOOKED', 'MISSED', 'CANCELLED', 'COMPLETED'
 CREATE TYPE booking_type AS ENUM ('CALC', 'DEPOSIT');
 CREATE TYPE session_status AS ENUM ('ACTIVE', 'COMPLETED', 'FAILED');
 CREATE TYPE payment_method AS ENUM ('CARD', 'APPLE_PAY', 'GOOGLE_PAY');
-CREATE TYPE payment_status AS ENUM ('PENDING', 'SUCCESS', 'FAILED', 'REFUNDED');
+CREATE TYPE payment_status AS ENUM ('PENDING', 'SUCCESS', 'FAILED');
 
--- додати в бд перевірку на імейл та номер телефону(символи)
 CREATE TABLE IF NOT EXISTS ev_user(
 id SERIAL PRIMARY KEY,
 name VARCHAR(50) NOT NULL,
@@ -50,22 +29,19 @@ house_number VARCHAR(10) NOT NULL
 );
 
 
--- подумати над ON DELETE CASCADE
 CREATE TABLE IF NOT EXISTS station (
-id SERIAL PRIMARY KEY,
-location_id INT NOT NULL REFERENCES location(id) ON DELETE CASCADE,
-name VARCHAR(100) NOT NULL,
-status station_status DEFAULT 'WORK',
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id SERIAL PRIMARY KEY,
+    location_id INT NOT NULL UNIQUE REFERENCES location(id) ON DELETE CASCADE, 
+    name VARCHAR(100) NOT NULL,
+    status station_status DEFAULT 'WORK',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS connector_type (
 id SERIAL PRIMARY KEY,
 name VARCHAR(64) UNIQUE NOT NULL
 );
-
-
 
 CREATE TABLE IF NOT EXISTS port (
     station_id INT REFERENCES station(id) ON DELETE CASCADE,
@@ -78,12 +54,6 @@ CREATE TABLE IF NOT EXISTS port (
     PRIMARY KEY (station_id, port_number)
 );
 
-
-id - ідентифікатор
-license_plate - номерні знаки
-battery_capacity - ємність батареї (кВт·год)
-
--- +
 CREATE TABLE IF NOT EXISTS vehicle (
 id SERIAL PRIMARY KEY,
 user_id INT NOT NULL REFERENCES ev_user(id) ON DELETE CASCADE,
@@ -103,8 +73,6 @@ CREATE TABLE IF NOT EXISTS tariff (
     UNIQUE (tariff_type, effective_date)
 );
 
-
-
 CREATE TABLE IF NOT EXISTS booking (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES ev_user(id),
@@ -121,29 +89,26 @@ CREATE TABLE IF NOT EXISTS booking (
 );
 
 
-
 CREATE TABLE IF NOT EXISTS session(
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES ev_user(id),
     vehicle_id INT REFERENCES vehicle(id),
     station_id INT NOT NULL,
     port_number INT NOT NULL,
-    booking_id INT REFERENCES booking(id), -- NULL = сесія без попереднього бронювання (walk-in)
-    start_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- при наявному booking_id: у межах [booking.start_time, booking.end_time] (див. seed)
-    end_time TIMESTAMP, -- NULL лише для ACTIVE; для завершених сесій > start_time
+    booking_id INT REFERENCES booking(id),
+    start_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    end_time TIMESTAMP,
     kwh_consumed DECIMAL(10,3) DEFAULT 0,
     status session_status DEFAULT 'ACTIVE',
     FOREIGN KEY (station_id, port_number) REFERENCES port(station_id, port_number)
 );
-
-
 
 CREATE TABLE IF NOT EXISTS bill (
     id SERIAL PRIMARY KEY,
     session_id INT UNIQUE NOT NULL REFERENCES session(id) ON DELETE CASCADE,
     calculated_amount DECIMAL(10,2) NOT NULL, 
     price_per_kwh_at_time DECIMAL(10,2), 
-    payment_method payment_method NOT NULL,
+    payment_method payment_method,
     payment_status payment_status DEFAULT 'PENDING',
     paid_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -159,19 +124,4 @@ CREATE TABLE IF NOT EXISTS tariff_prediction (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (target_date, tariff_type)
 );
-
-
-
-CREATE TABLE IF NOT EXISTS forecast_bias (
-    id SERIAL PRIMARY KEY,
-    tariff_type tariff_period NOT NULL UNIQUE,
-    bias_value DECIMAL(10, 4) NOT NULL DEFAULT 0,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
-
-INSERT INTO forecast_bias (tariff_type, bias_value) VALUES ('DAY', 0), ('NIGHT', 0)
-ON CONFLICT (tariff_type) DO NOTHING;
-
 

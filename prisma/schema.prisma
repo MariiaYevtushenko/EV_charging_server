@@ -44,12 +44,10 @@ enum TariffPeriod {
 
 enum BookingStatus {
   BOOKED
-  NO_ACTION
-  /** Слот минув, зарядки не було (пропущено). */
+  /** Слот минув або бронювання без дії — у БД один статус `MISSED`. */
   MISSED
   CANCELLED
   COMPLETED
-  PAID
 
   @@map("booking_status")
 }

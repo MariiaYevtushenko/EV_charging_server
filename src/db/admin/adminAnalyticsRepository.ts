@@ -11,18 +11,10 @@ import {
 
 const db = prisma as unknown as PrismaClient;
 
-/** Імена VIEW у PostgreSQL (незліплені ідентифікатори → нижній регістр). */
+/** Імена VIEW у PostgreSQL (`DB_CODE_SQL/View.sql`, нижній регістр). */
 const VIEW = {
   adminGlobalDashboard: "view_adminglobaldashboard",
-  stationPerformance: "view_stationperformance",
-  userAnalyticsComparison: "view_useranalyticscomparison",
-  userStationLoyalty: "view_userstationloyalty",
-  adminCityPerformance: "view_admin_city_performance",
-  adminUserSegments: "view_admin_user_segments",
-  /** Global_admin_analytics.sql — сесії за 30 днів по типу конектора (мережа). */
   adminSessionStatisticByPortType30: "view_admin_sessionstatisticbyporttype_30",
-  activeSessions: "view_activesessions",
-  upcomingBookings: "view_upcomingbookings",
 } as const;
 
 function serializeCell(v: unknown): unknown {
@@ -64,18 +56,11 @@ async function selectFromView(viewName: string, limit: number): Promise<Record<s
 
 export type AdminAnalyticsViewsPayload = {
   globalDashboard: Record<string, unknown> | null;
-  stationPerformance: Record<string, unknown>[];
-  userAnalyticsComparison: Record<string, unknown>[];
-  userStationLoyalty: Record<string, unknown>[];
-  cityPerformance: Record<string, unknown>[];
-  userSegments: Record<string, unknown>[];
-  activeSessions: Record<string, unknown>[];
-  upcomingBookings: Record<string, unknown>[];
   /** VIEW View_Admin_SessionStatisticByPortType_30 — мережа, останні 30 днів. */
   sessionStatsByPortType30d: Record<string, unknown>[];
-  /** Функції з Station_admin_analytics.sql (мережа + опційно stationId). */
+  /** Функції з `Functions_Analitics.sql` + VIEW з `View.sql` (мережа + опційно stationId). */
   stationAdminSnapshot: StationAdminSnapshot;
-  /** Функції з Global_admin_analytics.sql (мережа за період). */
+  /** Функції з `Functions_Analitics.sql` (мережа за період). */
   globalAdminSnapshot: GlobalAdminSnapshot;
   /** Якщо true — хоча б один запит повернув порожньо через помилку (view може бути не застосовано). */
   partial: boolean;
@@ -89,10 +74,13 @@ export type AdminStationViewsQuery = Partial<{
   fewestPeriod: string;
   sessionStatsPage: number;
   sessionStatsPageSize: number;
-  portStatsPage: number;
-  portStatsPageSize: number;
+  /** Параметри з клієнта; сортування таблиці сесій може бути додано в SQL-пагінацію пізніше. */
+  sessionStatsSortBy?: string;
+  sessionStatsSortDir?: string;
   peakStationId: number;
   peakPeriod: string;
+  portStatsPage?: number;
+  portStatsPageSize?: number;
   /** Кількість днів для `globalAdminSnapshot` (функції Global_admin_analytics.sql), 1–365. */
   globalPeriodDays: number;
 }>;
@@ -111,27 +99,8 @@ export async function queryAllAnalyticsViews(stationQuery?: AdminStationViewsQue
     }
   };
 
-  const [
-    globalRows,
-    stationPerformance,
-    userAnalyticsComparison,
-    userStationLoyalty,
-    cityPerformance,
-    userSegments,
-    activeSessions,
-    upcomingBookings,
-    sessionStatsByPortType30d,
-    stationSnap,
-    globalSnap,
-  ] = await Promise.all([
+  const [globalRows, sessionStatsByPortType30d, stationSnap, globalSnap] = await Promise.all([
     run(VIEW.adminGlobalDashboard, 2),
-    run(VIEW.stationPerformance, 3000),
-    run(VIEW.userAnalyticsComparison, 8000),
-    run(VIEW.userStationLoyalty, 800),
-    run(VIEW.adminCityPerformance, 500),
-    run(VIEW.adminUserSegments, 3000),
-    run(VIEW.activeSessions, 500),
-    run(VIEW.upcomingBookings, 500),
     run(VIEW.adminSessionStatisticByPortType30, 200),
     queryStationAdminAnalyticsSnapshot(stationQuery),
     queryGlobalAdminAnalyticsSnapshot(globalPeriodDays),
@@ -141,13 +110,6 @@ export async function queryAllAnalyticsViews(stationQuery?: AdminStationViewsQue
 
   return {
     globalDashboard,
-    stationPerformance,
-    userAnalyticsComparison,
-    userStationLoyalty,
-    cityPerformance,
-    userSegments,
-    activeSessions,
-    upcomingBookings,
     sessionStatsByPortType30d,
     stationAdminSnapshot: stationSnap,
     globalAdminSnapshot: globalSnap,

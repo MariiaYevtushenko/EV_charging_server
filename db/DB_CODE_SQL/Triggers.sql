@@ -1,5 +1,3 @@
--- Тригери: обмеження та побічні ефекти на рівні БД (узгоджено з Procedures.sql).
-
 
 -- ============================================================================
 -- SessionCompletedFinalizeBill — після завершення сесії (ACTIVE → COMPLETED):
@@ -129,6 +127,8 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER trigger_UpdatePortStatusAfterStationStatusChange
 AFTER UPDATE OF status ON station
 FOR EACH ROW EXECUTE FUNCTION UpdatePortStatusAfterStationStatusChange();
+
+
 
 
 
