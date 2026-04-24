@@ -23,7 +23,7 @@ export const SEED_ENV_DEFAULTS = {
    * Скільки календарних днів тарифів підтягувати з API (anchor=end).
    * Має бути ≥ `SEED_DEMO_BOOKINGS_DAYS_BACK` (і глибини дат у SQL-сиді).
    * Для ENTSO-E великі значення (сотні+) дають HTTP 429 — тоді `ENTSOE_SEED_SEQUENTIAL=true`,
-   * зменшіть `TARIFF_SEED_FETCH_CONCURRENCY`, увімкніть `TARIFF_SEED_USE_SNAPSHOT_FIRST=true`
+   * зменшіть `TARIFF_SEED_FETCH_CONCURRENCY`; JSON-снапшот за замовчуванням іде першим (`TARIFF_SEED_USE_SNAPSHOT_FIRST=false` щоб примусово API)
    * або збільшіть паузи (`ENTSOE_SEED_DELAY_MS`, `ENTSOE_429_BACKOFF_MS`).
    */
   TARIFF_SEED_DAYS: 210,

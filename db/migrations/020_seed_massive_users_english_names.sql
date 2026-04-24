@@ -1,29 +1,5 @@
--- Генерація випадкового пароля
-CREATE OR REPLACE FUNCTION GeneratePassword(p_len INT DEFAULT 12)
-RETURNS TEXT
-LANGUAGE plpgsql
-VOLATILE
-AS $$
-DECLARE
-  chars TEXT := 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*-_=+';
-  result TEXT := '';
-  clen INT;
-  i INT;
-  pos INT;
-BEGIN
-  IF p_len IS NULL OR p_len < 8 THEN
-    p_len := 12;
-  END IF;
-  clen := length(chars);
-  FOR i IN 1..p_len LOOP
-    pos := 1 + floor(random() * clen)::int;
-    result := result || substr(chars, pos, 1);
-  END LOOP;
-  RETURN result;
-END;
-$$;
-
--- Створення випадкових користувачів
+-- Оновлення демо-імен/прізвищ у SeedMassiveUsers (англійська мова); узгоджено з db/DB_CODE_SQL/SeedData.sql.
+-- Потребує наявної функції GeneratePassword (див. той самий SeedData.sql).
 CREATE OR REPLACE PROCEDURE SeedMassiveUsers(p_count INT DEFAULT 1000)
 LANGUAGE plpgsql
 AS $$

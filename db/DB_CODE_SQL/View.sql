@@ -104,6 +104,7 @@ SELECT
     2
   ) AS avg_duration_minutes,
   ROUND(AVG(s.kwh_consumed) FILTER (WHERE s.status = 'COMPLETED'::session_status), 3) AS avg_kwh,
+  COALESCE(SUM(s.kwh_consumed), 0)::NUMERIC AS total_kwh,
   COALESCE(SUM(b.calculated_amount), 0) AS total_revenue,
   ROUND(AVG(b.calculated_amount) FILTER (WHERE b.calculated_amount IS NOT NULL), 2) AS avg_bill_amount
 FROM station st
@@ -112,7 +113,7 @@ LEFT JOIN session s
  AND s.start_time >= now() - interval '30 days'
 LEFT JOIN bill b ON b.session_id = s.id
 GROUP BY st.id, st.name
-ORDER BY total_sessions DESC NULLS LAST, total_revenue DESC NULLS LAST;
+ORDER BY total_revenue DESC NULLS LAST, total_kwh DESC NULLS LAST, total_sessions DESC NULLS LAST;
 
 
 -- Порти: сесії / kWh / виручка за останні 30 днів (для station admin analytics + пагінація).

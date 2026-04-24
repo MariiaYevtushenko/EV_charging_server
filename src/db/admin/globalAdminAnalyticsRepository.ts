@@ -42,6 +42,12 @@ function serializeRow(row: Record<string, unknown>): Record<string, unknown> {
 
 function periodWindow(days: number): { from: Date; to: Date } {
   const d = clampPeriodDays(days);
+  const anchor = new Date();
+  if (d === 1) {
+    const from = new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate(), 0, 0, 0, 0);
+    const to = new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate() + 1, 0, 0, 0, 0);
+    return { from, to };
+  }
   const to = new Date();
   const from = new Date(to.getTime() - d * 86400000);
   return { from, to };

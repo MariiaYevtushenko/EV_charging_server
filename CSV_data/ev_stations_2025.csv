@@ -2,25 +2,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 462730,Cavas Pares Balta,Penedes,Penedes,,,ES,41.369095042729526,1.6558776364411187,(Business Owner at Location),Operational,1,Type 2 (Socket Only),2025-11-01 19:14:00+00:00
 462729,Tesla Supercharger Porto-Vecchio,T10,Porto-Vecchio,,20137,FR,41.57086650689254,9.273782448109387,Tesla (including non-tesla),Operational,1,CCS (Type 2),2025-11-01 19:12:00+00:00
 462728,Tesla Supercharger Magnant,D443,Magnant,,10110,FR,48.1807124359153,4.434366644283614,Tesla (including non-tesla),Operational,1,CCS (Type 2),2025-11-01 18:55:00+00:00
-462727,Tesla Supercharger Les Sables-d'Olonne,87 Av. Francois Mitterrand,Les Sables-d'Olonne,,85340,FR,46.51376963361935,-1.7770465726061957,Tesla (including non-tesla),Operational,1,CCS (Type 2),2025-11-01 18:52:00+00:00
-462726,Tesla Supercharger Falaise,2 rue Louis Rochet,Falaise,,14700,FR,48.9073067633619,-0.2069726228851323,Tesla (including non-tesla),Operational,1,CCS (Type 2),2025-11-01 18:49:00+00:00
-462725,Tesla Supercharger Artix,51 Rue des Écureuils,Artix,,64170,FR,43.39285785077698,-0.5553973636018554,Tesla (including non-tesla),Operational,1,CCS (Type 2),2025-11-01 18:41:00+00:00
-462724,Tesla Supercharger Agde,Bd Maurice Pacul,Agde,,34300,FR,43.29842920680102,3.472309232591897,Tesla (including non-tesla),Operational,1,CCS (Type 2),2025-11-01 18:37:00+00:00
-462722,Ayunt. Albinyana,Les Peces,Lalbinyana,,,ES,41.252653951048586,1.503785094817772,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-11-01 18:12:00+00:00
-462721,Tesla Supercharger Aix-en-Provence - Beaumanoir,Rue Marcel Arnaud,Aix-en-Provence,,13100,FR,43.513584144104584,5.466918055071346,Tesla (including non-tesla),Operational,1,CCS (Type 2),2025-11-01 18:02:00+00:00
-462720,Ayunt. Vilabella,Vilabella,Vilabella,,,ES,41.24847535929064,1.3307544213976144,eTecnic,Operational,1,Type 2 (Socket Only),2025-11-01 17:50:00+00:00
-462719,Ayunt. Salomó,Salomó,Salomó,,,ES,41.230059887693244,1.376109386752546,eTecnic,Operational,1,Type 2 (Socket Only),2025-11-01 17:49:00+00:00
-462718,Ayunt. La Nou de Gaià,La Nou de Gaià,La Nou de Gaià,,,ES,41.181981897314415,1.3732790332641116,eTecnic,Operational,1,Type 2 (Socket Only),2025-11-01 17:48:00+00:00
-462717,Camping Las Palmeras Zona Bungalows,Solimar,Tarragona,,,ES,41.13052895776218,1.318220638497678,(Business Owner at Location),Operational,1,Type 2 (Socket Only),2025-11-01 17:46:00+00:00
-462716,Ayunt. Els Pallaresos,Els Pallaresos,Els Pallaresos,,,ES,41.16836904425389,1.2741055846042855,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-11-01 17:44:00+00:00
-462715,Repsol Petroleo Visitantes,Tarragona,Tarragona,,,ES,41.17189095625409,1.2264916359336553,Repsol - Ibil (ES),Operational,1,Type 2 (Socket Only),2025-11-01 17:42:00+00:00
-462714,Ayto. Vilallonga del Camp,Vilallonga del Camp,Vilallonga del Camp,,,ES,41.208907125106464,1.2033020639570395,eTecnic,Operational,1,Type 2 (Socket Only),2025-11-01 17:39:00+00:00
-462713,Ayunt. d'El Pla de Santa Maria,El Pla de Santa Maria,El Pla de Santa Maria,,,ES,41.36567800553598,1.2883674221168349,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-11-01 17:36:00+00:00
-462712,Ayunt. d'El Pla de Santa Maria - Piscina Municipal,Ayunt. d'El Pla de Santa Maria,Ayunt. d'El Pla de Santa Maria,,,ES,41.363112829270534,1.2926158859520456,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-11-01 17:35:00+00:00
-462710,El Pont d'Armentera,El Pont d'Armentera,El Pont d'Armentera,,,ES,41.384075227782205,1.3629282492947823,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-11-01 17:32:00+00:00
-462709,Ayunt. Blancafort Piscina Municipal,Blancafort,Blancafort,,,ES,41.439855108619355,1.1591714786642342,eTecnic,Operational,1,Type 2 (Socket Only),2025-11-01 17:30:00+00:00
-462330,Ayunt. Muro de Alcoy,Muro de Alcoy,Muro de Alcoy,,,ES,38.77701698620899,-0.44530551310117517,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-10-19 13:26:00+00:00
-462329,Ayunt.  Callosa D'EnSarrià. Parking, Callosa D'EnSarrià, Callosa D'EnSarrià,,,ES,38.65144356743224,-0.12031132667596012,(Unknown Operator),Not Operational,1,Type 2 (Socket Only),2025-10-19 13:20:00+00:00
 462328,Ayunt. Callosa D'EnSarrià- Policía Local , Callosa D'EnSarrià, Callosa D'EnSarrià,,,ES,38.65119092943797,-0.1224303383124834,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-10-19 13:19:00+00:00
 462327,Casa Rural Finca Tosal,Bolulla,Bolulla,,,ES,38.670507692668934,-0.09594513735464716,(Business Owner at Location),Operational,1,Type 2 (Socket Only),2025-10-19 13:16:00+00:00
 462326,Aldi Ondara,Ondara,Ondara,,,ES,38.8162977730172,0.0228667500435904,REMO Mobility (ES),Operational,2,CCS (Type 2)|Type 2 (Socket Only),2025-10-19 13:08:00+00:00
@@ -61,28 +42,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 462285,Restauroute Rose de la Broye,A1,Lully,,,CH,46.8319077377586,6.858095142680668,MOVE (CH),Operational,3,CCS (Type 2)|Type 2 (Socket Only)|CHAdeMO,2025-10-18 18:52:00+00:00
 462284,Evergo - Novey Los Angeles,"C. 64B Oeste, Panamá, Provincia de Panamá",,,,PA,9.001830276030944,-79.52919677458499,Evergo,Operational,2,CCS (Type 1)|CHAdeMO,2025-10-18 15:25:00+00:00
 462283,Acea Futura,Via Statale 22,Scandiano,RE,,IT,44.599239,10.694955,Be Charge (Italy),Operational,1,Type 2 (Socket Only),2025-10-18 14:14:00+00:00
-462282,Hub Peraleda (Wenea),Peraleda de la Mata,Peraleda de la Mata,,,ES,39.89192448185304,-5.427291794594481,Wenea,Planned For Future Date,1,CCS (Type 2),2025-10-18 10:41:00+00:00
-462281,Hub Tordesillas (Wenea),Tordesillas,Tordedillas,,,ES,41.51569370946322,-5.01872348769021,Wenea,Planned For Future Date,1,CCS (Type 2),2025-10-17 20:48:00+00:00
-462280,Drinagh Business Park,Drinagh Business Park,Drinagh,Co. Wexford,,IE,52.30846823627297,-6.462794231998259,EVBox,Operational,1,Type 2 (Socket Only),2025-10-17 15:20:00+00:00
-462279,BM Mungía,Mungía,Mungía,,,ES,43.355178445027235,-2.8544964995580813,Zunder,Operational,2,CCS (Type 2)|Type 2 (Socket Only),2025-10-17 10:29:00+00:00
-462278,Centro Deportivo La Marazuela,Las Rozas,Las Rozas,,,ES,40.50020752418149,-3.8688994655595934,(Business Owner at Location),Operational,1,Type 2 (Socket Only),2025-10-17 07:42:00+00:00
-462277,Ayunt. Las Rozas. Navalcarbón,Las Rozas,Las Rozas,,,ES,40.51623582156688,-3.8993214244108003,Zunder,Operational,1,Type 2 (Socket Only),2025-10-17 07:35:00+00:00
-462269,Ionna Rechargery,1017 Douglas Blvd.,Roseville,CA,95678,US,38.744073964938224,-121.27781809766373,IONNA,Planned For Future Date,2,CCS (Type 1)|NACS / Tesla Supercharger,2025-10-17 04:53:00+00:00
-462268,OPLUG 24h,Av cerro azul 2579,Maringa,PR,,BR,-23.44995901708917,-51.93206863767148,(Unknown Operator),Operational,1,CCS (Type 2),2025-10-17 03:17:00+00:00
-462228,IONNA Kutztown Rechargery @ Sheetz,2298 Golden Key Road,Kutztown,PA,19530,US,40.582436387181275,-75.70886600000216,IONNA,Operational,2,CCS (Type 1)|NACS / Tesla Supercharger,2025-10-16 21:52:00+00:00
-462227,IONNA Middletown Rechargery Relay,300 Middletown Parkway,Middletown,MD,21769,US,39.43728878949082,-77.52915716886974,IONNA,Operational,2,CCS (Type 1)|NACS / Tesla Supercharger,2025-10-16 21:49:00+00:00
-462226,IONNA Raleigh Rechargery Relay,4237 Louisburg Road,Raleigh,NC,27604,US,35.84159568302509,-78.57751219224707,IONNA,Operational,2,CCS (Type 1)|NACS / Tesla Supercharger,2025-10-16 21:46:00+00:00
-462225,IONNA Beaver Rechargery Relay,1360 300 W,Beaver,UT,84713,US,38.292272909097704,-112.64654849472242,IONNA,Operational,2,CCS (Type 1)|NACS / Tesla Supercharger,2025-10-16 21:40:00+00:00
-462201,Advance Service,Eastpoint Business Park,East Wall,,Dublin 3,IE,53.35764365830261,-6.229111209483904,EZO (IE),Operational,1,Type 2 (Socket Only),2025-10-16 19:27:00+00:00
-462200,The Waterside,Charlotte Quay Dock,,,Dublin 4,IE,53.34242682654022,-6.235616168908109,EZO (IE),Operational,1,Type 2 (Socket Only),2025-10-16 19:22:00+00:00
-462199,Guinness Enterprise Centre,Taylor's Lane,The Liberties,,Dublin 8,IE,53.34084027398157,-6.284232228026326,EZO (IE),Operational,1,Type 2 (Socket Only),2025-10-16 19:17:00+00:00
-462198,Dromhall Hotel,Muckross Rd,Killarney,Co. Kerry,,IE,52.05340886204286,-9.506540166638956,EZO (IE),Planned For Future Date,1,CCS (Type 2),2025-10-16 13:31:00+00:00
-462197,Roig Arena,Valencia,Valencia,,,ES,39.44836878556109,-0.36448845508482464,Iberdrola | BP Pulse (ES),Operational,2,CCS (Type 2)|Type 2 (Tethered Connector) ,2025-10-16 10:39:00+00:00
-462196,Tesla Supercharger Rumia,Grunwaldzka 108,Rumia,,84-230,PL,54.58568532884112,18.371422251834133,Tesla (Tesla-only charging),Operational,1,CCS (Type 2),2025-10-16 10:23:00+00:00
-462195,Uno-x,Hestkærvej 1,Hjørring,,9800,DK,57.4562703942203,10.011218100124552,(Unknown Operator),Operational,1,CCS (Type 2),2025-10-16 09:40:00+00:00
-462194,GoFar (20 Yanvar),Tbilisi Avenue,Baku,Baku,,AZ,40.401270978621056,49.81064115186496,Gofar (az),Operational,2,CCS (Type 2)|Unknown,2025-10-16 06:15:00+00:00
-462193,TOK.az,Tbilisi propsekti,Baku,Baku,,AZ,40.392545350257535,49.82377907990292,(Unknown Operator),Operational,2,CCS (Type 2)|Unknown,2025-10-16 06:08:00+00:00
-462192,iVolt,Matbuat Avenue,Baku,Baku,,AZ,40.37829233651621,49.80808415224021,(Unknown Operator),Operational,2,CCS (Type 2)|Unknown,2025-10-16 06:03:00+00:00
 462174,EDS La Glorieta No 2 - ERCO,Carrera 24 A # 1BN - 04,Buga,Valle,763042,CO,3.8949639742142095,-76.31192809466732,(Unknown Operator),Operational,3,CCS (Type 1)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-10-15 18:43:00+00:00
 462173,EDS Cootracaime - ERCO,Cra. 7 #14 - 02,Cajamarca,Tolima,732501,CO,4.440320439119487,-75.4314694668394,(Unknown Operator),Operational,3,CCS (Type 1)|CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-10-15 18:38:00+00:00
 462172,ERCO - Outlet de Moda,Cl. 16 #55-129,Medellin,Antioquia,050024,CO,6.21940442514798,-75.8333169046327,(Unknown Operator),Operational,2,CCS (Type 1)|CCS (Type 2),2025-10-15 18:11:00+00:00
@@ -540,23 +499,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 459483,TARGET GRAND SUPERMARKET (TAMAN KLUANG PERDANA) SDN BHD (Grocery),Target Grand Supermarket (Taman Kluang Perdana) Sdn Bhd,Kluang,,86000,MY,2.002378,103.291092,ChargeSini,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-07-12 07:16:00+00:00
 459482,TARGET PARIT RAJA (Grocery),TARGET SUPERMARKET SDN BHD CAWANGAN PUSAT BANDAR PARIT RAJA,Parit Raja,,86400,MY,1.866485,103.109177,ChargeSini,Operational,2,CCS (Type 2)|CCS (Type 2),2025-07-12 07:16:00+00:00
 459481,THE SUMMIT BATU PAHAT (Shopping Mall),The Summit Batu Pahat,Batu Pahat,,83000,MY,1.857076,102.934471,ChargeSini,Unknown,4,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |CCS (Type 2)|CCS (Type 2),2025-07-12 07:16:00+00:00
-459480,THE COMMUNE LIFESTYLE MALL (Shopping Mall),THE COMMUNE Lifestyle Mall,Kulai,,81000,MY,1.642143,103.602264,ChargeSini,Operational,4,CCS (Type 2)|CCS (Type 2)|CCS (Type 2)|CCS (Type 2),2025-07-12 07:16:00+00:00
-459322,פז Charge - שדרות,א.ת החדש-שדרות,שדרות,,,IL,31.5240118,34.6062429,Paz (Israel),Operational,1,CCS (Type 2),2025-07-07 07:31:00+00:00
-459321,BYD Park,Kathmandu Thirbam Road,Kathmandu,Bagmati,,NP,27.72045,85.33156,(Unknown Operator),Operational,1,Unknown,2025-07-07 04:14:00+00:00
-459320,"Pilot Travel Center #408 Grantsville, MD",3000 Chestnut Ridge Road,Grantsville,MD,21536 ,US,39.692318816561624,-79.09998040831158,eVgo Network,Planned For Future Date,1,CCS (Type 1),2025-07-07 01:44:00+00:00
-459318,Flying J Travel Center #621,2495 Williams Ave,Limon,CO,80828 ,US,39.275631467002256,-103.70894343925073,eVgo Network,Operational,1,CCS (Type 1),2025-07-07 01:22:00+00:00
-459317,"Pilot Travel Center #592 Grand Junction, CO",2195 Hwy 6 and 50,Grand Junction,CO,81505,US,39.11255160061671,-108.64900660451883,eVgo Network,Operational,1,CCS (Type 1),2025-07-07 01:14:00+00:00
-459316,"Flying J Travel Center #623 Midway, FL",32670 Blue Star Hwy,Midway,FL,32343,US,30.493005291716344,-84.42877274131558,eVgo Network,Operational,1,CCS (Type 1),2025-07-07 01:10:00+00:00
-459314,"Flying J Travel Center #726 Dallas, TX",7425 Bonnie View Road,Dallas,TX,75241,US,32.65600861444996,-96.75107710882565,eVgo Network,Operational,1,CCS (Type 1),2025-07-07 01:03:00+00:00
-459313,"Pilot Travel Center #252 Kearney, MO",600 W MO-92,Kearney,MO,64060 ,US,39.36809480529226,-94.37423192496641,eVgo Network,Operational,1,CCS (Type 1),2025-07-07 00:58:00+00:00
-459312,"Pilot Travel Center #43 Walcott, IA",3500 North Plainview Road,Walcott,IA,52773,US,41.61964472119243,-90.78348685011457,eVgo Network,Operational,1,CCS (Type 1),2025-07-07 00:37:00+00:00
-459311,Tcharge Pipa,"Rua Imperio do Sol, 400 ",Tibau do Sul,Rio Grande do Norte,59178-000,BR,-6.240319,-35.045226,(Unknown Operator),Operational,1,CCS (Type 2),2025-07-06 22:12:00+00:00
-459310,Tcharge - Parque Parahyba 3,Rua Maria José Noronha Teixeira S/N - Aeroclube,João Pessoa,Paraíba,58036-575. ,BR,-7.086524,-34.840483,(Unknown Operator),Operational,2,CCS (Type 2)|CCS (Type 2),2025-07-06 21:54:00+00:00
-459309,Anglesey Supercharger,Menai,Gaerwen,,LL60 6AG,GB,53.223435319212484,-4.2645613873849015,Tesla (including non-tesla),Operational,1,CCS (Type 2),2025-07-06 21:43:00+00:00
-459308,Macdonalds,45 gamsakhurdia ave,Zugdidi,SZ,2100,GE,42.50409754957187,41.86786841282765,(Unknown Operator),Operational,1,CCS (Type 2),2025-07-06 18:58:00+00:00
-459307,DA-Tene,D. Agmashenebeli st,Samtredia,,3900,GE,42.16404458331533,42.38124065662919,Da-Tene (GE),Operational,2,CCS (Type 2)|GB-T DC - GB/T 20234.3,2025-07-06 18:52:00+00:00
-459306,Europ Assistance STS Prisinzano,Via Giuseppe Giusti 13,Parma,PR,,IT,44.816927,10.318701,Be Charge (Italy),Operational,3,CCS (Type 2)|CHAdeMO|CCS (Type 2),2025-07-06 17:15:00+00:00
-459305,Southgate Shopping Centre,Dublin Rd,Drogheda,Co. Meath,,IE,53.702783974460715,-6.311127921204388,ePower,Operational,1,CCS (Type 2),2025-07-06 11:29:00+00:00
 459304,Tcharge 24h - Eletroposto,Rua Professora Maria Jose Noronha Teixeira,João Pessoa,paraiba,58036-575,BR,-7.0864628105968706,-34.84046732384553,(Unknown Operator),Operational,1,CCS (Type 2),2025-07-06 00:55:00+00:00
 459303,CREV - Ciudad Del Este,Ciudad Del Este Mall,Tres Rios,Cartago,,CR,9.908566977052772,-84.01751230583096,(Unknown Operator),Operational,2,CCS (Type 1)|GB-T DC - GB/T 20234.3,2025-07-06 00:21:00+00:00
 459302,Coopeguanacaste - Santa cruz ,Agencia Coopeguanacaste Santa cruz,Santa cruz,Guancaste,,CR,10.269794563636054,-85.57344049744893,(Unknown Operator),Operational,3,CCS (Type 1)|CHAdeMO|GB-T DC - GB/T 20234.3,2025-07-06 00:15:00+00:00
@@ -1047,74 +989,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 458244,"Vernon, TX - Tesla Supercharger",2822 US-287,Vernon,TX,76384,US,34.161677,-99.297576,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-24 07:11:00+00:00
 458243,OCCIDENTAL EMPLOYEE LOT 04,1600 Campus Rd,Los Angeles,CA,90041,US,34.129576,-118.211461,ChargePoint,Operational,1,Type 1 (J1772),2025-06-24 07:10:00+00:00
 458242,OCCIDENTAL EMPLOYEE LOT 01,1600 Campus Rd,Los Angeles,CA,90041,US,34.129502,-118.21142,ChargePoint,Operational,1,Type 1 (J1772),2025-06-24 07:10:00+00:00
-457982,Go Electric - Sorocaba,"Rua Dom Aguirre, 3465",Sorocaba,São Paulo,,BR,-23.48246300000021,-47.43960200000038,Go Electric E-Mobility (BR),Operational,1,CCS (Type 2),2025-06-23 13:47:00+00:00
-457981,Eletroposto Carioca - Easy Volt,"Av. das Américas, 6161", Rio de Janeiro,RJ,22640-101,BR,-23.00053037,-43.37656835,EZVolt,Operational,3,CCS (Type 2)|CCS (Type 2)|Type 2 (Tethered Connector) ,2025-06-23 11:57:00+00:00
-457980,Plenitude ,Via Guglielmo Cacchioli 8,Borgo Val di Taro,PR,,IT,44.488187,9.769865,Be Charge (Italy),Operational,1,Type 2 (Socket Only),2025-06-23 11:27:00+00:00
-457979,Enel X Conad,Via Carlo Azeglio Ciampi 1,Borgo Val di Taro,PR,,IT,44.490576,9.775538,Enel X,Operational,2,CCS (Type 2)|Type 2 (Socket Only),2025-06-23 05:21:00+00:00
-457978,Aventi at Aventura Condo,2901 NE 185 Street,Aventura,Florida,33180,US,25.94787820108155,-80.14214174741407,Chargelab,Operational,1,Type 1 (J1772),2025-06-23 02:47:00+00:00
-457977,Plenitude Ghiare,Via Fondovalle 2,Berceto,PR,,IT,44.55637,9.932767,Be Charge (Italy),Operational,1,Type 2 (Socket Only),2025-06-22 16:11:00+00:00
-457976,Briarwood Ford Red E DC Fast Charger ,7070 East Michigan Avenue ,Saline ,Michigan ,48176,US,42.18525587776037,-83.7405630756943,Red E Charge,Operational,2,CCS (Type 1)|CCS (Type 1),2025-06-22 15:51:00+00:00
-457975,Lidl,Balassagyarmati út 9-15,Vác,Pest,2600,HU,47.7928461423237,19.115667460324772,Lidl,Operational,3,CCS (Type 2)|CHAdeMO|Type 2 (Socket Only),2025-06-22 14:50:00+00:00
-457974,McDonald's,Cork Rd,Waterford,Co. Watford,,IE,52.24888732633352,-7.121583676134151,InstaVolt Ltd,Operational,2,CHAdeMO|CCS (Type 2),2025-06-22 13:53:00+00:00
-457973,Villafranca de los Barros (Zunder) ,Villafranca De Los Barros,Villafranca De Los Barros,,,ES,38.55816644732309,-6.358783109716285,Zunder,Planned For Future Date,1,CCS (Type 2),2025-06-22 09:48:00+00:00
-457970,Fattoria Zivieri,Via laguna,Sasso Marconi,,,IT,44.396417294617635,11.196121283020148,(Unknown Operator),Operational,1,Type 2 (Socket Only),2025-06-21 16:42:00+00:00
-457969,TotalEnergies - Vuurtorenplein 5,Vuurtorenplein 5,De PAnne,,8660,BE,51.10017139411053,2.582411743652216,TotalEnergies (FR),Operational,1,Type 2 (Socket Only),2025-06-21 15:49:00+00:00
-457968,TotalEnergies - Kapellelaan 10,Kapellelaan 10,De Panne,,8660,BE,51.098847865366054,2.5815829513380777,TotalEnergies (FR),Operational,1,Type 2 (Socket Only),2025-06-21 15:47:00+00:00
-457967,TotalEnergies,Donnylaan 22,De Panne,,8660,BE,51.09774051011877,2.5834675870256376,TotalEnergies (FR),Operational,2,Type 2 (Socket Only)|Type 2 (Socket Only),2025-06-21 15:42:00+00:00
-457966,Chesapeake Market & Deli,7144 Lake Shore Drive,North Beach,Maryland,,US,38.72590356579107,-76.54026554728765,(Unknown Operator),Operational,1,Type 1 (J1772),2025-06-21 15:22:00+00:00
-457965,Scandic Hallandia Halmstad,Rådhusgatan 4,Halmstad,Halland,302 43,SE,56.67298916601334,12.858266977643012,MER,Operational,6,Type 2 (Socket Only)|Type 2 (Socket Only)|Type 2 (Socket Only)|Type 2 (Socket Only)|Type 2 (Socket Only)|Type 2 (Socket Only),2025-06-21 15:21:00+00:00
-457962,ALDI Dunshaughlin,Lagore Rd,Dunshaughlin,Co. Meath,,IE,53.51256534916604,-6.5375698291626065,Shell Recharge Solutions (UK),Operational,1,Type 2 (Socket Only),2025-06-21 14:10:00+00:00
-457622,Floralien,Floralienlaan,Antwerp,,2600,BE,51.18674553405535,4.418748584167361,(Unknown Operator),Operational,1,CCS (Type 2),2025-06-21 13:08:00+00:00
-456851,Radisson Scandinavia Hotel Oslo (PowerGo),Holbergs gate 30,Oslo,,0166,NO,59.918067,10.733192,PowerGo,Operational,8,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456849,Sundhedshus Hanstholm (PowerGo),Bådsgårdsvej 12,Hanstholm,,7730,DK,57.112787,8.60706,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456848,Det Nordatlantiske Fyr (PowerGo),Tårnvej 7,Hanstholm,,7730,DK,57.112617,8.598985,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456847,Hanstholm Skole (PowerGo),Bådsgårdsvej 55,Hanstholm,,7730,DK,57.11225296,8.60818029,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456846,Energipunkt Frøstrup (PowerGo),Storkevej 11,Frøstrup,,7741,DK,57.0863281,8.99221377,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456845,Tømmerby-Lild Skole (PowerGo),Skolevej 2,Frøstrup,,7741,DK,57.07821364,8.9931457,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456844,Østerild Skole (PowerGo),Vesterbyvej 1,Thisted,,7700,DK,57.028901,8.841711,PowerGo,Operational,4,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456843,Nors Skole SFO (PowerGo),Kirkebyvej 25,Thisted,,7700,DK,57.023122,8.670584,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456842,Sennels Skole (PowerGo),Sennelsvej 122,Thisted,,7700,DK,56.970259,8.799692,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456841,Pædagoguddannelsen Thisted (PowerGo),Lerpyttervej 43,Thisted,,7700,DK,56.96825645,8.69981827,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456840,PPR og dagpasning (PowerGo),Ringvej 34,Thisted,,7700,DK,56.96552276,8.69675545,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456839,Thyværkstedet (afdeling Rosen) (PowerGo),Kronborgvej 113,Thisted,,7700,DK,56.964091,8.703166,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456838,Plejecenter Fjordglimt (PowerGo),Sennelsvej 65,Thisted,,7700,DK,56.96393377,8.78993197,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456837,Hjemmeplejen Nord (PowerGo),Industrivej 5,Thisted,,7700,DK,56.963696,8.70903,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456836,Plejecenter Kristianslyst (PowerGo),Nørrealle 53,Thisted,,7700,DK,56.962207,8.688412,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456835,Brandstation Hurup (PowerGo),Fabriksvej 4,Thisted,,7700,DK,56.961982,8.725877,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456834,Østre Skole (PowerGo),Kronborgvej 28,Thisted,,7700,DK,56.960163,8.70382,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456833,Koldby Skole (PowerGo),kastanievej 4,thisted,,7752,DK,56.959853,8.723671,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456832,Tingstrup Skole og Tandklinik (PowerGo),Thorstedvej 21,Thisted,,7700,DK,56.95978,8.66681,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456831,Børnehuset Rolighed (PowerGo),Lindevej 4,Thisted,,7700,DK,56.957311,8.729342,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456830,Rolighedsskolen (PowerGo),Kastanievej 80,Thisted,,7700,DK,56.957295,8.725943,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456829,Munkehallen (PowerGo),Munkevej 9E,Thisted,,7700,DK,56.955851,8.699602,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456828,Bofællesskabet Søskrænten (PowerGo),Fredensvej 15,Thisted,,7700,DK,56.953435,8.586546,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456827,Sjørring Skole (PowerGo),Ebbesvej 3,Thisted,,7700,DK,56.952964,8.59297105,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456826,Vibedal Plejecenter (PowerGo),Vibedalvej 1,Thisted,,7700,DK,56.952754,8.724486,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456825,Sjørring Børnehave (PowerGo),Præstegårdsvej 2,Thisted,,7700,DK,56.95017024,8.59430946,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456824,Tilsted Skole (PowerGo),Silstrupvej 47,Thisted,,7700,DK,56.949291,8.642719,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456823,Dragbækcentret (PowerGo),Simons Bakke 37,Thisted,,7700,DK,56.944734,8.658424,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456822,Lægehuset Thyland (PowerGo),Vorupørvej 168,Thisted,,7700,DK,56.927559,8.506175,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456821,Solgården Plejecenter (PowerGo),Solgårdsvej 14,Thisted,,7700,DK,56.92601863,8.50848772,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456820,Materielgården Vilsund (PowerGo),Rævebakken 7,Snedsted,,7752,DK,56.883572,8.608628,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456819,Vildsund Børnehave (PowerGo),Skyumvej 53,Thisted,,7700,DK,56.87648064,8.62856792,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456818,Bedsted Thy Skole (PowerGo),Skolegade 1,Bedsted Thy,,7755,DK,56.81163855,8.40146445,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456817,Kulhuset Krik (PowerGo),Krik Strandvej 68,Vestervig,,7770,DK,56.772013,8.274815,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456816,Områdecentret Sct. Thøgersgaard (PowerGo),Prins Burisvej 2,Vestervig,,7770,DK,56.76409889,8.31634313,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456815,Gjerlev Stadion (PowerGo),Sognevej 59,Randers,,8983,DK,56.595857,10.134695,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456814,Gjerlev Aktivitetshus (PowerGo),Tønagervej 13,Randers,,8983,DK,56.588024,10.135649,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456813,Grønhøjskolen (PowerGo),Nørreled 3,Randers,,8983,DK,56.58234677,10.18909744,PowerGo,Operational,4,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456812,Purhus-Hallen (PowerGo),Bakkevænget 12,Fårup,,8990,DK,56.54485194,9.85682501,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456811,Spentruphallerne (PowerGo),Skaldhøjvej 3,Spentrup,,8981,DK,56.542615,10.034577,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456810,Fårup Skole og Børneby (PowerGo),Fårup Skolevej 5,Fårup,,8990,DK,56.54216915,9.85462873,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456806,Randers Specialskole (PowerGo),Borup Byvej 14,Randers,,8920,DK,56.50376422,9.96419702,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456804,Randers Specialskole (PowerGo),Blommevej 50,Randers,,8930,DK,56.492238,10.053687,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456801,Bjerregrav Hallen (PowerGo),Blishønevej 31,Randers,,8920,DK,56.48315,9.906221,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456800,Helsted Stadion (PowerGo),Rønnebærvej 35,Randers,,8920,DK,56.480563,9.990867,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456799,Børnehuset Lervangen (PowerGo),Lervangen 43E,Randers,,8930,DK,56.475853,10.029773,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456798,Huset Nyvang (PowerGo),Rindsvej 6,Randers,,8920,DK,56.47527306,10.02550685,PowerGo,Operational,4,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456797,Børnehuset Rismøllen (PowerGo),Rismøllegade 10,Randers,,8930,DK,56.474602,10.068296,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456796,Bostedet Marienborg (PowerGo),Marienborgvej 17,Randers,,8930,DK,56.47450959,10.04506369,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456795,Dronningborg Aktivitetscenter (PowerGo),Stenaltvej 1,Randers,,8930,DK,56.473895,10.071052,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
 456794,Østervangsskolen  (PowerGo),Dronningborg Boulevard 33,Randers,,8930,DK,56.473605,10.050322,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
 456793,Randers Ungdomsskole (PowerGo),Nyholmsvej 12,Randers,,8930,DK,56.47124655,10.08144761,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
 456792,Regionshospitalet Randers (PowerGo),Østervangsvej 26A,Randers,,8930,DK,56.4680873,10.0471828,PowerGo,Operational,4,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
@@ -1272,174 +1146,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 456436,Jumbo 4860 Gemert P. Poellplein (PowerGo),Pastoor Poellplein 9,Gemert,,5421PL,NL,51.56147766,5.6856513,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
 456435,HyTEPS (PowerGo),Elisabethplaats 30,Gemert,,5421 LC,NL,51.5567732,5.680948,PowerGo,Operational,3,CCS (Type 2)|CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
 456434,Sint Sebastiaanstraat 20 Tilburg (PowerGo),Sint Sebastiaanstraat 20,Tilburg,,5017 AW,NL,51.552476,5.0914393,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456433,Pieter Brinkmanstraat 12 Tilburg (PowerGo),Pieter Brinkmanstraat 12,Tilburg,,5025 VN,NL,51.5493304,5.0601278,PowerGo,Operational,4,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456432,Van Grobbendonckstraat 32 Tilburg (PowerGo),Van Grobbendonckstraat 32,Tilburg,,5021 GP,NL,51.54808044,5.09055567,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456431,Jumbo 5128 St. Willebrord Kievitstraat (PowerGo),Kievitstraat 17,Sint Willebrord,,4711KH,NL,51.54584487,4.58957014,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456430,Jeker 59 Tilburg  (PowerGo),Jeker 59,Tilburg,,5032 AX,NL,51.54517,5.0430913,PowerGo,Unknown,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456428,Aces Direct (PowerGo),Rosa Castellanosstraat 1,Tilburg,,5032 MG,NL,51.53625929,5.044888,PowerGo,Operational,6,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456427,First Impression (PowerGo),Maidstone 24,Tilburg,,5026SK,NL,51.53163775,5.04596429,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456426,Hilvaria Studio's (PowerGo),Goirlesedijk 12b,Tilburg,,5081ND,NL,51.509626,5.107387,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456425,Basic-Fit 1208 Goes Klein Frankrijk (PowerGo),Klein Frankrijk 11,Goes,,4461ZN,NL,51.50654292,3.87841044,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456424,Basic-Fit 1089 Bergen op Zoom (PowerGo),Bastionweg 30,Bergen op Zoom,,4614 RM,NL,51.50542831,4.30562353,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456423,Jumbo 3179 Oirschot WC De Poort (PowerGo),Harnasweg 3,Oirschot,,5688EA,NL,51.50456619,5.31408119,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456422,Basic-Fit 1097 Goes v.d. Spiegelstraat (PowerGo),v.d. Spiegelstraat 82-94,Goes,,4461 LN,NL,51.49921726,3.89650163,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456420,Jumbo 5085 Heinkenszand Stenevate (PowerGo),Stenevate 2,Heinkenszand,,4451 KB,NL,51.4719907,3.81996619,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456419,Jumbo 4854 Deurne Schelde (PowerGo),Schelde 40,Deurne,,5751VH,NL,51.4561578,5.8041168,PowerGo,Unknown,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456418,Basic-Fit 1203 Deurne Fabriekstraat (PowerGo),Fabriekstraat 24,Deurne,,5753 AH,NL,51.4544679,5.79286247,PowerGo,Operational,3,CCS (Type 2)|CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456417,Basic-Fit 1166 Eindhoven Limburglaan (PowerGo),Limburglaan 36,Eindhoven,,5652 AA,NL,51.43222478,5.45239931,PowerGo,Operational,3,CCS (Type 2)|CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456416,Jumbo 3833 Hoogerheide Raadhuisstraat (PowerGo),Raadhuisstraat 87,Hoogerheide,,4631 NC,NL,51.42529139,4.32361667,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456415,Basic-Fit 2059 Kalmthout (PowerGo),Kapellensteenweg 117,Kalmthout,,2920,BE,51.38517411,4.47566775,PowerGo,Operational,3,CCS (Type 2)|CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456414,Basic-Fit 2074 Ekeren (PowerGo),Slijkweg 5,Antwerpen,,2180,BE,51.30131912,4.40865088,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456413,Jumbo 3193 Aardenburg Peurssenstraat (PowerGo),Peurssensstraat 21,Aardenburg,,4527BK,NL,51.275006,3.4446015,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456412,Ferienanlage Erzeberg (PowerGo),Birkenstraße 21,Bad Emstal,,,DE,51.26878773,9.252627883,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456411,Markt 1 Rötha (PowerGo),Markt 1,Rötha,,,DE,51.197732,12.410024,PowerGo,Operational,4,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456410,UplandParcs Winterberg (PowerGo),Fichtenweg 4,Winterberg,,,DE,51.18942306,8.51569745,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456409,Camping Biggesee 11711627,Am Sonderner Kopf 3,Olpe,,,DE,51.0754,7.8532,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456408,Hotel Diehlberg (PowerGo),Am Diehlburg 2,Olpe,,,DE,51.06694,7.83988,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456407,Basic-Fit 2008 Gent Watersportbaan (PowerGo),Zuiderlaan 4,Gent,,9000,BE,51.04824064,3.69279406,PowerGo,Operational,3,CCS (Type 2)|CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456406,Basic-Fit 1098 Sittard Limbrichterweg (PowerGo),Limbrichterweg 78,Sittard,,6135 GJ,NL,51.00709398,5.84627541,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456404,Basic-Fit 1133 Brunssum Haefland (PowerGo),Haefland 2,Brunssum,,6441 PA,NL,50.95854906,5.97302754,PowerGo,Operational,3,CCS (Type 2)|CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456403,Corda Campus (PowerGo),Kempische Steenweg 293/16,Hasselt,,3500,BE,50.95158496,5.35301715,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456400,Basic-Fit 2066 Bilzen (PowerGo),Vrankrijk 14,Bilzen,,3740,BE,50.86065917,5.50876547,PowerGo,Operational,2,CCS (Type 2)|CCS (Type 2),2025-06-21 09:42:00+00:00
-456397,T&S Stausee Oberwald (PowerGo),Stausee Oberwald,Callenberg,,,DE,50.82284329,12.655664,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456396,Carestone Kalbach (PowerGo),Kirchstraße / Veitstreinbacher Straße,Mittelkalbach,,,DE,50.42183,9.64145,PowerGo,Operational,4,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456395,Eifel-Camp (PowerGo),Am Freilinger See 1,Blankenheim,,,DE,50.41503,6.71911,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456394,Campingplatz Heilhauser Mühle (PowerGo),Heilhausermühle 1,Waxweiler,,54649,DE,50.1083374,6.3494978,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456393,Camping Heilhauser Muhle (PowerGo),Heilhauser Muehle 1,Waxweiler Duitsland,,,DE,50.09024,6.36888,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456392,Campingplatz Litzelau 11730970,Litzelau 4,Unterwössen,,,DE,47.7178,12.4792,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456391,Waldbad Camping Isny (PowerGo),"Lohbauerstraße 59,",Isny im Allgäu,,88316,DE,47.67853928,10.03102779,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456390,EESS Arribide (PowerGo),"Polígono Industrial Arriandi, P-1, 108","Lurreta, Bizkaia",,48215,ES,43.1828445,-2.66131617,PowerGo,Operational,1,CCS (Type 2),2025-06-21 09:42:00+00:00
-456389,Hotel Tramuntana (PowerGo),"Carrer Mas del Pla, 7-9",Girona,,17700,ES,42.4066481,2.8788841,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456388,Centre Comercial Tramuntana (PowerGo),"Carrer Mas del Pla, 4",La Jonquera,,17700,ES,42.40534973,2.87950993,PowerGo,Operational,2,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456387,Zona Dièsel (PowerGo),Carrer de Lleida 2,Vic,,08500,ES,41.946875691420246,2.271121962426804,PowerGo,Operational,1,CCS (Type 2),2025-06-21 09:42:00+00:00
-456385,Hostal Chema (PowerGo),"Carretera de Burgos a Portugal, 119",Valladolid,,47194,ES,41.69769163,-4.71391768,PowerGo,Operational,1,CCS (Type 2),2025-06-21 09:42:00+00:00
-456384,Parking Carlos III (PowerGo),Gran Via de Carles III 58,Barcelona,,08028,ES,41.38386536,2.12845778,PowerGo,Operational,5,Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) |Type 2 (Tethered Connector) ,2025-06-21 09:42:00+00:00
-456383,Aquopolis Villanueva de la Cañada (PowerGo),Avenida Mirasierra 3,Villanueva de la Cañada,,28691,ES,40.455464680390946,-3.992148882357668,PowerGo,Operational,1,Type 2 (Socket Only),2025-06-21 09:42:00+00:00
-456382,Maisons du Monde (PowerGo),"C/ del General Riera, 125",Palma,,07010,ES,39.594006894833996,2.6421664308409447,PowerGo,Operational,1,CCS (Type 2),2025-06-21 09:42:00+00:00
-385031,BC Hydro - Vanderhoof,2533 Burrard Ave,Vanderhoof,BC,V0J 3A0,CA,54.017219,-124.009998,BC Hydro,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:58:00+00:00
-385025,Association of Alberta Municipalities,17301 Victoria Trail,Smoky Lake,AB,T0A 3C0,CA,53.99761774,-112.4544804,,Operational,1,Type 1 (J1772),2025-06-20 10:58:00+00:00
-385021,Association of Alberta Municipalities,5021 50 St,Legal,AB,T0G 1L0,CA,53.9500933,-113.595032,,Operational,1,Type 1 (J1772),2025-06-20 10:58:00+00:00
-385017,Prince Albert National Park - Waskesiu Townsite - Visitor Parking Lot - Tesla Destination,969 Lakeview Drive,Waskesiu Lake,SK,S0J 2Y0,CA,53.923489,-106.081993,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:58:00+00:00
-385015,PG FORD LEVEL 3 #1,1111 Central Street West,Prince George,BC,V2M 3C9,CA,53.914325,-122.782838,ChargePoint,Operational,1,CCS (Type 1),2025-06-20 10:58:00+00:00
-385013,PG FORD LEVEL 3 #2,1111 Central St W,Prince George,BC,V2M 3C9,CA,53.914224,-122.782693,ChargePoint,Operational,1,CCS (Type 1),2025-06-20 10:58:00+00:00
-385006,Cluculz Rest Area,Highway 16,Vanderhoof,BC,V2M 1S2,CA,53.90825921,-123.5869642,,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:58:00+00:00
-385005,HUBCITYVW LEVEL 2 STATION,1822 Queensway,Prince George,BC,V2L 1L8,CA,53.906749,-122.741833,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:58:00+00:00
-385001,BC Hydro - Prince George - College of New Caledonia,3330 22 Ave,Prince George,BC,V2N 1P8,CA,53.90412268110873,-122.7853699064293,BC Hydro,Operational,3,CHAdeMO|CCS (Type 1)|NACS / Tesla Supercharger,2025-06-20 10:58:00+00:00
-384996,River Point Landing - Tesla Supercharger,3036 Recplace Drive,Prince George,BC,V2N 0G2,CA,53.890585,-122.767819,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:58:00+00:00
-384994,Wood Wheaton Supercentre - Outside,2879 Highway 16 West,PRINCE GEORGE,BC,V2N 0A3,CA,53.88607,-122.76898,flo,Operational,1,Type 1 (J1772),2025-06-20 10:58:00+00:00
-384992,On the Run EV Fast Charge,5150 Domano Blvd,Prince George,BC,V2N 4V8,CA,53.8683,-122.7774,,Operational,1,CCS (Type 1),2025-06-20 10:58:00+00:00
-384985,Li Pchi Taanfaan,1 Mayer Way,The Pas,MB,R9A 1V5,CA,53.830229,-101.24137,flo,Operational,1,Type 1 (J1772),2025-06-20 10:58:00+00:00
-384981,Metis N4 Construction,200 Main St,Winnipeg,MB,R3C 1A8,CA,53.82139956,-101.2495254,,Operational,1,Type 1 (J1772),2025-06-20 10:58:00+00:00
-384980,Twin Motors The Pas Recon Center,1637 Gordon Avenue,The Pas,MB,R9A 1L1,CA,53.802971,-101.250422,flo,Operational,1,Type 1 (J1772),2025-06-20 10:58:00+00:00
-384421,INDIGO PARK CCA016-RR,725 9 Avenue Southwest,Calgary,AB,T2P 3V5,CA,51.044829,-114.074731,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384420,INDIGO PARK CCA127-02,820 4 Street Southeast,Calgary,AB,T2G 0S1,CA,51.044827,-114.052754,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384419,CPA City Hall Parkade - Lot 36 - Tesla Destination,322 9 Ave SE,Calgary,AB,T2G 5A6,CA,51.044567,-114.0569,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-384416,INDIGO PARK CCA040-E,224 10 Avenue Southwest,Calgary,AB,T2R,CA,51.043718,-114.067832,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384413,Indigo Park Canada Inc,218-10 Ave SE,Calgary,AB,T2G 0V9,CA,51.0435555731705,-114.059464402816,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384412,INDIGO PARK CCA191-6E,204 10 Ave SE,Calgary,AB,T2G 0V9,CA,51.04335,-114.0602,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384409,SWTCH Energy Inc.,909 11 Ave SW,Calgary,AB,T2R 0E7,CA,51.0426016,-114.0819252,SWTCH - Charge Everywhere,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384408,Impark (Keynote Parking Garage) - Tesla Destination,1100 1st St SE,Calgary,AB,T2G 1B1,CA,51.041995,-114.060321,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-384402,Slate Asset Management,1414 8 St SW,Calgary,AB,T2R 1J6,CA,51.03971572,-114.0814373,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384401,Fifteen-15-1 (Public),1515 12th St SW,Calgary,AB,T3C 1C7,CA,51.038678,-114.091916,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384400,Strathmore Motor Products Ltd 2,900 Wridge Rd,Strathmore,AB,T1P 1H8,CA,51.03867,-113.40583,InCharge (US),Operational,2,Type 1 (J1772)|CCS (Type 1),2025-06-20 10:57:00+00:00
-384398,Ranch Market - Tesla Supercharger,100 Ranch Market,Strathmore,AB,T1P 0A8,CA,51.038196,-113.378637,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:57:00+00:00
-384395,INDIGO PARK CCA250-2,909 17 Avenue Southwest,Calgary,AB,T2T 0A4,CA,51.037542,-114.082197,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384394,Golden Hills School Division - Tesla Destination,435A HWY 1,Strathmore,AB,T1P 1C8,CA,51.037049,-113.399473,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-384393,Strathmore Dodge,100 Canal Avenue,Strathmore,AB,T1P0C4,CA,51.036731,-113.407445,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384392,Strathmore,109 - 900 Pine Road,Strathmore,AB,T1P 0A2,CA,51.03609,-113.38955,flo,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384391,BROADSTREET DAWSON #5,80 Dawson Dr,Chestermere,AB,T1X 0L3,CA,51.0356,-113.846191,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384388,Southgrow Regional Initiative,3809 7 St SE,Calgary,AB,T2G 2Y8,CA,51.0212314,-114.0460605,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384387,First Capital Asset Management LP,3915 51 St SW,Calgary,AB,T3E 6N1,CA,51.0202803945502,-114.16239074805,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384386,SkyFire Energy - Tesla Destination,4038 - 7 St SE,Calgary,AB,T2G 2Y8,CA,51.018137,-114.045391,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-384385,SWTCH Energy Inc.,4000 4 Str SE,Calgary,AB,T2G 1Y6,CA,51.0173554,-114.0494052,SWTCH - Charge Everywhere,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384382,P2P - Calgary SW West Hills,180 Stewart Green SW,Calgary,AB,T3H 3C8,CA,51.015625,-114.166888,flo,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384381,MN MNA-C-1,3652 44 Avenue Southeast,Calgary,AB,T2B 3J9,CA,51.013921,-113.978767,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384375,Best Western Plus - Tesla Supercharger,1925 Laforme Blvd.,Revelstoke,BC,V0E 2S0,CA,51.009594,-118.218857,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:57:00+00:00
-384374,Shell Canada,1840 Trans Canada Hwy,Revelstoke,BC,V0E 2S0,CA,51.0094525918297,-118.214587286104,,Planned For Future Date,1,CCS (Type 1),2025-06-20 10:57:00+00:00
-384369,OMO Teppan & Kitchen - Tesla Destination,5222 Macleod Trl S,Calgary,AB,T2H 0J2,CA,51.007793,-114.067885,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-384265,TOWN OF OKOTOKS ART GALLERY,53 North Railway Street,Okotoks,AB,T1S 1J3,CA,50.724311,-113.967438,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384264,BC Hydro - Port Hardy,7250 Market St,Port Hardy,BC,V0N 2P0,CA,50.7233,-127.492,BC Hydro,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384262,BC Hydro - Ashcroft,680 Railway Ave,Ashcroft,BC,V0K 1A0,CA,50.71903508883074,-121.2806356669342,BC Hydro,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384261,TOWN OF OKOTOKS NORTH RAILWAY,1118 North Railway Street,Okotoks,AB,T0L 0A0,CA,50.717208,-113.949155,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384260,Okotoks Volkswagon,4 Westland Rd #200,Okotoks,AB,T1S 1N1,CA,50.7171642770659,-113.983260651389,,Operational,2,Type 1 (J1772)|CCS (Type 1),2025-06-20 10:57:00+00:00
-384259,TOWN OF OKOTOKS VIKING RENTAL,204 Community Way,Okotoks,AB,T1S 2N3,CA,50.716717,-113.976904,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384257,Kamloops Honda - Fast Charger,1308 Josep Way,Kamloops,BC,V2H 1N6,CA,50.712239,-120.334174,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384255,Newfoundland Power,119 Fisher St,Port au Choix,NL,A0K 4C0,CA,50.7098613,-57.3617348,,Planned For Future Date,1,CCS (Type 1),2025-06-20 10:57:00+00:00
-384250,Okanagan College - Salmon Arm Campus,2552 10th Ave NE,Salmon Arm,BC,V1E 2S4,CA,50.704405,-119.255644,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384248,BC Hydro - Salmon Arm - Ross St NE,321 Ross Street NE,Salmon Arm,BC,V1E,CA,50.7027,-119.283,BC Hydro,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384247,On the Run EV Fast Charge,101 Trans Canada Hwy NE,Salmon Arm,BC,V1E 4P5,CA,50.7005,-119.2835,,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384246,BC Hydro - Salmon Arm - Hudson Ave Public Parking,100 Hudson Ave NW,Salmon Arm,BC,V1E 4M2,CA,50.7002984,-119.2858901,BC Hydro,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384245,Salmon Arm Gas Bar  - 50 Trans-Canada Hwy,50 Trans-Canada Hwy,Salmon Arm,BC,V1E 1V4,CA,50.699569,-119.285517,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384244,Petro-Canada,915 Lakeshore Dr W,Salmon Arm,BC,V1E 1E4,CA,50.69869080431333,-119.2957513703613,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384242,Petro-Canada EV Fast Charger,"200, 64273 Highway 7 E",Aldersyde,AB,T0L 1T0,CA,50.69578560354633,-113.8861778439026,,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384241,Salmon Arm,"300, 1151 - 10th Avenue SW",Salmon Arm,BC,V1E 1T3,CA,50.69453,-119.29689,Electrify Canada,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384240,1 St S,1st St S,Coldwell,MB,R0C 1Y0,CA,50.69406184,-98.03640203,Chargelab,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384238,Association of Alberta Municipalities,301 Centre Ave W,Black Diamond,AB,T0L 0H0,CA,50.68853393,-114.236172,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384236,Manny's Corner,1091 Main street,Lillooet,BC,V0K 1V0,CA,50.687809,-121.93724,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384232,Sun Life Financial - Tesla Destination,280 West Victoria St,Kamloops,BC,V2C 1A4,CA,50.678265,-120.346725,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-384231,JPD - Lansdowne Village,450 Lansdowne Street,Kamloops,BC,V2C 1Y3,CA,50.677265,-120.328413,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384227,INDIGO PARK CBI122,339 Saint Paul Street,Kamloops,BC,V2C 2J5,CA,50.673832,-120.333664,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384225,Thompson Rivers University - Coyote Den,620 Dalgleish Dr,Kamloops,BC,V2C 0M7,CA,50.67167,-120.357577,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384222,BROADSTREET HILLSIDEWALK #5,3410 Valleyview Drive,Kamloops,BC,V2C 0M2,CA,50.670211,-120.223161,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384219,School District 73,710 McGill Rd,Kamloops,BC,V2C 0A2,CA,50.66980741,-120.3563411,InCharge (US),Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384218,400-970 McMaster Way,400-970 McMaster Way,Kamloops,BC,V2C 6K2,CA,50.669415,-120.376222,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384217,BC Hydro - Kamloops - Tournament Capital Centre,910 McGill Rd,Kamloops,BC,V2C 6N6,CA,50.6694,-120.368,BC Hydro,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384208,Kamloops Fuel Bar - 7750 Dallas Drive,7750 Dallas Dr,Kamloops,BC,V2C 6X2,CA,50.658206,-120.119935,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384206,Kamloops Visitor Center - Tesla Supercharger,1290 Trans-Canada Hwy,Kamloops,BC,V2C 6R3,CA,50.655257,-120.368307,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:57:00+00:00
-384202,On the Run EV Fast Charge,1520 Hugh Allan Dr,Kamloops,BC,V1S 1Y2,CA,50.6528,-120.3821,,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384200,7Charge - Kamloops 37774A,1120 Rogers Way,Kamloops,BC,V1S 1N5,CA,50.6523643,-120.3684513,7-Charge (7-Eleven),Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384199,Quality Inn Kamloops,1860 Rogers Pl,Kamloops,BC,V1S 1T7,CA,50.65189067,-120.36889652,Chargelab,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384198,Wingate by Wyndham Kamloops - Tesla Destination,1180 Rogers Wy,Kamloops,BC,V1S 1N5,CA,50.651584,-120.370114,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-384195,Redhill Rest Area,Highway 1,Ashcroft,BC,V0K 1A0,CA,50.639713,-121.343758,flo,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384194,BRCC - Manic 5 - Centrale,"Route 389, km 214",Manic-5,QC,G5T 2T2,CA,50.63929,-68.732158,Circuit Electrique,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384193,Shoreside GM Gimli - 50kW,231 Airport Road,Gimli,MB,R0C 1B0,CA,50.639197,-97.009111,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384192,British Columbia Ministry of Transportation and Infrastructure,Trans-Canada Hwy,Ashcroft,BC,V0K 1A0,CA,50.63846799,-121.343776,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384190,Shelter Bay,BC-23,Columbia-Shuswap B,BC,V0E 2S0,CA,50.63653,-117.927294,flo,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384188,Administrative Office,4836 Radium Blvd,Radium Hot Springs,BC,V0A 1M0,CA,50.6200267,-116.0760544,EVGateway,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384187,Radium Hot Springs Centre,4863 Stanley Street,Radium Hot Springs,BC,V0A 1M0,CA,50.6184,-116.072985,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384182,SD 85 Port McNeill,2161 McNeill Rd,Port McNeill,BC,V0N 2R0,CA,50.5837696,-127.0785432,InCharge (US),Operational,1,CCS (Type 1),2025-06-20 10:57:00+00:00
-384180,High Country Chevrolet Buick GMC Ltd 2,702 11 Ave SE,High River,AB,T1V 1P2,CA,50.57267,-113.85703,InCharge (US),Operational,2,Type 1 (J1772)|CCS (Type 1),2025-06-20 10:57:00+00:00
-384178,Country Chrysler - SmartDC,1103 14st street SE,High River,AB,T1V 1M7,CA,50.572477,-113.848766,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384177,P2P - Brooks,1240 Cassils Place E,Brooks,AB,T1R 1C3,CA,50.572356,-111.869608,flo,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384176,Davis Chevrolet Buick GMC Brooks - Fast Charger,504 2nd St W,Brooks,AB,T1R 0E9,CA,50.571391,-111.896666,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384171,P2P - Longview,100 Morrison Rd,Longview,AB,T0L 1H0,CA,50.534824,-114.23139,flo,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384168,Indian Head Chrysler,501 Johnston Ave,Indian Head,SK,S0G 2K0,CA,50.526944,-103.668525,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384166,Rocky Mountain School District #6 - 1421-029,1302 Industrial 1 Rd,Invermere,BC,V0A 1K0,CA,50.51542872,-116.0389473,InCharge (US),Operational,1,CCS (Type 1),2025-06-20 10:57:00+00:00
-384160,Winnipeg Beach Town,39 Robinson Ave,Winnipeg Beach,MB,R0C 3G0,CA,50.496314,-96.968546,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384151,BMW DILAWRI STATION 1,700 Broad St,Regina,SK,S4R 8H7,CA,50.46776,-104.608623,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384150,Gescan Regina,445 Henderson Drive,Regina,SK,S4N 5W8,CA,50.46655,-104.564452,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384148,REGINA ACURA REGINA ACURA,787 Broad St,Regina,SK,S4R 8G9,CA,50.465923,-104.60552,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384147,DILAWRI 1 STATION 1,1750 6th Ave,Regina,SK,S4R 0X3,CA,50.460171,-104.605801,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384143,Una Rest Area,4369-4311 BC-97,Armstrong,BC,V0E 1B5,CA,50.45101279886521,-119.4481335005951,,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384142,PILE O’ BONES PILE O' BONES,1808 Cameron St,Regina,SK,S4T 7R7,CA,50.449525,-104.625633,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384141,Gimli Rd,139 Gimli Rd,Matlock,MB,R0C 2B0,CA,50.448895,-96.95146,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384139,SaskPower Logistics Complex -12305 Rotary Ave -  Building A,12305 Rotary Ave,Regina,SK,S4M 0A1,CA,50.447083,-104.765085,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384136,Suncor,2910 E Quance St,Regina,SK,S4V 3B9,CA,50.44634,-104.54091,,Operational,1,CCS (Type 1),2025-06-20 10:57:00+00:00
-384133,NORTECH PARKING STAFF_1,2127 Halifax St,Regina,SK,S4P 1V1,CA,50.445071,-104.602557,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384131,Canadian Tire - Tesla Supercharger,2325 Prince of Wales Drive,Regina,SK,S4V 3A4,CA,50.442534,-104.532003,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:57:00+00:00
-384128,BC Hydro - Spences Bridge - The Packing House,3705 Riverview Ave,Spences Bridge,BC,V0K 2L0,CA,50.4223827,-121.3427822,BC Hydro,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384127,BROADSTREET TERRA GREENS #1,3700 Green Diamond Road,Regina,SK,S4V 3M2,CA,50.419763,-104.51087,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384125,Tim Hortons - Regina,3753 Chuka Blvd,Regina,SK,S4V 3H6,CA,50.417448,-104.516613,flo,Operational,1,CCS (Type 1),2025-06-20 10:57:00+00:00
-384121,Moose Jaw Fuel Bar (Ross Park) - 1592 9th Avenue NE,1592 9th Avenue NE,Moose Jaw,SK,S6J 0A9,CA,50.41123,-105.51222,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384120,P2P - Vulcan,115 Centre St E,Vulcan,AB,T0L 2B0,CA,50.405923,-113.257722,flo,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384118,The Shop - Civic Plaza - Tesla Supercharger,1251 Main Street N #7,Moose Jaw,SK,S6H 6M3,CA,50.404331,-105.534081,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:57:00+00:00
-384117,Regina Motor Products,Albert St. S. - Highways 1 & 6,Regina,SK,S4P 3A8,CA,50.392777,-104.619126,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384116,PETRO CANADA STATION 1,450 MB-6,Saint Laurent,MB,R0C 2S0,CA,50.370117,-97.890335,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384115,South Beach Casino,One Ocean Drive,Scanterbury,MB,R0E 1W0,CA,50.361269,-96.622121,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384114,P2P - Nanton,2114 19th Street,Nanton,AB,T0L 1R0,CA,50.349071,-113.773778,flo,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384113,Nanton Truck Stop - Tesla Destination,2810 21st Ave,NANTON,AB,T0L,CA,50.341704,-113.765373,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-384112,Borderland Co-op Gas Station - Tesla Supercharger,1206 Highway 1,Whitewood,SK,S0G 5C0,CA,50.334755,-102.256302,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:57:00+00:00
-384111,Petro-Canada,1203 Highway 1,Whitewood,SK,S0G 5C0,CA,50.3334158,-102.2590615,,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384110,BC Hydro - Pemberton,7444 Frontier St,Pemberton,BC,V0N 2L0,CA,50.3231358,-122.8057451,BC Hydro,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384108,PEMBERTON EVSE 1,7405 Cottonwood St,Pemberton,BC,V0N 2L1,CA,50.319485,-122.800927,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384107,Sayward Valley Resort,1546 Sayward Rd,Sayward,BC,V0P 1R0,CA,50.315542,-125.919635,,Operational,1,CCS (Type 1),2025-06-20 10:57:00+00:00
-384106,BC Hydro - Sayward,"Sayward Junction Gas, Sayward Rd",Sayward,BC,V0P 1R0,CA,50.3124,-125.919,BC Hydro,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384105,Swift Current,1811 Memorial Dr,Swift Current,SK,S9H 5B7,CA,50.30869,-107.77529,flo,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384103,Swift Current Mall - Tesla Supercharger,1 Springs Drive,Swift Current,SK,S9H 3X6,CA,50.306262,-107.779848,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:57:00+00:00
-384100,Peavey Mart,1150 Central Ave N,Swift Current,SK,S9H 4C8,CA,50.299282,-107.797499,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384098,Nakusp Hot Springs,8500 Hot Springs Road,Nakusp,BC,V0G 1R0,CA,50.296762,-117.685351,flo,Temporarily Unavailable,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384097,BRCC - Baie-Johan-Beetz - du Nord,15 rue du du Nord,Baie-johan-Beetz,QC,G0G 1B0,CA,50.291025,-62.804644,Circuit Electrique,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384096,Municipalité Rivière-Saint-Jean - Magpie - Hôtel de ville,"116, Rue du Quai",Rivière-Saint-Jean,QC,G0G 2N0,CA,50.290036,-64.331511,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
 384094,Tesla - 8935 - Vernon BC,2220 58 Ave,Vernon,BC,V1T 9T2,CA,50.288996,-119.261655,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
 384091,Superior Tech - Tesla Destination,127 8th Ave NW,Swift Current,SK,S9H 0Z5,CA,50.283787,-107.810556,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
 384090,STANDARD EV STANDARD DODGE,7 3 Ave NW,Swift Current,SK,S9H 0B5,CA,50.282988,-107.803566,ChargePoint,Operational,1,CCS (Type 1),2025-06-20 10:57:00+00:00
@@ -1479,26 +1185,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 384022,Fairmont Chateau Whistler - Parking Level P1 - Tesla Destination,4599 Chateau Blvd,Whistler,BC,V0N 1B4,CA,50.117399,-122.944972,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
 384021,Greystone Lodge VR2451,4899 Spearhead Dr,Whistler,BC,V8E,CA,50.11725403,-122.94186349,Chargelab,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
 384017,Resort Municipality of Whistler,Day Lot 2,Whistler,BC,V0N 1B4,CA,50.115726,-122.9526475,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384016,LOT 2 LOT 2-UNIT 3,4298 Blackcomb Way,Whistler,BC,V0N 1B4,CA,50.115669,-122.951849,ChargePoint,Temporarily Unavailable,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384015,WHISTLER - RMOW LOT A - UNIT 3,4000 Whistler Way,Whistler,BC,V0N 1B4,CA,50.115602,-122.957705,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384013,Resort Municipality of Whistler,Day Lot 1,Whistler,BC,V0N 1B4,CA,50.1154395,-122.9526645,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384010,LOT 1 LOT 1-UNIT 1,4490 Blackcomb Way,Whistler,BC,V0N 1B4,CA,50.114861,-122.952535,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384009,Whistler Conference Center - Tesla Destination,4010 Whistler Way,Whistler,BC,V0N 1B4,CA,50.11478,-122.957757,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-384008,LOT 1 LOT 1-UNIT 2,4490 Blackcomb Way,Whistler,BC,V0N 1B4,CA,50.114768,-122.95257,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384007,BC Hydro - Whistler Conference Center,4010 Whistler Way,Whistler,BC,V8E 1J2,CA,50.1147,-122.958,BC Hydro,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-384002,City of Merritt - City Hall,2185 Voght St,Merritt,BC,V1K 1R6,CA,50.112488,-120.788241,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-384000,BC Hydro - Lake Country,15686 Pelmewash Pkwy,Lake Country,BC,V4V 2G4,CA,50.11209427763782,-119.3872121489349,BC Hydro,Operational,4,Tesla (Model S/X)|CHAdeMO|CCS (Type 1)|NACS / Tesla Supercharger,2025-06-20 10:57:00+00:00
-383997,McMillan Motor Products Inc 1,420 Railway St,Kipling,SK,S0G 2S0,CA,50.10289747,-102.6294796,InCharge (US),Operational,2,Type 1 (J1772)|CCS (Type 1),2025-06-20 10:57:00+00:00
-383994,LODGING OVATION LEGENDS-2,2036 London Ln,Whistler,BC,V0N 1B2,CA,50.094539,-122.98942,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-383993,Municipal Yard,8001 Highway 99,Whistler,BC,V0N 1B0,CA,50.09242,-122.9972,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-383992,Gescan Whistler,#103 - 1410 Alpha Lake Road,Whistler,BC,V8E 0J3,CA,50.090375,-123.030205,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-383988,Hampton Inn & Suites by Hilton Medicine Hat - Tesla Destination,2510 Box Springs Blvd NW,Medicine Hat,AB,T1C 0C8,CA,50.066852,-110.743945,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-383987,Beausejour Chevrolet Buick GMC Ltd 2,1012 Park Ave,Beausejour,MB,R0E 0C0,CA,50.06175,-96.50373,InCharge (US),Operational,2,Type 1 (J1772)|CCS (Type 1),2025-06-20 10:57:00+00:00
-383984,Bill Howich Chrysler - Smart DC,2777 North Island Highway,Campbell River,BC,V9W 2H4,CA,50.04462,-125.26832,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-383983,Southgrow Regional Initiative,602 1 St SE,Medicine Hat,AB,T1A 0H5,CA,50.04187668,-110.676634,,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-383980,SOUTH ST. CLEME ACTIVITY CENTER,88 Donald Rd,Narol,MB,R1C 0B8,CA,50.036874,-96.97957,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-383976,CITY OF CR CA CENTENNIAL 1,1235 Shoppers Row,Campbell River,BC,V9W 2C7,CA,50.0272,-125.24495,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-383975,P2P - Claresholm,5100 1 St West,Claresholm,AB,T0L 0T0,CA,50.026847,-113.582112,flo,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
 383971,CITY OF CR CA CITY HALL 1,372 St Anns Rd,Campbell River,BC,V9W 4C6,CA,50.02343,-125.24463,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
 383970,Promenade du p'tit quai,21 avenue Parent,Port-Cartier,QC,G5B 1H3,CA,50.0209635599748,-66.8752965676334,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
 383968,BRCC - Port-Cartier - Av. Parent,21 Avenue Parent,Port Cartier,QC,G5B 2G4,CA,50.020777,-66.875471,Circuit Electrique,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
@@ -1517,154 +1203,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 383942,Dunn Chrysler Dodge - SmartDC,2599 Saskatchewan Avenue West,Portage La Prairie,MB,R1N 4A5,CA,49.976115,-98.339565,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
 383941,PORTAGE TOYOTA KESTREL 1,2633 Saskatchewan Ave W,Portage la Prairie,MB,R1N 4A5,CA,49.976095,-98.341659,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
 383940,Petro-Canada EV Fast Charger,Highway 1 and Highway 16,Portage la Prairie,MB,R1N 3A4,CA,49.9746028,-98.4659314,,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-383937,Westfield Crossing - Tesla Supercharger,2100 Saskatchewan Ave,Portage la Prairie,MB,R1N 3G3,CA,49.971925,-98.318733,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:57:00+00:00
-383936,BROADSTREET HIGHLAND #1,3700 Ferrier Street,Winnipeg,MB,R2P 0H3,CA,49.970961,-97.111335,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-383934,BROADSTREET HIGHLAND #2,3700 Ferrier Street,Winnipeg,MB,R2P 0H3,CA,49.970822,-97.111481,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-383932,BROADSTREET HIGHLAND #4,3700 Ferrier Street,Winnipeg,MB,R2P 0H3,CA,49.970653,-97.111362,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-383931,Four Way Motors - Tesla Destination,99 Hampton St,MacGregor,MB,R0H 0R0,CA,49.966573,-98.776086,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:57:00+00:00
-383930,585 MANDALAY 585 MANDALAY,585 Mandalay Dr,Winnipeg,MB,R2P 2N9,CA,49.963184,-97.18072,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-383927,Birchwood Hyundai - Smart DC,2420 McPhillips Street,Winnipeg,MB,R2V 4J6,CA,49.958547,-97.143991,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-383921,FortisBC - Kelowna Airport,1-5540 Airport Way,Kelowna,BC,V1V 1S1,CA,49.95048,-119.384894,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:57:00+00:00
-383920,McPhillips Nissan,2150 Mcphillips St,Winnipeg,MB,R2V 3C8,CA,49.950283,-97.152126,flo,Operational,1,Type 1 (J1772),2025-06-20 10:57:00+00:00
-380194,SCC SUMMIT SCC SUMMIT #2,1009 Olive Way,Seattle,WA,98101,US,47.614938,-122.331583,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380193,CWP CCP #2,555 110th Ave NE,Bellevue,WA,98004,US,47.614918,-122.194147,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380191,CWP CCP #5,555 110th Ave NE,Bellevue,WA,98004,US,47.61488,-122.194148,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380189,CWP CCP #3,555 110th Ave NE,Bellevue,WA,98004,US,47.614876,-122.194183,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380188,AMZ SEA112 - 06,437 108th Ave NE,Bellevue,WA,98004,US,47.614925,-122.196628,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380182,AMZ SEA112 - 19,555 108th Ave NE,Bellevue,WA,98004,US,47.614747,-122.196461,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380181,BELLEVUE BELLEVUE CH 1,450 110th Ave NE,Bellevue,WA,98004,US,47.614744,-122.193162,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380180,AMZ SEA112 - 16,555 108th Ave NE,Bellevue,WA,98004,US,47.614667,-122.196453,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380179,LINC SQUARE EXP LSS P2 92-93,500 Bellevue Way NE,Bellevue,WA,98004,US,47.614649,-122.200751,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380177,LINC SQUARE EXP LSS P2 111-112,410 Bellevue Way NE,Bellevue,WA,98004,US,47.614394,-122.200531,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380175,Rockwood PM - Adirondack Lodge,2711 E Adirondack Ln,Spokane,WA,99223,US,47.61438,-117.370552,flo,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380174,LINC SQUARE EXP LSS P2 98-99,424 104th Ave NE,Bellevue,WA,98004,US,47.614345,-122.200772,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380173,KRC SKYLINE SKYLINE #2,10900 NE 4th St,Bellevue,WA,98004,US,47.614334,-122.19401,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380172,LINC SQUARE EXP LSS P2 109-110,424 104th Ave NE,Bellevue,WA,98004,US,47.614311,-122.201051,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380171,KRC SKYLINE SKYLINE #3,10900 NE 4th St,Bellevue,WA,98004,US,47.614305,-122.194097,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380170,LINC SQUARE EXP LSE P2 #2,432-492 Bellevue Way NE,Bellevue,WA,98004,US,47.614294,-122.201255,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380169,Bellevue City Hall,450 110th Ave NE,Bellevue,WA,98004,US,47.614293,-122.192294,,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380168,LINC SQUARE EXP LSS P3 248-249,10400 NE 4th St,Bellevue,WA,98004,US,47.61418,-122.200734,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380166,LINC SQUARE EXP LSE P2 #1,410 Bellevue Way NE,Bellevue,WA,98004,US,47.614157,-122.20117,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380162,LINC SQUARE EXP LSS P6 1,410 Bellevue Way NE,Bellevue,WA,98004,US,47.614098,-122.200748,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380160,KRC SKYLINE STATION #4,10900 NE 4th St,Bellevue,WA,98004,US,47.613972,-122.194125,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380157,Four 106,380 106th Avenue Northeast,Bellevue,WA,98004,US,47.61385468783211,-122.1986520317181,Blink Charging,Temporarily Unavailable,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380155,Westin-Seattle,1900 5th ave,Seattle,WA,98101,US,47.613691,-122.33813,Noodoe EV,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380152,Harvard Market,1425 Broadway,Seattle,WA,98122,US,47.613498,-122.320931,Blink Charging,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380142,FIRST LIGHT P86,300 Virginia Street,Seattle,WA,98101,US,47.61285,-122.341082,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380140,SPOKANE CHARGER HD SPOKANE 1,4515 S Regal St,Spokane,WA,99223,US,47.612773,-117.365571,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380138,SPOKANE CHARGER HD SPOKANE 3,4515 South Regal Street,Spokane,WA,99223,US,47.612738,-117.366765,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380135,CITY LIGHT MINOR 2,1134 13th Ave,Seattle,WA,98122,US,47.612645,-122.315262,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380132,Hotel Theodore - Tesla Destination,1531 7th Ave,Seattle,WA,98101,US,47.612347,-122.334168,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:52:00+00:00
-380131,Marriott AC Bellevue - Tesla Destination,208 106th Pl NE,Bellevue,WA,98004,US,47.612345,-122.197702,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:52:00+00:00
-380129,431605  Avalon Meydenbauer,10410 Northeast 2nd Street,Bellevue,WA,98004,US,47.6121794,-122.2009976,Blink Charging,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380125,7th & Pine LLC - Garage,1508 7th Avenue,Seattle,WA,98101,US,47.61181562734982,-122.3332516452808,Blink Charging,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380121,Ridgewood Corporate Square Building G,11900 NE 1st Street,Bellevue,WA,98005,US,47.611519,-122.182197,Blink Charging,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380117,"531612  PRISA Market Place Tower WA, LLC c/o CBRE",2025 1st Avenue,Seattle,WA,98121,US,47.6113722,-122.343703,Blink Charging,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380115,RETAIL PARKING PARK 88 #3,88 102nd Ave NE,Bellevue,WA,98004,US,47.611146,-122.203926,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380111,AMZ SEA113 - 14,85 106th Ave NE,Bellevue,WA,98004,US,47.610368,-122.199158,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380110,"Seattle, WA - Union Street (Wall Connector) - Tesla Destination",601 Union St,Seattle,WA,98101,US,47.610142,-122.331887,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:52:00+00:00
-380108,MRC du Témiscouata,5 Rue de l'Hôtel de Ville #101,Témiscouata-sur-le-Lac,QC,G0L 1X0,CA,47.6100817108101,-68.7909194518007,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380107,MADISON GARAGE MADISON GARAGE1,1229 Madison St,Seattle,WA,98104,US,47.61008,-122.322151,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-380106,Union Square - Tesla Supercharger,601 Union Street,Seattle,WA,98101,US,47.610024,-122.332078,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:52:00+00:00
-379833,O'Neill Nissan,900 Topsail Road,Mount Pearl,NL,A1N 3J9,CA,47.524441,-52.796643,flo,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-379827,V2R,100 Rue Deux Rivieres,Tracadie-Sheila,NB,E1X 4S9,CA,47.520582,-64.895089,BeCharged,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-379818,Black and McDonald Limited,26A Dundee Ave,Mount Pearl,NL,E2E 2K9,CA,47.51640823,-52.84184146,,Planned For Future Date,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-379816,Repère Boréal,"3141, Route du Fleuve",Les Éboulements,QC,G0A 2M0,CA,47.5140239,-70.2508541,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-379814,NBP - La Croisée Ultramar,224 rue Canada,Saint-Quentin,NB,E8A 1H3,CA,47.512964,-67.39143,BeCharged,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:52:00+00:00
-379812,HYDRO GALWAY DCFC,42 Danny Drive,St. John's,NL,A1H 0P1,CA,47.508546,-52.829723,ChargePoint,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:52:00+00:00
-379811,Desjardins - CdS New Liskeard,"138, avenue Whitewood",New Liskeard,ON,P0J 1P0,CA,47.50854,-79.676745,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-379810,HYDRO GALWAY L2,42 Danny Drive,St. John's,NL,A1H 0N4,CA,47.508478,-52.8297,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-379808,Beltrami Electric Coop,4111 Technology Dr NW,Bemidji,MN,56601,US,47.507079,-94.909183,,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:52:00+00:00
-379805,Central Highlands Plaza,4601 NE Sunset Blvd.,Renton,WA,98059,US,47.5055425,-122.1575712,eVgo Network,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:52:00+00:00
-379801,Seola Gardens,11195 5th Avenue Southwest,Seattle,WA,98146,US,47.502354,-122.34112,Blink Charging,Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-379798,Safeway 2725 NE Sunset Blvd,2725 NE Sunset Blvd,Renton,WA,98056,US,47.499129,-122.180651,Shell Recharge Solutions (US),Operational,1,Type 1 (J1772),2025-06-20 10:52:00+00:00
-379796,Nintendo of America,1229 NW 8th St,North Bend,WA,98045,US,47.49773,-121.79837,EVGateway,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:52:00+00:00
-378471,Shell Canada Ltd,386 Great Northern Rd,Sault St.e Marie,ON,P6B 4Z7,CA,46.5384382706365,-84.3182562843658,,Planned For Future Date,1,CCS (Type 1),2025-06-20 10:50:00+00:00
-378470,BRCC - Tim Hortons - Laurier-Station,128 Boulevard Laurier,Laurier-Station,QC,G0S 1N0,CA,46.538382,-71.636986,Circuit Electrique,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:50:00+00:00
-378469,The Water Tower Inn - Tesla Supercharger,360 Great Northern Road,Sault St.e Marie,ON,P6B 4Z7,CA,46.538211,-84.316643,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:50:00+00:00
-378466,Laurier-Station - 136 rue Bergeron,"136, Rue Bergeron",Laurier-Station,QC,G0S 1N0,CA,46.537164,-71.625737,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378465,ESD RANDLE DCFC,9781 US-12,Randle,WA,98377,US,46.535837,-121.958914,ChargePoint,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:50:00+00:00
-378464,Fairfield Inn & Suites – Marquette,808 South Lakeshore Boulevard,Marquette,MI,49855,US,46.53495364222587,-87.39513918879544,Blink Charging,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378456,Avenue d'Almaville - Avenue du Capitaine-Veilleux,325 avenue d'Almaville,Shawinigan,QC,G9P 1E7,CA,46.529643,-72.756324,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378453,THE MALPEQUE MALPEQUE HALL,2197 PE-20,Kensington,PE,C0B 1M0,CA,46.528858,-63.687835,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378452,Highland Ford,68 Great Northern Rd,Sault St.e Marie,ON,P6B 4Y8,CA,46.526649,-84.31941,,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378447,Motel 6,503 Trunk Rd,Sault St.e Marie,ON,P6A 3T1,CA,46.518569,-84.2796663,Hwisel EV,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378446,Desjardins - Centre de la Mauricie,2500 105e Avenue,Shawinigan,QC,G9P 1P6,CA,46.518272,-72.743303,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378445,Bloc de la Plage - Rivière-Rouge,286 Rue Robidoux,Rivière-Rouge,QC,J0T1T0,CA,46.5130939,-74.9890497,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378444,Lochsa Lodge,115 Powell Rd,Powell,ID,59847,US,46.511,-114.718,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378442,Municipalité de Lac-des-Écorces,"123, Rue Saint Joseph",Lac-des-Écorces,QC,J0W 1H0,CA,46.5075225,-75.355983,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378439,La Cache a Maxime - Tesla Destination,265 Drouin,Scott,QC,G0S 3G0,CA,46.506793,-71.055195,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:50:00+00:00
-378438,SIDE PARKING LOT BY PARTS ENTRANCE SOUTH,280 Falconbridge Road,SUDBURY,ON,P3A 5K3,CA,46.506635,-80.935239,flo,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378435,CAMBRIAN FORD CAMBRIAN 2.2,1615 Kingsway,Greater Sudbury,ON,P3B 2E9,CA,46.505215,-80.939359,ChargePoint,Temporarily Unavailable,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378433,Desjardins - Saint-Boniface,130 rue Guillemette,Saint-Boniface,QC,G0X 2L0,CA,46.504069,-72.826029,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378432,SUDBURY HYUNDAI HYUNDAI CT4KD,1150 Kingsway,Sudbury,ON,P3B 2E5,CA,46.501859,-80.959143,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378431,Parc des Synergies - Rue Langevin,0 rue Langevin (En face de la bibliothèque),Saint-Boniface,QC,G0X 2L0,CA,46.501214,-72.830371,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378430,Bureau d'accueil touristique (Batiscan),1000 rue Principale,Batiscan,QC,G0X 1A0,CA,46.500353,-72.246384,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378427,City of Negaunee - 100 Tobin St,100 Tobin Street,Negaunee,MI,49866,US,46.49939,-87.61397,ZEF Energy,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378426,City of Negaunee - 205 Silver St,205 Silver Street,Negaunee,MI,49866,US,46.4986,-87.61137,ZEF Energy,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378424,PEIFU CCG1,357 Graham's Lane,New Glasgow,PE,C0A 1M0,CA,46.497257,-63.406925,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378423,Centre communautaire Georges-Sévigny \ Saint-Luc-de-Vincennes,660 rue Principale,Saint-Luc-de-Vincennes,QC,G0X 3K0,CA,46.4969401,-72.421042,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378421,Bureau Municipal (Batiscan),795 rue Principale,Batiscan,QC,G0X 1A0,CA,46.496667,-72.250211,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378417,Maritime Electric Co,7580 Cawnpore Ln,Cavendish,PE,C0A 1N0,CA,46.49281,-63.37949,,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378416,CAV COUNTRY INN PEI INC,8405 Cavendish Rd,Cavendish,PE,C0A 1M0,CA,46.49249,-63.36768,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378414,Green Gables Heritage Place - Tesla Destination,8619 Cavendish Rd,Cavendish,PE,C0A 1N0,CA,46.490657,-63.381294,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:50:00+00:00
-378412,Municipalité de Notre-Dame-du-Mont-Carmel - Salle paroissiale,3991 rue Monseigneur-Béliveau,Notre-Dame-du-Mont-Carmel,QC,G0X 3J0,CA,46.489468,-72.656638,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378410,Stationnement de l'Église - Joly,699 rue Principale,Saint-Janvier-de-Joly,QC,G0S 1M0,CA,46.486778,-71.665139,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378409,Fortierville - Rue de la Fabrique,"198C, rue de la Fabrique",Fortierville,QC,G0S 1J0,CA,46.486184,-72.032539,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378408,Auberge Vue D'La Dune/Dune View Inn - Tesla Destination,589 Route 475,Bouctouche Bay,NB,E4S 4N9,CA,46.485244,-64.689395,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:50:00+00:00
-378406,Saint-Narcisse-de-Beaurivage - Édifice municipal,400 rue Principale,Saint-Narcisse-de-Beaurivage,QC,G0S 1W0,CA,46.483047,-71.233088,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378405,Municipalité de Notre-Dame-du-Mont-Carmel - Centre Jacques Gauthier,801 rang Saint-Louis,Notre-Dame-du-Mont-Carmel,QC,G0X 3J0,CA,46.482843,-72.707382,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378403,Municipalité de Notre-Dame-du-Mont-Carmel - Hôtel de Ville,3880 Hôtel-de-Ville,Notre-Dame-du-Mont-Carmel,QC,G0X 3J0,CA,46.472524,-72.676287,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378402,Stationnement Incitatif Cameron,"700, Route Cameron",Sainte-Marie,QC,G6E 3E2,CA,46.47211231216011,-71.02893783673868,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378399,BRCC - St-Hubert - Sainte-Marie,655 Route Cameron,Ste-Marie-de-Beauce,QC,G6E 3V7,CA,46.46915,-71.037935,Circuit Electrique,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:50:00+00:00
-378398,Salle municipale - Saint-Maurice,2431 rang Saint-Jean,Saint-Maurice,QC,G0X 2X0,CA,46.468509,-72.531989,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378397,Dosquet - Chalet des loisirs,"1, Rue Viger",Dosquet,QC,G0S 1H0,CA,46.46817150584471,-71.53215491707417,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378394,CISSSCA - Ste-Marie (siege Social),363 Route Cameron,Sainte-Marie,QC,G6E 3E2,CA,46.464993,-71.04528,flo,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378392,NOSM EAST 1,1360 S Bay Rd,Sudbury,ON,P3E 6H6,CA,46.463895,-80.963995,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378391,Frampton - Centre communautaire,"107, rue Sainte-Anne",Frampton,QC,G0R 1M0,CA,46.463765,-70.807782,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378389,BRCC - Saint-Alexis-des-Monts - Desjardins,"41, rue Richard",Saint-Alexis-des-Monts,QC,J0K 1V0,CA,46.462096,-73.141311,Circuit Electrique,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:50:00+00:00
-378387,Frampton - Dépanneur Proxi,155 Rue Principale,Frampton,QC,G0R 1M0,CA,46.461938,-70.808352,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378383,Frampton - Terrain des loisirs,"1, rue des Loisirs",Frampton,QC,G0R 1M0,CA,46.45774,-70.805277,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378382,École Maribel - Ste-Marie,"940, route Saint-Martin",Sainte-Marie,QC,G6E 1E7,CA,46.454847,-71.02385,flo,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378378,Centre Caztel,"905, Route Saint-Martin",Sainte-Marie,QC,G6E 1E6,CA,46.45286919999999,-71.0307861,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378375,MOOSE LAKE LEVEL 2,201 Arrowhead Ln,Moose Lake,MN,55767,US,46.45235,-92.76395,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378373,Tous les jours,"1000 Blv. Vachon , Nord",Ste-Marie-De-Beauce,QC,G6E 1M2,CA,46.4507556018157,-71.0297438439934,,Planned For Future Date,1,CCS (Type 1),2025-06-20 10:50:00+00:00
-378372,"Sainte Marie, QC - Tesla Supercharger",1000 Boulevard Vachon North,Sainte-Marie,QC,G6E 1M2,CA,46.449826,-71.03048596,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:50:00+00:00
-378368,Bureau municipal - 390 Rue Saint-Édouard,390 Rue saint-Édouard,Charette,QC,G0X 1E0,CA,46.444733,-72.921105,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378367,Amsterdam Inn,383 Centreville Road,Florenceville-Bristol,NB,E7L 3K5,CA,46.444199,-67.641959,BeCharged,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:50:00+00:00
-378364,Municipalité de Saint-Étienne-des-Grès,1260 rue Saint-Alphonse,Saint-Étienne-des-Grès,QC,G0X 2P0,CA,46.441985,-72.771073,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378363,Centre du Tricentenaire,961 Notre-Dame,Champlain,QC,G0X 1C0,CA,46.441806,-72.344853,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378361,SmartCentres Sudbury - Tesla Supercharger,2416 Long Lake Rd,Sudbury,ON,P3E 0C5,CA,46.440506,-81.004739,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:50:00+00:00
-378358,Desjardins - La Nouvelle-Beauce,275 Ave. Marguerite-Bourgeoys,Sainte-Marie,QC,G6E 3Y9,CA,46.4382,-71.022,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378355,CLRWTR RVR CSNO STATION 2,17500 Nez Perce Rd,Lewiston,ID,83501,US,46.43671,-116.90742,ChargePoint,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:50:00+00:00
-378349,Port of Clarkston,757 Port Way,Clarkston,WA,99403,US,46.425404,-117.04866,EV Connect,Operational,1,CCS (Type 1),2025-06-20 10:50:00+00:00
-378345,Lancer Lanes & Casino Clarkston - ULTRA,1250 Bridge Street,Clarkston,WA,99403,US,46.42016,-117.055684,flo,Operational,1,CCS (Type 1),2025-06-20 10:50:00+00:00
-378343,Municipalité de Saint-Paulin - Bureau municipal,2871 rue Laflèche,Saint-Paulin,QC,J0K 3G0,CA,46.419372,-73.013542,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378341,Bibliothèque - Kiamika,"3, Chemin Valiquette",Kiamika,QC,J0W 1G0,CA,46.4181953,-75.38118209999999,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378337,ROGERS CDJR L3A ROGERS DODGE PL,1824 Main Street,Lewiston,ID,83501,US,46.416323,-117.006162,ChargePoint,Operational,1,CCS (Type 1),2025-06-20 10:50:00+00:00
-378335,PEIFU DALVAY4,70 Dalvay Crescent,York,PE,C0A 1P0,CA,46.4155,-63.075437,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378334,PEIFU DALVAY1,40 Dalvay Crescent,York,PE,C0A 1P0,CA,46.415488,-63.074179,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378333,PEIFU DALVAY2,70 Dalvay Crescent,York,PE,C0A 1P0,CA,46.41548,-63.075454,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378332,Ville de Rivière-Rouge,550A L'Annonciation Nord,Rivière-Rouge,QC,J0T 1T0,CA,46.4146003719077,-74.8707684278488,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378329,Prince Edward Island Tax Centre,275 Pope Rd,Summerside,PE,C1N 6A2,CA,46.41101129552904,-63.7965173416636,,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378328,Munising City Hall,301 E Superior Street,Munising,MI,49862,US,46.409658,-86.651215,flo,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:50:00+00:00
-378269,Desjardins - Est de Trois-Rivières,670 boulevard Thibeau,Trois-Rivières,QC,G8T 6Z8,CA,46.382805,-72.547118,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378266,Tous les jours,"645, Boul. Thibeau",Cap-de-la-Madeleine,QC,G8T 6Z6,CA,46.382251,-72.546051,,Planned For Future Date,1,CCS (Type 1),2025-06-20 10:50:00+00:00
-378259,BRCC - Maniwaki - Galeries Maniwaki,100 Rue Principale Sud,Maniwaki,QC,J9E 1Z6,CA,46.376751,-75.982585,Circuit Electrique,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:50:00+00:00
-378258,Novotny MN,7180 Novotny Road North,Baxter,MN,56425,US,46.37588390668431,-94.25188840590694,Blink Charging,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378256,Desjardins - CdS Vallee-Jonction,"325, rue Principale",Vallée-Jonction,QC,G0S 3J0,CA,46.37454,-70.92202,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378255,Maniwaki - Hôtel de Ville,186 Principale Sud,Maniwaki,QC,J9E 1Z9,CA,46.374395,-75.982068,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378254,YNLCH YNLCH,580 Fort Road,Toppenish,WA,98948,US,46.373754,-120.339208,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378253,Doc's Sports Bar and Grill,88801 Warbler Lane,Sturgeon Lake,MN,55783,US,46.37283,-92.78792,ZEF Energy,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:50:00+00:00
-378252,Centre de services aux citoyens - Secteur Est,"200, Rue de Grandmont",Trois-Rivières,QC,G8T 2R4,CA,46.372448,-72.5222096,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378251,St-Hubert Express - Trois-Rivières,475 Rue Vachon,Trois-Rivières,QC,G8T 8P6,CA,46.371105,-72.554429,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378249,509 rue Vachon,509 rue Vachon,Trois-Rivières,QC,G8T 8Y2,CA,46.37068,-72.55534,Circuit Electrique,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:50:00+00:00
-378248,Astria Toppenish Hospital,502 W 4th Ave,Toppenish,WA,98948,US,46.370524,-120.316528,flo,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378232,Desjardins - CdS Les Boulevards,4750 boul. des Forges,Trois-Rivières,QC,G8Y 1W8,CA,46.360454,-72.590804,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:50:00+00:00
-378127,Municipalité Lac-du-Cerf,"19, Chemin de l'Église",Lac-du-Cerf,QC,J0W 1S1,CA,46.3023286,-75.4974233,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:49:00+00:00
-378126,Saint-Frédéric,850 Rue du Parc Saint-Frédéric,Saint-Frédéric,QC,G0N 1P0,CA,46.297697,-70.970481,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:49:00+00:00
-378125,STOREMARK STATION 1,55 Union Road,Charlottetown,PE,C1C 0S2,CA,46.296004,-63.137095,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:49:00+00:00
-378123,Desjardins - Nord de Lanaudière,"20, rue St-Gabriel",St-Gabriel-de-Brandon,QC,J0K 2N0,CA,46.293092,-73.384096,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:49:00+00:00
 378120,BRCC - Bécancour-de Port Royal - Shell,1610 Boulevard de Port Royal,Bécancour,QC,G9H 0J1,CA,46.2919,-72.5402,Circuit Electrique,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:49:00+00:00
 378119,Ville de Saint-Gabriel,155 rue Saint-Gabriel,Saint-Gabriel,QC,J0K 2N0,CA,46.290795,-73.380623,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:49:00+00:00
 378117,Bureau municipal (St-Ursule),215 Lessard,Sainte-Ursule,QC,J0K 3M0,CA,46.2900833,-73.0298436,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:49:00+00:00
@@ -1789,39 +1327,6 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 376652,Stationnement Centre-ville (390 avenue Saint-Simon),390 avenue St-Simon,Saint-Hyacinthe,QC,J2S 5B2,CA,45.623958,-72.944291,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
 376650,Pacific Energy Concept,210 W 3rd St,Vancouver,WA,98660,US,45.62363,-122.67335,Loop,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
 376648,Parc de la montée du Quatre,"1361, Montée du Quatre",L'Ange-Gardien,QC,J8L 0S9,CA,45.62352829999999,-75.3517317,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376646,Sydney Street Parking Lot,16 Sydney Street,Antigonish,NS,B2G 2A3,CA,45.623262,-61.990082,flo,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376645,Arvon Apartments,"275 W 3rd St, STE 300",Vancouver,WA,98660,US,45.623182,-122.6732697,OpConnect,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376644,Laval - Chalet du 22e Régiment,3365 Avenue des Ambassadeurs,Laval,QC,H7E 5M3,CA,45.623137,-73.682001,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376642,The Power Commission of The City of St. John,121 Frank Gibbon Ln,Antigonish,NS,B0H 1X0,CA,45.623021,-61.984,,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376641,Ville de St-Hyacinthe - - Stationnement Centre des Arts,"1845, Rue Saint-Antoine",Saint-Hyacinthe,QC,J2S 3L7,CA,45.622861,-72.946274,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376640,Columbus Field,121 Main Street,Antigonish,NS,B0H 1X0,CA,45.622803,-61.985019,flo,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376637,Ron Macgillivray Chevrolet Buick Gmc,75 St Andrews St,Antigonish,NS,B2G 2G9,CA,45.622367,-61.981316,EV Connect,Operational,2,Type 1 (J1772)|CCS (Type 1),2025-06-20 10:48:00+00:00
-376636,Antigonish Town & County Library,283 Main St,Antigonish,NS,B2G 2C3,CA,45.622267,-61.992383,flo,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376635,Banks-Vernonia State Trail,14001 NW Sellers Road,Banks,OR,97106,US,45.622174,-123.114002,Rivian Waypoints L2 Network,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376634,Chisholm Park Parking Lot,325 Main St,Antigonish,NS,B2G 2C3,CA,45.622038,-61.993885,flo,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376633,BRCC - Grenville - Ultramar,13 Rue Maple,Grenville,QC,J0V 1J0,CA,45.622,-74.5937,Circuit Electrique,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:48:00+00:00
-376632,Boisbriand - Parc Pellerin,65 Rue Péladeau,Boisbriand,QC,J7G 1M4,CA,45.621974,-73.82157,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376631,8755 4e Croissant,8755 4e Croissant,Montréal,QC,H1J 1M3,CA,45.621933,-73.573054,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376630,Parc Pellerin,72 Piette,Boisbriand,QC,J7G 1L8,CA,45.620994,-73.819329,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376627,Ville de Saint-Hyacinthe - 1675 St-Pierre Ouest,"1675, Rue Saint-Pierre Ouest",Saint-Hyacinthe,QC,J2T 1P2,CA,45.619728,-72.941635,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376624,Laval - Centre communautaire Lausanne,425 rue de Lausanne,Laval,QC,H7K 3P8,CA,45.618488,-73.719237,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376623,431004  The Reserve at CTC,600 Southeast 177th Avenue,Vancouver,WA,98683,US,45.6183882,-122.4917385,Blink Charging,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376621,Residence Inn,411 SE 123rd,Vancouver,WA,98683,US,45.618268,-122.545053,Noodoe EV,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376620,Hamilton Chevrolet Buick GMC Ltee 2,48 Highway 105,Wakefield,QC,J0X 3G0,CA,45.61821,-75.92074,InCharge (US),Operational,2,Type 1 (J1772)|CCS (Type 1),2025-06-20 10:48:00+00:00
-376618,8759 Des Sciences,8759 Des Sciences,Montréal,QC,H1J 1H8,CA,45.617913,-73.559252,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376613,Desjardins - CdS Papineauville,276 rue Papineau,Papineauville,QC,J0V 1R0,CA,45.617404,-75.017986,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376611,6 rue de Muy,6 de Muy,Boucherville,QC,J4B 4T1,CA,45.617195,-73.455415,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376609,Gateway Hyundai,42 Paint St,Port Hawkesbury,NS,B9A 3J8,CA,45.6169178360634,-61.331282721648,,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376607,3000 avenue Boullé,3000 avenue Boullé,Saint-Hyacinthe,QC,J2S 1H9,CA,45.6168,-72.9746,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376605,AMPCAP 1003 VANCOUVE 1,17001 SE Mill Plain Blvd,Vancouver,WA,98684,US,45.616431,-122.49669,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376604,7501 Rondeau,7501 Rondeau,Montréal,QC,H1K 2P3,CA,45.61634620767123,-73.55157011723178,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376603,Permacon,8145 Rue Bombardier,Anjou,QC,H1J 1A5,CA,45.61621,-73.57793,,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376602,BRCC - Boisbriand - Couche-Tard,"119, Chemin de la Grande-Côte",Boisbriand,QC,J7G 1C1,CA,45.61615,-73.81846139999999,Circuit Electrique,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:48:00+00:00
-376601,Laval - Centre d’interprétation de l’eau,18 Rue Hotte,Laval,QC,H7L 2R3,CA,45.61607910606281,-73.7859941282028,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376600,7743 Rheaume,7743 Rheaume,Montréal,QC,H1K 2S2,CA,45.615923,-73.553482,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376597,Franklin IDE,1701 SE Columbia River Drive,Vancouver,WA,98661,US,45.615426,-122.653615,Blink Charging,Temporarily Unavailable,1,Type 1 (J1772),2025-06-20 10:48:00+00:00
-376596,Nova Scotia Power Inc,643 Reeves St,Port Hawkesbury,NS,B9A 2R9,CA,45.61529137,-61.35344933,,Operational,1,CCS (Type 1),2025-06-20 10:48:00+00:00
-375222,955 St-Paul,955 St-Paul,Montréal,QC,H3C 4A8,CA,45.496484,-73.561119,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375220,5307 Côte-Des-Neiges,5307 Côte-Des-Neiges,Montréal,QC,H3T 1Y4,CA,45.496464,-73.622383,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375218,13555 boul Pierrefonds : Bibliothèque Pierrefonds,13555 boul. Pierrefonds,Pierrefonds,QC,H9A 1A6,CA,45.496306,-73.8480668,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375216,LE GEORGE SS1 4-5,1001 Rue Lucien-L'Allier,Montréal,QC,H3G 2C3,CA,45.495836,-73.570999,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
@@ -1892,46 +1397,12 @@ id,title,address,town,state,postcode,country,lat,lon,operator,status,num_connect
 375123,850 des Seigneurs,850 des Seigneurs,Montréal,QC,H3J 1Y5,CA,45.490222,-73.574478,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375122,6245 Décarie,6245 Décarie,Montréal,QC,H3W 3E1,CA,45.490172,-73.643094,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375119,Best Western Plus Isanti - Tesla Destination,409 Main St E,Isanti,MN,55040,US,45.489675,-93.238039,Tesla (Tesla-only charging),Operational,1,Tesla (Model S/X),2025-06-20 10:46:00+00:00
-375117,380 Guy,380 Guy,Montréal,QC,H3K 1A9,CA,45.489561,-73.56622,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375116,Moneris,7350  route Transcanadienne,Saint Laurent,QC,H4T 1A3,CA,45.489422,-73.705804,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375115,Damerow Ford,12325 SW Canyon Rd,Beaverton,OR,97005,US,45.489142,-122.803683,,Operational,1,CCS (Type 1),2025-06-20 10:46:00+00:00
-375114,PGE BEA DCFC 4,11850 Southwest Canyon Road,Portland,OR,97225,US,45.489088,-122.798162,ChargePoint,Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:46:00+00:00
-375112,PGE BEA L2,11850 Southwest Canyon Road,Beaverton,OR,97005,US,45.488941,-122.798186,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375110,Comfort Inn & Suites,13455 Southwest Tualatin Valley Highway,Beaverton,OR,97005,US,45.488822,-122.8159396,Blink Charging,Temporarily Unavailable,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375109,555 Des Seigneurs,555 Des Seigneurs,Montréal,QC,H3J 2S5,CA,45.488813,-73.570943,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375108,186 avenue du manoir,186 avenue du manoir,Montréal,QC,H9C 1V2,CA,45.488672,-73.87451,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375107,NAMT53-IT1-4016-011,800 Blvd Hymus,Montréal,QC,H4S 0B5,CA,45.4886091,-73.7604691,InCharge (US),Operational,2,CHAdeMO|CCS (Type 1),2025-06-20 10:46:00+00:00
-375106,500 Montée de l’Église - Bibliothèque Île-Bizard,500 Montée de l'Église - Bibliothèque Île-Bizard,Montréal,QC,H9C 1G9,CA,45.488525,-73.881924,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375105,Longueuil - Parc de la cité,6201 Boulevard Davis,Saint-Hubert,QC,J3Y 8Y4,CA,45.488412,-73.41028,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375103,2300 Rene Levesque,"1042, Rue Lambert Closse",Montréal,QC,H3H 1Z2,CA,45.48834810020062,-73.58137015241358,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375102,6405 Abrams,6405 Abrams,Montréal,QC,H4S 1Y2,CA,45.488343,-73.751973,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375100,4820 Jolicoeur,"4820, Rue Jolicoeur",Montréal,QC,H9H 5H1,CA,45.4882319,-73.8520686,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375099,"4752 Southeast 174th Ave, Portland",4752 Southeast 174th Ave,Portland,OR,97236,US,45.4881576,-122.4836231,OpConnect,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375097,1825 Notre-Dame O,1825 rue Notre-Dame O,Montréal,QC,H3J 2Y4,CA,45.487874,-73.569212,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375096,FCR - Place Nelligan,1134 St-René Boulevard West,Gatineau,QC,J8T 6H1,CA,45.487851,-75.70122,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375095,5701 Décarie,5701 Décarie,Montréal,QC,H3W 3C8,CA,45.48778063,-73.63770162,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375094,BRCC - Greenfield Park - Galeries Taschereau,"3810, Boulevard Taschereau",Longueuil,QC,J4V 2H9,CA,45.48769,-73.47243,Circuit Electrique,Operational,1,CCS (Type 1),2025-06-20 10:46:00+00:00
 375092,Westmount - Stationnement municipal Greene,1368 Av. Greene,Westmount,QC,H3Z 2B1,CA,45.487284,-73.591454,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375090,"3122 Southwest 14th Drive, Gresham",3122 Southwest 14th Drive,Gresham,OR,97080,US,45.4870017,-122.4635159,OpConnect,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375089,5499 Décarie,"5499, Boulevard Décarie",Montréal,QC,H3W 3C6,CA,45.4869584,-73.6355896,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375087,2200 St-Jacques,"2200, Rue Saint-Jacques",Montréal,QC,H3J 2M7,CA,45.4867255,-73.5742444,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375086,2390 Coursol,2390 Coursol,Montréal,QC,H3J 1C7,CA,45.48658378,-73.57796873,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375084,CRONIN LOT CRONIN 1.2,9000 Southwest Beaverton Hillsdale Highway,Portland,OR,97225,US,45.486206,-122.76786,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375083,Westmount - Stationnement public Tupper,1156 Av. Greene,Westmount,QC,H3Z 1P4,CA,45.486143,-73.587047,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375082,"1476 Southeast Barnes Road, Gresham",1476 Southeast Barnes Road,Gresham,OR,97080,US,45.4861301,-122.3933456,OpConnect,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375080,"1550 SE BARNES RD, Gresham",1550 SE BARNES RD,Gresham,OR,97080,US,45.4856405,-122.3933408,OpConnect,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375079,Ville de Westmount - Hôtel de ville,4333 rue Sherbrooke Ouest,Westmount,QC,H3Z 1E2,CA,45.485616,-73.597835,flo,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375078,BEAVERTON CNTRL GRIFFITH #1,4755 SW Griffith Dr,Beaverton,OR,97005,US,45.485592,-122.798089,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375077,5 St-Georges,5 Rue Saint-Georges,Montréal,QC,H9H 1B5,CA,45.485538,-73.862778,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375076,Bureau municipal - Municipalité de Val-Racine,"2991, chemin Saint-Léon",Val-Racine,QC,G0Y 1E1,CA,45.485528,-71.073686,flo,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375074,"46, rue de l'hôtel-de-Ville","46, rue de l'hôtel-de-Ville",East Angus,QC,J0B 1R0,CA,45.48468,-71.65815,Circuit Electrique,Operational,3,Type 1 (J1772)|CHAdeMO|CCS (Type 1),2025-06-20 10:46:00+00:00
-375073,BEAVERTON CNTRL LIBRARY WEST #1,12375 SW 5th St,Beaverton,OR,97005,US,45.484606,-122.804677,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375071,BEAVERTON CNTRL LIBRARY WEST #3,12375 SW 5th St,Beaverton,OR,97005,US,45.484525,-122.804686,ChargePoint,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375070,12001 de Salaberry,12001 de Salaberry,Dollard-des-ormeaux,QC,H9B 2A7,CA,45.48449,-73.80755,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375069,1340 Shearer,1340 Shearer,Montréal,QC,H3K 1C9,CA,45.484391,-73.563946,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375068,1660 Centre,1660A Centre,Montréal,QC,H3K 1G4,CA,45.484356,-73.559822,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375067,Westmount - Rue Belmont Crescent,Parc King George,Westmount,QC,H3Y 1Y4,CA,45.484257,-73.60502,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
-375064,"540, Boulevard de la Cité","540, Boulevard de la Cité",Gatineau,QC,J8T 0A7,CA,45.4842,-75.6797,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375037,550 Avenue Atwater,550 Avenue Atwater,Montréal,QC,H4C 2G6,CA,45.48178,-73.578613,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375036,5125 Clanranald,"5125, Avenue Clanranald",Montréal,QC,H3X 2S3,CA,45.48151550000001,-73.6319441,Circuit Electrique,Operational,1,Type 1 (J1772),2025-06-20 10:46:00+00:00
 375035,Tillamook OR - Tesla Supercharger,2325 Latimer Road North,Tillamook,OR,97141,US,45.481497,-123.843983,Tesla (including non-tesla),Operational,1,NACS / Tesla Supercharger,2025-06-20 10:46:00+00:00

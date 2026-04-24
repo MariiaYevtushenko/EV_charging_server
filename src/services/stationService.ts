@@ -98,7 +98,7 @@ function buildStationEnergyAnalytics(
   const revArr = Array.from({ length: bucketCount }, () => 0);
   for (const s of sessions) {
     const t = s.startTime.getTime();
-    if (t < from.getTime() || t > to.getTime()) continue;
+    if (t < from.getTime() || t >= to.getTime()) continue;
     let idx = Math.floor((t - from.getTime()) / bucketMs);
     if (idx >= bucketCount) idx = bucketCount - 1;
     if (idx < 0) continue;
@@ -499,12 +499,13 @@ export const stationService = {
   ): Promise<StationEnergyAnalyticsDto | null> {
     const exists = await stationRepository.findByIdWithPorts(stationId);
     if (!exists) return null;
-    const to = new Date();
+    let to = new Date();
     let from: Date;
     let bucketCount: number;
     let bucket: "hour" | "day";
     if (period === "1d") {
-      from = addMs(to, -24 * 60 * 60 * 1000);
+      from = new Date(to.getFullYear(), to.getMonth(), to.getDate(), 0, 0, 0, 0);
+      to = new Date(to.getFullYear(), to.getMonth(), to.getDate() + 1, 0, 0, 0, 0);
       bucketCount = 24;
       bucket = "hour";
     } else if (period === "7d") {

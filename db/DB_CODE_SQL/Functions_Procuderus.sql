@@ -59,7 +59,6 @@ DECLARE
   v_kwh_consumed DECIMAL(10, 3);
   v_tariff_price DECIMAL(10, 2);
   v_start_time TIMESTAMP;
-  v_tariff_type tariff_period;
   v_final DECIMAL(10, 2);
   v_session_id INT;
 BEGIN
@@ -84,8 +83,7 @@ BEGIN
    
   ELSE
 --  - Якщо це  бронювання типу DEPOSIT або просто сесія без бронювання
-    v_tariff_type := GetTariffPeriodType(v_start_time);
-    v_tariff_price := GetTariffPricePerKwhAt(v_start_time, v_tariff_type);
+    v_tariff_price := GetTariffPricePerKwhAt(v_start_time);
 
      -- Якщо бронювання типу DEPOSIT, то v_prepayment - передплата
     IF v_booking_id IS NOT NULL THEN

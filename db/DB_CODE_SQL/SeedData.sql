@@ -29,19 +29,20 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
   first_names TEXT[] := ARRAY[
-    'Олександр', 'Андрій', 'Максим', 'Дмитро', 'Іван', 'Віктор', 'Юрій', 'Сергій', 'Роман', 'Богдан',
-    'Михайло', 'Василь', 'Петро', 'Олег', 'Артем', 'Тарас', 'Кирило', 'Ігор', 'Володимир', 'Назар',
-    'Євген', 'Степан', 'Марко', 'Леонід', 'Вадим', 'Руслан', 'Павло', 'Тимофій', 'Микола', 'Станіслав',
-    'Олена', 'Марія', 'Анна', 'Катерина', 'Наталія', 'Юлія', 'Тетяна', 'Ірина', 'Світлана', 'Оксана',
-    'Христина', 'Вікторія', 'Дарина', 'Софія', 'Єлизавета', 'Марина', 'Людмила', 'Ганна', 'Зоряна', 'Аліна'
+    'James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard', 'Joseph', 'Thomas', 'Charles',
+    'Christopher', 'Daniel', 'Matthew', 'Anthony', 'Mark', 'Donald', 'Steven', 'Paul', 'Andrew', 'Joshua',
+    'Kenneth', 'Kevin', 'Brian', 'George', 'Timothy', 'Edward', 'Jason', 'Jeffrey', 'Ryan', 'Jacob',
+    'Gary', 'Nicholas', 'Eric', 'Jonathan', 'Stephen', 'Larry', 'Justin', 'Scott', 'Brandon', 'Benjamin',
+    'Mary', 'Patricia', 'Jennifer', 'Linda', 'Elizabeth', 'Barbara', 'Susan', 'Margaret', 'Dorothy', 'Lisa'
   ];
   last_names TEXT[] := ARRAY[
-    'Петренко', 'Коваленко', 'Бондаренко', 'Шевченко', 'Ткаченко', 'Мельник', 'Кравченко', 'Поліщук',
-    'Сидоренко', 'Романенко', 'Лисенко', 'Мороз', 'Коваль', 'Павлюк', 'Іваненко', 'Гончар', 'Олійник',
-    'Дорошенко', 'Савчук', 'Костюк', 'Зінченко', 'Мазур', 'Левченко', 'Бойко', 'Ткачук', 'Гриценко',
-    'Дудник', 'Руденко', 'Кучер', 'Пономаренко', 'Сердюк', 'Мартинюк', 'Яремчук', 'Вовк', 'Пилипенко',
-    'Гаврилюк', 'Кравець', 'Шаповал', 'Литвин', 'Осадчук', 'Рябоконь', 'Стеценко', 'Федоренко', 'Чорненко',
-    'Демченко', 'Білоус', 'Гордієнко', 'Коломієць', 'Лукашук', 'Назаренко', 'Паламарчук', 'Скрипник'
+    'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis',
+    'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thompson',
+    'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'White', 'Harris',
+    'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson', 'Walker', 'Young', 'Allen',
+    'King', 'Wright', 'Torres', 'Nguyen', 'Hill', 'Flores', 'Green', 'Adams',
+    'Nelson', 'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts',
+    'Gomez', 'Phillips', 'Evans', 'Turner', 'Parker', 'Collins', 'Edwards', 'Stewart'
   ];
   email_domains TEXT[] := ARRAY[
     'gmail.com', 'ukr.net', 'i.ua', 'meta.ua', 'bigmir.net', 'outlook.com', 'yahoo.com', 'proton.me', 'ev-charge.com'

@@ -1,11 +1,4 @@
-/**
- * Сид таблиці `vehicle` з data/electric_vehicles_spec_*.csv після того, як у БД вже є `ev_user`
- *
- * Usage (з каталогу server/):
- *   npx tsx scripts/seed/seed-vehicles-from-csv.ts
- *
- * Requires DATABASE_URL in .env
- */
+
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

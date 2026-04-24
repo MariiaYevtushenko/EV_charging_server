@@ -9,12 +9,28 @@ function forecastDir(): string {
   return path.resolve(__dirname, "..", "..", "..", "..", "forecast");
 }
 
+/**
+ * Запуск інтерпретатора для `scriptAbsPath`.
+ * На Windows `python` часто відсутній у PATH (cmd повертає **9009**) — за замовчуванням `py -3`.
+ * Явний шлях: `PYTHON_PATH=C:\\...\\python.exe` (або `python`, якщо він у PATH).
+ */
+function pythonSpawnConfig(scriptAbsPath: string): { command: string; args: string[] } {
+  const custom = process.env["PYTHON_PATH"]?.trim();
+  if (custom) {
+    return { command: custom, args: [scriptAbsPath] };
+  }
+  if (process.platform === "win32") {
+    return { command: "py", args: ["-3", scriptAbsPath] };
+  }
+  return { command: "python3", args: [scriptAbsPath] };
+}
+
 function runPython(scriptName: string): Promise<{ code: number; stdout: string; stderr: string }> {
   const dir = forecastDir();
   const script = path.join(dir, scriptName);
-  const python = process.env["PYTHON_PATH"] ?? "python";
+  const { command, args } = pythonSpawnConfig(script);
   return new Promise((resolve, reject) => {
-    const child = spawn(python, [script], {
+    const child = spawn(command, args, {
       cwd: dir,
       env: { ...process.env },
       windowsHide: true,

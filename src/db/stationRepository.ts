@@ -489,12 +489,12 @@ export const stationRepository = {
     });
   },
 
-  // Отримання сесій станції з початком у [from, to]
+  // Отримання сесій станції з початком у [from, to) (to — виключна межа)
   async findSessionsForStationInRange(stationId: number, from: Date, to: Date) {
     return db.session.findMany({
       where: {
         stationId,
-        startTime: { gte: from, lte: to },
+        startTime: { gte: from, lt: to },
       },
       select: {
         startTime: true,

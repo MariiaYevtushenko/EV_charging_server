@@ -11,7 +11,6 @@ export type TariffListItemDto = {
   id: number;
   tariffType: "DAY" | "NIGHT";
   pricePerKwh: number;
-  /** YYYY-MM-DD (локальний календар, як у upsert). */
   effectiveDate: string;
 };
 

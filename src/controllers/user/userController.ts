@@ -311,7 +311,7 @@ export const createSession: RequestHandler = async (req, res, next) => {
         if (s["endTime"] != null) {
             sessionInput.endTime = new Date(String(s["endTime"]));
         }
-        const session = await userService.createSession(sessionInput);
+        const session = await userService.createSession(stationId, portNumber, sessionInput);
         res.json(session);
     } catch (e) {
         next(e);

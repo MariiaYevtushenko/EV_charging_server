@@ -27,9 +27,9 @@ export function parsePaginationQuery(query: Record<string, unknown>): ParsedPagi
 }
 
 /** Період для списків бронювань / сесій / платежів (глобальна адмінка). */
-export type NetworkListPeriod = "7d" | "30d" | "all";
+export type NetworkListPeriod = "today" | "7d" | "30d" | "all";
 
-const NETWORK_LIST_PERIODS: readonly NetworkListPeriod[] = ["7d", "30d", "all"];
+const NETWORK_LIST_PERIODS: readonly NetworkListPeriod[] = ["today", "7d", "30d", "all"];
 
 export function parseNetworkListPeriod(raw: unknown): NetworkListPeriod {
   if (typeof raw === "string" && NETWORK_LIST_PERIODS.includes(raw as NetworkListPeriod)) {
@@ -224,7 +224,7 @@ export const ADMIN_NETWORK_PAYMENTS_DEFAULT_PAGE_SIZE = 50;
 export const ADMIN_NETWORK_PAYMENTS_MAX_PAGE_SIZE = 2000;
 
 export type NetworkPaymentsSortKey =
-  | "createdAt"
+  | "paidAt"
   | "userName"
   | "sessionId"
   | "method"
@@ -241,7 +241,7 @@ const NETWORK_PAYMENT_UI_FILTERS: readonly NetworkPaymentUiFilter[] = [
 ];
 
 const NETWORK_PAYMENTS_SORT_KEYS: readonly NetworkPaymentsSortKey[] = [
-  "createdAt",
+  "paidAt",
   "userName",
   "sessionId",
   "method",
@@ -276,10 +276,11 @@ export function parseNetworkPaymentsQuery(query: Record<string, unknown>): Parse
   const search =
     typeof rawQ === "string" && rawQ.trim() !== "" ? rawQ.trim() : undefined;
 
-  const rawSort = typeof query["sort"] === "string" ? query["sort"] : "createdAt";
-  const sort = NETWORK_PAYMENTS_SORT_KEYS.includes(rawSort as NetworkPaymentsSortKey)
-    ? (rawSort as NetworkPaymentsSortKey)
-    : "createdAt";
+  const rawSort = typeof query["sort"] === "string" ? query["sort"] : "paidAt";
+  const normalizedSort = rawSort === "createdAt" ? "paidAt" : rawSort;
+  const sort = NETWORK_PAYMENTS_SORT_KEYS.includes(normalizedSort as NetworkPaymentsSortKey)
+    ? (normalizedSort as NetworkPaymentsSortKey)
+    : "paidAt";
 
   const rawOrder = typeof query["order"] === "string" ? query["order"].toLowerCase() : "desc";
   const order: "asc" | "desc" = rawOrder === "asc" ? "asc" : "desc";

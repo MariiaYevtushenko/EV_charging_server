@@ -118,7 +118,11 @@ function buildPeriodDetail(row: SummarySqlRow | null): {
       row.avg_session_duration_minutes != null ? num(row.avg_session_duration_minutes) : 0,
     topStation:
       tid != null && tname
-        ? { id: tid, name: String(tname), visitCount: Number(row.top_station_visit_count ?? 0) }
+        ? {
+            id: Number(tid),
+            name: String(tname),
+            visitCount: Number(row.top_station_visit_count ?? 0),
+          }
         : null,
   };
 }
@@ -290,7 +294,7 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
   };
 
   const stationsInPeriod = stationRows.map((r) => ({
-    stationId: r.station_id,
+    stationId: Number(r.station_id),
     stationName: r.station_name,
     sessionCount: Number(r.session_count ?? 0),
     kwh: num(r.total_kwh),
@@ -302,7 +306,7 @@ export async function queryUserAnalytics(userId: number, period: UserAnalyticsPe
     const model = String(r.model ?? "").trim();
     const carLabel = [brand, model].filter(Boolean).join(" ") || "—";
     return {
-      vehicleId: r.vehicle_id,
+      vehicleId: Number(r.vehicle_id),
       licensePlate: String(r.license_plate ?? ""),
       carLabel,
       sessionCount: Number(r.session_count ?? 0),

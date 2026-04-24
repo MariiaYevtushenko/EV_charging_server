@@ -11,14 +11,14 @@ export type EvStationCsvRow = {
   connector_types?: string;
 };
 
-/** Коди конекторів у `connector_type.name`, узгоджені з сидом портів. */
+
 export type ConnectorCode =
   | "TYPE_2"
   | "CCS_2"
   | "CHADEMO"
   | "TESLA_SUPERCHARGER";
 
-/** Поля локації/станції з одного рядка ev_stations CSV (після нормалізації для сиду). */
+  
 export type StationLocationDataFromRow = {
   extId: number;
   title: string;

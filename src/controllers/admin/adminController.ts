@@ -254,7 +254,6 @@ export const getAnalyticsViews: RequestHandler = async (req, res, next) => {
         if (sid !== undefined) stationQuery.stationId = sid;
         if (q["period"] !== undefined && q["period"] !== "") stationQuery.period = q["period"];
         if (q["topPeriod"] !== undefined && q["topPeriod"] !== "") stationQuery.topPeriod = q["topPeriod"];
-        if (q["fewestPeriod"] !== undefined && q["fewestPeriod"] !== "") stationQuery.fewestPeriod = q["fewestPeriod"];
         const ssp = parseOptionalPositiveIntParam(q["sessionStatsPage"]);
         if (ssp !== undefined) stationQuery.sessionStatsPage = ssp;
         const sessionStatsPageSize = parseOptionalPositiveIntParam(q["sessionStatsPageSize"]);
@@ -265,7 +264,6 @@ export const getAnalyticsViews: RequestHandler = async (req, res, next) => {
         if (q["sessionStatsSortDir"] !== undefined && q["sessionStatsSortDir"] !== "") {
             stationQuery.sessionStatsSortDir = q["sessionStatsSortDir"].trim();
         }
-        if (q["peakPeriod"] !== undefined && q["peakPeriod"] !== "") stationQuery.peakPeriod = q["peakPeriod"];
         const gpd = parseOptionalPositiveIntParam(q["globalPeriodDays"]);
         if (gpd !== undefined) {
             stationQuery.globalPeriodDays = Math.min(365, Math.max(1, gpd));

@@ -5,15 +5,33 @@ import {
   DEFAULT_DAY_FALLBACK,
   DEFAULT_NIGHT_FALLBACK,
 } from "../utils/tariffEnv.js";
-import { localDateAtNoon } from "../utils/tariffDateUtils.js";
+import { dateKeyLocal, localDateAtNoon } from "../utils/tariffDateUtils.js";
 import {
   sanitizeTariffDayNightUah,
   sanitizeTariffSingleUah,
 } from "../utils/tariffPriceSanitize.js";
+import { mergeDayNightIntoTariffSeedSnapshotFile } from "../utils/tariffSeedSnapshotMerge.js";
 
 const db = prisma as unknown as PrismaClient;
 
 export type TariffRow = Awaited<ReturnType<typeof db.tariff.findMany>>[number];
+
+async function syncTariffSeedSnapshotJsonForCalendarDay(
+  calendarDay: Date,
+): Promise<void> {
+  const rows = await db.tariff.findMany({
+    where: { effectiveDate: localDateAtNoon(calendarDay) },
+  });
+  const dayRow = rows.find((x) => x.tariffType === TariffPeriod.DAY);
+  const nightRow = rows.find((x) => x.tariffType === TariffPeriod.NIGHT);
+  if (!dayRow || !nightRow) return;
+  const key = dateKeyLocal(localDateAtNoon(calendarDay));
+  await mergeDayNightIntoTariffSeedSnapshotFile(
+    key,
+    Number(dayRow.pricePerKwh),
+    Number(nightRow.pricePerKwh),
+  );
+}
 
 export const tariffRepository = {
   async listAll(take = 3000) {
@@ -69,7 +87,8 @@ export const tariffRepository = {
   async upsertDayNightForCalendarDay(
     calendarDay: Date,
     dayPricePerKwh: number,
-    nightPricePerKwh: number
+    nightPricePerKwh: number,
+    syncSnapshotJson = true,
   ): Promise<void> {
     const s = sanitizeTariffDayNightUah(dayPricePerKwh, nightPricePerKwh);
     const effectiveDate = localDateAtNoon(calendarDay);
@@ -101,6 +120,9 @@ export const tariffRepository = {
       },
       update: { pricePerKwh: s.night },
     });
+    if (syncSnapshotJson) {
+      await syncTariffSeedSnapshotJsonForCalendarDay(calendarDay);
+    }
   },
 
   /** Один рядок (DAY або NIGHT) на календарну дату — інший період не змінюється. */
@@ -129,5 +151,6 @@ export const tariffRepository = {
       },
       update: { pricePerKwh: p },
     });
+    await syncTariffSeedSnapshotJsonForCalendarDay(calendarDay);
   },
 };

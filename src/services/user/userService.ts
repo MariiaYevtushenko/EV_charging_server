@@ -140,8 +140,25 @@ export const userService = {
   async getSession(userId: number, sessionId: number) {
     return await userRepository.getSession(userId, sessionId);
   },
-  async createSession(data: Prisma.SessionCreateInput) {
-    return await userRepository.createSession(data);
+  async createSession(stationId: number, portNumber: number, data: Prisma.SessionCreateInput) {
+    const st = data.status ?? SessionStatus.ACTIVE;
+    if (st !== SessionStatus.ACTIVE) {
+      return await userRepository.createSession(data);
+    }
+    try {
+      return await userRepository.createSessionOnPortIfFree(stationId, portNumber, data);
+    } catch (e) {
+      if (e instanceof Error && e.message === "PORT_ACTIVE_SESSION") {
+        throw new HttpError(
+          409,
+          "На обраному порті цієї станції вже триває зарядка. Оберіть інший порт або зачекайте завершення сесії."
+        );
+      }
+      if (e instanceof Error && e.message === "PORT_NOT_FOUND") {
+        throw new HttpError(404, "Порт станції не знайдено");
+      }
+      throw e;
+    }
   },
   async updateSession(userId: number, sessionId: number, data: Prisma.SessionUpdateInput) {
     return await userRepository.updateSession(userId, sessionId, data);

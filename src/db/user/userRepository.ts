@@ -9,6 +9,7 @@ import type {
   PaymentMethod,
   Prisma,
 } from "../../../generated/prisma/index.js";
+import { SessionStatus } from "../../../generated/prisma/index.js";
 import { callCancelBooking } from "../sql/proceduresRepository.js";
 import { sqlGetVehicleReportForPeriod } from "./userSqlAnalyticsFunctions.js";
 
@@ -144,6 +145,38 @@ export const userRepository = {
   async createSession(data: Prisma.SessionCreateInput): Promise<Session> {
     return await db.session.create({
       data,
+    });
+  },
+
+  /**
+   * Одна активна сесія на пару (station_id, port_number). Блокує рядок port (FOR UPDATE),
+   * щоб два паралельні POST не відкрили дві ACTIVE на той самий порт.
+   */
+  async createSessionOnPortIfFree(
+    stationId: number,
+    portNumber: number,
+    data: Prisma.SessionCreateInput
+  ): Promise<Session> {
+    return await db.$transaction(async (tx) => {
+      const portRows = await tx.$queryRaw<Array<{ ok: number }>>`
+        SELECT 1 AS ok FROM port
+        WHERE station_id = ${stationId} AND port_number = ${portNumber}
+        FOR UPDATE
+      `;
+      if (portRows.length === 0) {
+        throw new Error("PORT_NOT_FOUND");
+      }
+      const active = await tx.session.findFirst({
+        where: {
+          stationId,
+          portNumber,
+          status: SessionStatus.ACTIVE,
+        },
+      });
+      if (active) {
+        throw new Error("PORT_ACTIVE_SESSION");
+      }
+      return await tx.session.create({ data });
     });
   },
   async updateSession(userId: number, sessionId: number, data: Prisma.SessionUpdateInput): Promise<Session> {

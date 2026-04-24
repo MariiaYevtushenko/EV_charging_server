@@ -18,7 +18,18 @@ export const postRunForecastModel: RequestHandler = async (_req, res, next) => {
   try {
     const { code, stdout, stderr } = await runAiEngine();
     if (code !== 0) {
-      res.status(500).json({ ok: false, code, stdout, stderr });
+      const hint = (stderr ?? stdout ?? "").trim().slice(0, 600);
+      /** Префікс з кирилицею — інакше клієнт для 500 ховає технічний текст без UA. */
+      const message = hint
+        ? `Помилка моделі прогнозу: ${hint}`
+        : `Модель прогнозу завершилась з кодом ${code}. Перевірте PYTHON_PATH або py/python у PATH, DATABASE_URL та наявність рядків у tariff.`;
+      res.status(500).json({
+        ok: false,
+        code,
+        stdout,
+        stderr,
+        message,
+      });
       return;
     }
     res.json({ ok: true, stdout, stderr });

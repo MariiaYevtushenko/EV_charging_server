@@ -129,7 +129,6 @@ function mapPaymentStatus(s: PaymentStatus): AdminEndUserDto["payments"][number]
     case "PENDING":
       return "pending";
     case "FAILED":
-    case "REFUNDED":
       return "failed";
     default:
       return "pending";

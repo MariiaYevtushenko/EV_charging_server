@@ -10,9 +10,11 @@ import {
   isEntsoeTariffMode,
 } from "./entsoeTariffClient.js";
 import {
+  buildTariffRowsForSeedFromSnapshotLoose,
   calendarDayFromDateKeyLocal,
   isTariffSeedUseSnapshotFirst,
   isTariffSeedWriteSnapshot,
+  listExpectedTariffSeedDateKeys,
   readTariffSeedSnapshotFile,
   resolveTariffSeedSnapshotPathForIO,
   validateTariffSeedSnapshotFile,
@@ -27,12 +29,22 @@ export type { ParsedTariffPayload } from "./tariffApiParser.js";
 /**
  * Запис історичних тарифів за день (upsert по tariff_type + effective_date).
  */
+/**
+ * @param options.syncSnapshotJson — оновити `tariff_seed_snapshot.json` лише для одиничних записів
+ * (напр. cron). Масовий сид передає `false`, щоб не перезаписувати великий файл сотні разів.
+ */
 export async function saveHistoricalTariff(
   date: Date,
   dayPrice: number,
-  nightPrice: number
+  nightPrice: number,
+  options?: { syncSnapshotJson?: boolean },
 ): Promise<void> {
-  await tariffRepository.upsertDayNightForCalendarDay(date, dayPrice, nightPrice);
+  await tariffRepository.upsertDayNightForCalendarDay(
+    date,
+    dayPrice,
+    nightPrice,
+    options?.syncSnapshotJson === true,
+  );
 }
 
 /**
@@ -169,7 +181,8 @@ export type TariffSeedMode =
   | "api_single"
   | "api_series"
   | "entsoe"
-  | "snapshot";
+  | "snapshot"
+  | "snapshot_loose";
 
 async function prefetchNbuIfEurTariffSeed(
   url: string | undefined,
@@ -229,7 +242,7 @@ export type SeedTariffsFromApiResult = {
  * - ENTSO-E: від’ємні €/kWh за замовчуванням стають додатними (`|x|`), якщо не `ENTSOE_CLAMP_NEGATIVE_PRICES=false`.
  * - Якщо `TARIFF_API_PRICES_IN_EUR` увімкнено (за замовчуванням так), значення з API трактуються як €/кВт·год і перед записом у БД множаться на курс НБУ (грн/€).
  * - **Швидкий сид ENTSO-E / per-day:** `TARIFF_SEED_FETCH_CONCURRENCY` (деф. 6) — паралельні HTTP; старий послідовний режим: `ENTSOE_SEED_SEQUENTIAL=true` + `ENTSOE_SEED_DELAY_MS`.
- * - **Резервний JSON:** після збору цін пишеться `scripts/seed/data/tariff_seed_snapshot.json` (вимкнути: `TARIFF_SEED_WRITE_SNAPSHOT=false`). Якщо `TARIFF_SEED_USE_SNAPSHOT_FIRST=true` і файл валідний для `days`/`anchor`/дати — HTTP не викликаються.
+ * - **JSON-снапшот:** за замовчуванням спочатку читається `tariff_seed_snapshot.json` (strict або loose по датах; вимкнути: `TARIFF_SEED_USE_SNAPSHOT_FIRST=false`). Після збору з API файл перезаписується (`TARIFF_SEED_WRITE_SNAPSHOT=false` щоб не писати). Після кожного upsert у `tariff` JSON доповнюється тим самим днём.
  */
 export async function SeedTariffsFromApi(
   days: number = 90,
@@ -247,7 +260,8 @@ export async function SeedTariffsFromApi(
   const anchor: TariffSeedRangeAnchor = options?.anchor ?? "start";
   const persist =
     options?.persistDayNight ??
-    ((d: Date, day: number, night: number) => saveHistoricalTariff(d, day, night));
+    ((d: Date, day: number, night: number) =>
+      saveHistoricalTariff(d, day, night, { syncSnapshotJson: false }));
   const nbuRateCache = { v: null as number | null };
   const url = process.env["TARIFF_API_URL"];
   const rangeAnchorDate = localDateAtNoon(rangeDate);
@@ -269,15 +283,35 @@ export async function SeedTariffsFromApi(
   if (isTariffSeedUseSnapshotFirst()) {
     const snapPath = resolveTariffSeedSnapshotPathForIO();
     const raw = await readTariffSeedSnapshotFile(snapPath);
-    if (
-      raw != null &&
-      validateTariffSeedSnapshotFile(raw, days, anchor, rangeAnchorDate)
-    ) {
-      for (const row of raw.rows) {
-        const calendarDay = calendarDayFromDateKeyLocal(row.date);
-        await persist(calendarDay, row.day, row.night);
+    if (raw != null) {
+      if (validateTariffSeedSnapshotFile(raw, days, anchor, rangeAnchorDate)) {
+        for (const row of raw.rows) {
+          const calendarDay = calendarDayFromDateKeyLocal(row.date);
+          await persist(calendarDay, row.day, row.night);
+        }
+        return { daysWritten: raw.rows.length, mode: "snapshot" };
       }
-      return { daysWritten: raw.rows.length, mode: "snapshot" };
+      const expectedKeys = listExpectedTariffSeedDateKeys(
+        days,
+        anchor,
+        rangeAnchorDate,
+      );
+      const loose = buildTariffRowsForSeedFromSnapshotLoose(
+        raw,
+        expectedKeys,
+        fallbackPrices.day,
+        fallbackPrices.night,
+      );
+      if (loose) {
+        for (const r of loose) {
+          await persist(
+            calendarDayFromDateKeyLocal(r.dateKey),
+            r.day,
+            r.night,
+          );
+        }
+        return { daysWritten: loose.length, mode: "snapshot_loose" };
+      }
     }
   }
 
@@ -543,6 +577,6 @@ export async function ingestDailyTariff(date: Date = new Date()): Promise<{
   night: number;
 }> {
   const { day, night } = await resolveDayNightPricesUahForDate(date);
-  await saveHistoricalTariff(date, day, night);
+  await saveHistoricalTariff(date, day, night, { syncSnapshotJson: true });
   return { day, night };
 }

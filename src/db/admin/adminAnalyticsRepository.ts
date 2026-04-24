@@ -71,14 +71,11 @@ export type AdminStationViewsQuery = Partial<{
   stationId: number;
   period: string;
   topPeriod: string;
-  fewestPeriod: string;
   sessionStatsPage: number;
   sessionStatsPageSize: number;
-  /** Параметри з клієнта; сортування таблиці сесій може бути додано в SQL-пагінацію пізніше. */
+  /** Параметри з клієнта для ORDER BY у пагінації `view_stationsessionstatslast30days` (whitelist у репозиторії). */
   sessionStatsSortBy?: string;
   sessionStatsSortDir?: string;
-  peakStationId: number;
-  peakPeriod: string;
   portStatsPage?: number;
   portStatsPageSize?: number;
   /** Кількість днів для `globalAdminSnapshot` (функції Global_admin_analytics.sql), 1–365. */

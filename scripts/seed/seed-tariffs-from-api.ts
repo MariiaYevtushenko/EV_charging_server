@@ -63,7 +63,7 @@ function WriteSeedReport(result: SeedTariffsFromApiResult): void {
     "Результат (об'єкт повернення SeedTariffsFromApi):",
     JSON.stringify(result, null, 2),
     "",
-    "Довідка mode: no_api | entsoe | api_single | api_series | api_per_day (лише JSON-API).",
+    "Довідка mode: no_api | entsoe | api_single | api_series | api_per_day | snapshot | snapshot_loose.",
     "На кожен день: 2 записи в tariff — DAY (денний тариф) і NIGHT (нічний), pricePerKwh у валюті схеми.",
     "",
     "Контекст env (URL токенів не показуємо):",
@@ -74,9 +74,9 @@ function WriteSeedReport(result: SeedTariffsFromApiResult): void {
           "  TARIFF_API_PER_DAY не перемикає цей режим (потрібен лише для власного JSON API з ?date=).",
           `  TARIFF_API_PER_DAY у .env: ${EnvValue("TARIFF_API_PER_DAY")}`,
         ]
-      : result.mode === "snapshot"
+      : result.mode === "snapshot" || result.mode === "snapshot_loose"
         ? [
-            "  Примітка: snapshot — дані з JSON (TARIFF_SEED_USE_SNAPSHOT_FIRST), без запитів до API.",
+            "  Примітка: snapshot / snapshot_loose — дані з tariff_seed_snapshot.json (за замовч. TARIFF_SEED_USE_SNAPSHOT_FIRST), без запитів до API.",
           ]
         : [`  TARIFF_API_PER_DAY: ${EnvValue("TARIFF_API_PER_DAY")}`]),
     `  TARIFF_DAY_PRICE: ${EnvValue("TARIFF_DAY_PRICE")}`,

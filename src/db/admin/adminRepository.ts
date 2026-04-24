@@ -47,10 +47,23 @@ export function mergeBillWhere(
   return { AND: [a, b] };
 }
 
+function startOfLocalCalendarDay(d = new Date()): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+}
+
+function startOfNextLocalCalendarDay(d = new Date()): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 0, 0, 0, 0);
+}
+
 export function buildNetworkListPeriodBookingWhere(
   period: NetworkListPeriod
 ): Prisma.BookingWhereInput | undefined {
   if (period === "all") return undefined;
+  if (period === "today") {
+    const from = startOfLocalCalendarDay();
+    const to = startOfNextLocalCalendarDay();
+    return { startTime: { gte: from, lt: to } };
+  }
   const days = period === "7d" ? 7 : 30;
   const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
   return { startTime: { gte: cutoff } };
@@ -60,6 +73,11 @@ export function buildNetworkListPeriodSessionWhere(
   period: NetworkListPeriod
 ): Prisma.SessionWhereInput | undefined {
   if (period === "all") return undefined;
+  if (period === "today") {
+    const from = startOfLocalCalendarDay();
+    const to = startOfNextLocalCalendarDay();
+    return { startTime: { gte: from, lt: to } };
+  }
   const days = period === "7d" ? 7 : 30;
   const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
   return { startTime: { gte: cutoff } };
@@ -69,6 +87,11 @@ export function buildNetworkListPeriodBillWhere(
   period: NetworkListPeriod
 ): Prisma.BillWhereInput | undefined {
   if (period === "all") return undefined;
+  if (period === "today") {
+    const from = startOfLocalCalendarDay();
+    const to = startOfNextLocalCalendarDay();
+    return { createdAt: { gte: from, lt: to } };
+  }
   const days = period === "7d" ? 7 : 30;
   const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
   return { createdAt: { gte: cutoff } };
@@ -405,7 +428,7 @@ export const adminRepository = {
       case "pending":
         return { paymentStatus: "PENDING" };
       case "failed":
-        return { paymentStatus: { in: ["FAILED", "REFUNDED"] } };
+        return { paymentStatus: "FAILED" };
       default:
         return {};
     }
@@ -416,8 +439,8 @@ export const adminRepository = {
     order: "asc" | "desc"
   ): Prisma.BillOrderByWithRelationInput {
     switch (sort) {
-      case "createdAt":
-        return { createdAt: order };
+      case "paidAt":
+        return { paidAt: order };
       case "userName":
         return { session: { user: { name: order } } };
       case "sessionId":
@@ -429,7 +452,7 @@ export const adminRepository = {
       case "status":
         return { paymentStatus: order };
       default:
-        return { createdAt: "desc" };
+        return { paidAt: "desc" };
     }
   },
 

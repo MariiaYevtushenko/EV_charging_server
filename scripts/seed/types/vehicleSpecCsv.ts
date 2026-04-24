@@ -6,7 +6,7 @@ export type CsvVehicleRow = {
   battery_capacity_kwh?: string;
 };
 
-/** Результат сидування авто з CSV. */
+
 export type SeedVehiclesFromCsvResult = {
   inserted: number;
   skippedUsers: number;

@@ -146,7 +146,10 @@ export type AdminNetworkPaymentRow = {
     currency: string;
     method: string;
     status: "success" | "pending" | "failed";
+    /** Дата створення рахунку (технічна). */
     createdAt: string;
+    /** Дата фактичної оплати; для PENDING/FAILED без оплати — null. */
+    paidAt: string | null;
     description: string;
     userId: string | null;
     userName: string;
@@ -213,7 +216,6 @@ function mapBillPaymentUi(s: PaymentStatus): "success" | "pending" | "failed" {
         case "PENDING":
             return "pending";
         case "FAILED":
-        case "REFUNDED":
             return "failed";
         default:
             return "pending";
@@ -475,6 +477,7 @@ export const adminService = {
                 method: paymentMethodUi(bill.paymentMethod),
                 status: mapBillPaymentUi(bill.paymentStatus),
                 createdAt: bill.createdAt.toISOString(),
+                paidAt: bill.paidAt != null ? bill.paidAt.toISOString() : null,
                 description: `Сесія #${s.id} · ${st.name}`,
                 userId: uid,
                 userName: userDisplayName(s.user),

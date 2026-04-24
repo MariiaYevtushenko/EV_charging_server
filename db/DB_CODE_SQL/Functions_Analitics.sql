@@ -217,53 +217,6 @@ AS $$
 $$;
 
 
--- Найменш завантажені станції (сесії за період, зростання)
-CREATE OR REPLACE FUNCTION GetNetworkStationsFewestSessions(
-  p_date_from TIMESTAMPTZ,
-  p_date_to TIMESTAMPTZ,
-  p_limit INT DEFAULT 10
-)
-RETURNS TABLE(station_id INT, station_name TEXT, session_count INT)
-LANGUAGE sql
-STABLE
-AS $$
-  SELECT
-    st.id as station_id,
-    st.name as station_name,
-    COUNT(s.id) as session_count
-  FROM station st
-  JOIN session s ON s.station_id = st.id
-  WHERE s.start_time >= p_date_from
-    AND s.start_time < p_date_to
-  GROUP BY st.id, st.name
-  ORDER BY session_count ASC NULLS FIRST, st.id
-  LIMIT (SELECT LEAST(50, GREATEST(1, COALESCE(p_limit, 10))));
-$$;
-
-
-
---- ОК
--- Пікові години по всій мережі: ISO-день тижня (1=Пн … 7=Нд), година 0–23
-CREATE OR REPLACE FUNCTION GetNetworkPeakHourBuckets(
-  p_date_from TIMESTAMPTZ,
-  p_date_to TIMESTAMPTZ
-)
-RETURNS TABLE(iso_dow INT, hour_of_day INT, session_count INT)
-LANGUAGE sql
-STABLE
-AS $$
-  SELECT
-    EXTRACT(ISODOW FROM s.start_time)::INT AS iso_dow,
-    EXTRACT(HOUR FROM s.start_time)::INT AS hour_of_day,
-    COUNT(*) AS session_count
-  FROM session s
-  WHERE s.start_time >= p_date_from
-    AND s.start_time < p_date_to
-  GROUP BY iso_dow, hour_of_day
-  ORDER BY iso_dow, hour_of_day;
-$$;
-
-
 -- Пікові години однієї станції (для деталізації stationId у snapshot)
 CREATE OR REPLACE FUNCTION GetStationPeakHourBuckets(
   p_station_id INT,
@@ -543,8 +496,9 @@ $$;
 -- ============================================================================
 -- Користувач
 -- ============================================================================
--- ВСЕ ОК
--- Зведення по сесіях: енергія, витрати, середні, найчастіша станція
+-- Зведення по сесіях за [p_date_from, p_date_to) по start_time — **усі** сесії користувача (як графік по днях).
+-- Середні kWh / чек — лише по завершених (COMPLETED), щоб не ділити на активні з 0 kWh.
+-- LANGUAGE sql: уникнення 42804 через OUT-змінні plpgsql з тими ж іменами, що й стовпці RETURNS TABLE.
 CREATE OR REPLACE FUNCTION GetUserSessionEnergySpendSummary(
   p_user_id INT,
   p_date_from TIMESTAMP,
@@ -560,9 +514,10 @@ RETURNS TABLE(
   top_station_id INT,
   top_station_name TEXT,
   top_station_visit_count INT
-) AS $$
-BEGIN
-  RETURN QUERY
+)
+LANGUAGE sql
+STABLE
+AS $$
   WITH sess AS (
     SELECT
       s.id,
@@ -570,44 +525,63 @@ BEGIN
       s.kwh_consumed,
       s.start_time,
       s.end_time,
+      s.status AS session_status,
       b.calculated_amount
     FROM session s
     LEFT JOIN bill b ON b.session_id = s.id
     WHERE s.user_id = p_user_id
       AND s.start_time >= p_date_from
       AND s.start_time < p_date_to
-      AND s.status = 'COMPLETED'::session_status
   ),
   top_st AS (
-    SELECT st.id AS sid, st.name AS sname, COUNT(*) AS vcnt
+    SELECT st.id AS sid, st.name::TEXT AS sname, count(*)::bigint AS vcnt
     FROM sess x
-    JOIN station st ON st.id = x.station_id
+    INNER JOIN station st ON st.id = x.station_id
     GROUP BY st.id, st.name
-    ORDER BY COUNT(*) DESC, COALESCE(SUM(x.kwh_consumed), 0) DESC NULLS LAST, st.id
+    ORDER BY count(*) DESC, coalesce(sum(x.kwh_consumed), 0::numeric) DESC NULLS LAST, st.id
     LIMIT 1
+  ),
+  agg AS (
+    SELECT
+      count(*)::INT AS total_sessions,
+      coalesce(sum(sess.kwh_consumed), 0)::NUMERIC AS total_kwh,
+      coalesce(sum(sess.calculated_amount), 0::numeric)::NUMERIC AS total_revenue,
+      CASE
+        WHEN count(*) FILTER (WHERE sess.session_status = 'COMPLETED'::session_status) = 0 THEN NULL::NUMERIC
+        ELSE round(
+          (sum(sess.kwh_consumed) FILTER (WHERE sess.session_status = 'COMPLETED'::session_status))::numeric
+            / nullif(count(*) FILTER (WHERE sess.session_status = 'COMPLETED'::session_status), 0),
+          6
+        )
+      END AS avg_kwh_per_session,
+      CASE
+        WHEN count(*) FILTER (WHERE sess.session_status = 'COMPLETED'::session_status) = 0 THEN NULL::NUMERIC
+        ELSE round(
+          (sum(sess.calculated_amount) FILTER (WHERE sess.session_status = 'COMPLETED'::session_status))::numeric
+            / nullif(count(*) FILTER (WHERE sess.session_status = 'COMPLETED'::session_status), 0),
+          2
+        )
+      END AS avg_revenue_per_session,
+      round(
+        avg(
+          extract(epoch FROM (sess.end_time - sess.start_time)) / 60.0
+        ) FILTER (WHERE sess.end_time IS NOT NULL),
+        2
+      )::NUMERIC AS avg_session_duration_minutes
+    FROM sess
   )
   SELECT
-    COUNT(*) AS total_sessions,
-    COALESCE(SUM(sess.kwh_consumed), 0) AS total_kwh,
-    COALESCE(SUM(sess.calculated_amount), 0) AS total_revenue,
-    CASE WHEN COUNT(*) = 0 THEN NULL
-         ELSE ROUND(COALESCE(SUM(sess.kwh_consumed), 0) / COUNT(*)::numeric, 6)
-    END AS avg_kwh_per_session,
-    CASE WHEN COUNT(*) = 0 THEN NULL
-         ELSE ROUND(COALESCE(SUM(sess.calculated_amount), 0) / COUNT(*)::numeric, 2)
-    END AS avg_revenue_per_session,
-    ROUND(
-      AVG(
-        EXTRACT(EPOCH FROM (sess.end_time - sess.start_time)) / 60.0
-      ) FILTER (WHERE sess.end_time IS NOT NULL),
-      2
-    ) AS avg_session_duration_minutes,
-    (SELECT sid FROM top_st) AS top_station_id,
-    (SELECT sname FROM top_st) AS top_station_name,
-    (SELECT vcnt FROM top_st) AS top_station_visit_count
-  FROM sess;
-END;
-$$ LANGUAGE plpgsql STABLE;
+    a.total_sessions,
+    a.total_kwh,
+    a.total_revenue,
+    a.avg_kwh_per_session,
+    a.avg_revenue_per_session,
+    a.avg_session_duration_minutes,
+    (SELECT ts.sid::INT FROM top_st ts LIMIT 1),
+    (SELECT ts.sname FROM top_st ts LIMIT 1),
+    (SELECT ts.vcnt::INT FROM top_st ts LIMIT 1)
+  FROM agg a;
+$$;
 
 
 -- Графік споживання / витрат по днях
@@ -627,9 +601,9 @@ BEGIN
   RETURN QUERY
   SELECT
     (date_trunc('day', s.start_time))::DATE AS day_bucket,
-    COUNT(s.id) AS session_count,
-    COALESCE(SUM(s.kwh_consumed), 0) AS total_kwh,
-    COALESCE(SUM(b.calculated_amount), 0) AS total_revenue
+    COUNT(s.id)::INT AS session_count,
+    COALESCE(SUM(s.kwh_consumed), 0)::NUMERIC AS total_kwh,
+    COALESCE(SUM(b.calculated_amount), 0)::NUMERIC AS total_revenue
   FROM session s
   LEFT JOIN bill b ON b.session_id = s.id
   WHERE s.user_id = p_user_id
@@ -657,9 +631,9 @@ BEGIN
   RETURN QUERY
   SELECT
     date_trunc('month', s.start_time) AS month_start,
-    COUNT(s.id) AS session_count,
-    COALESCE(SUM(s.kwh_consumed), 0) AS total_kwh,
-    COALESCE(SUM(b.calculated_amount), 0) AS total_revenue
+    COUNT(s.id)::INT AS session_count,
+    COALESCE(SUM(s.kwh_consumed), 0)::NUMERIC AS total_kwh,
+    COALESCE(SUM(b.calculated_amount), 0)::NUMERIC AS total_revenue
   FROM session s
   LEFT JOIN bill b ON b.session_id = s.id
   WHERE s.user_id = p_user_id
@@ -689,13 +663,13 @@ RETURNS TABLE(
 BEGIN
   RETURN QUERY
   SELECT
-    COUNT(*) AS total_bookings,
-    COUNT(*) FILTER (WHERE b.status = 'BOOKED'::booking_status) AS cnt_booked,
-    COUNT(*) FILTER (WHERE b.status = 'COMPLETED'::booking_status) AS cnt_completed,
-    COUNT(*) FILTER (WHERE b.status = 'MISSED'::booking_status) AS cnt_missed,
-    COUNT(*) FILTER (WHERE b.status = 'CANCELLED'::booking_status) AS cnt_cancelled,
+    COUNT(*)::INT AS total_bookings,
+    COUNT(*) FILTER (WHERE b.status = 'BOOKED'::booking_status)::INT AS cnt_booked,
+    COUNT(*) FILTER (WHERE b.status = 'COMPLETED'::booking_status)::INT AS cnt_completed,
+    COUNT(*) FILTER (WHERE b.status = 'MISSED'::booking_status)::INT AS cnt_missed,
+    COUNT(*) FILTER (WHERE b.status = 'CANCELLED'::booking_status)::INT AS cnt_cancelled,
     CASE
-      WHEN COUNT(*) = 0 THEN NULL
+      WHEN COUNT(*) = 0 THEN NULL::NUMERIC
       ELSE ROUND(
         100.0 * COUNT(*) FILTER (WHERE b.status = 'COMPLETED'::booking_status)::numeric
         / COUNT(*)::numeric,
@@ -733,9 +707,9 @@ BEGIN
     v.license_plate::TEXT,
     v.brand::TEXT,
     v.model::TEXT,
-    COUNT(s.id) AS session_count,
-    COALESCE(SUM(s.kwh_consumed), 0) AS total_kwh,
-    COALESCE(SUM(b.calculated_amount), 0) AS total_revenue
+    COUNT(s.id)::INT AS session_count,
+    COALESCE(SUM(s.kwh_consumed), 0)::NUMERIC AS total_kwh,
+    COALESCE(SUM(b.calculated_amount), 0)::NUMERIC AS total_revenue
   FROM vehicle v
   LEFT JOIN session s
     ON s.vehicle_id = v.id
@@ -760,7 +734,6 @@ CREATE OR REPLACE FUNCTION GetUserTopStationsByEnergy(
   p_limit INT DEFAULT 5
 )
 RETURNS TABLE(
- 
   station_id INT,
   station_name TEXT,
   session_count INT,
@@ -775,9 +748,9 @@ BEGIN
     SELECT
       st.id AS sid,
       st.name::TEXT AS sname,
-      COUNT(s.id) AS scnt,
-      COALESCE(SUM(s.kwh_consumed), 0) AS kwh,
-      COALESCE(SUM(b.calculated_amount), 0) AS rev
+      COUNT(s.id)::INT AS scnt,
+      COALESCE(SUM(s.kwh_consumed), 0)::NUMERIC AS kwh,
+      COALESCE(SUM(b.calculated_amount), 0)::NUMERIC AS rev
     FROM session s
     JOIN station st ON st.id = s.station_id
     LEFT JOIN bill b ON b.session_id = s.id
@@ -817,9 +790,9 @@ RETURNS TABLE(
 BEGIN
   RETURN QUERY
   SELECT
-    COUNT(s.id) AS total_sessions,
-    COALESCE(SUM(s.kwh_consumed), 0) AS total_kwh_consumed,
-    COALESCE(SUM(b.calculated_amount), 0) AS total_revenue_amount
+    COUNT(s.id)::INT AS total_sessions,
+    COALESCE(SUM(s.kwh_consumed), 0)::NUMERIC AS total_kwh,
+    COALESCE(SUM(b.calculated_amount), 0)::NUMERIC AS total_revenue
   FROM session s
   INNER JOIN bill b ON b.session_id = s.id
   WHERE s.vehicle_id = p_vehicle_id

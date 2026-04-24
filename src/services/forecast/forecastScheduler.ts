@@ -35,9 +35,13 @@ export async function runForecastModelOnce(source: string): Promise<void> {
   try {
     const { code, stdout, stderr } = await runAiEngine();
     if (code !== 0) {
+      const winPyHint =
+        code === 9009 && process.platform === "win32"
+          ? " — Windows: не знайдено команду запуску Python. Задайте PYTHON_PATH (повний шлях до python.exe) або переконайтеся, що в PATH є `py` (Python Launcher) / `python`."
+          : "";
       console.error(
-        `[forecast] ai_engine.py помилка (${source}) exit=${code}`,
-        stderr?.trim() || stdout?.trim() || ""
+        `[forecast] ai_engine.py помилка (${source}) exit=${code}${winPyHint}`,
+        stderr?.trim() || stdout?.trim() || "",
       );
       return;
     }

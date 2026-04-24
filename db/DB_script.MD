@@ -26,7 +26,7 @@ CREATE TYPE booking_status AS ENUM ('BOOKED', 'MISSED', 'CANCELLED', 'COMPLETED'
 CREATE TYPE booking_type AS ENUM ('CALC', 'DEPOSIT');
 CREATE TYPE session_status AS ENUM ('ACTIVE', 'COMPLETED', 'FAILED');
 CREATE TYPE payment_method AS ENUM ('CARD', 'APPLE_PAY', 'GOOGLE_PAY');
-CREATE TYPE payment_status AS ENUM ('PENDING', 'SUCCESS', 'FAILED', 'REFUNDED');
+CREATE TYPE payment_status AS ENUM ('PENDING', 'SUCCESS', 'FAILED');
 
 -- додати в бд перевірку на імейл та номер телефону(символи)
 CREATE TABLE IF NOT EXISTS ev_user(

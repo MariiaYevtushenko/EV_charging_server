@@ -1,20 +1,4 @@
-/**
- * SEED_ALL_DATA — одна транзакція PostgreSQL: `BEGIN` на старті, `COMMIT` лише після
- * успішного завершення всіх кроків; при будь-якій помилці — `ROLLBACK` (нічого не лишається наполовину).
- *
- * Порядок: **тарифи (API / snapshot)** → SeedMassiveUsers → vehicle CSV → станції CSV → SeedBookingsSessionsBills.
- * Тарифи йдуть першими (найповільніший мережевий крок; паралель — `TARIFF_SEED_FETCH_CONCURRENCY` у сервісі).
- * Демо-логіни не вставляються (окремо / вручну).
- *
- * Числові параметри сиду — змінні оточення (дефолти в `scripts/seed/seedEnvConfig.ts`),
- * зокрема `SEED_DEMO_SESSIONS_COUNT`, `SEED_SESSION_FROM_BOOKING_SHARE`, `SEED_DEMO_BOOKINGS_DAYS_BACK`.
- *
- * Опційно: `SEED_OPTIONAL_SQL_PROCEDURES=true` — лише для кроку 2 (`SeedMassiveUsers`): якщо
- * процедура відсутня, крок пропускається (savepoint). Крок 5 (`SeedBookingsSessionsBills`) завжди
- * атомарний із рештою пайплайна: будь-яка помилка → `ROLLBACK` усієї транзакції (без часткового коміту станцій).
- *
- * CLI: npx tsx scripts/seed-all-data.ts [--truncate]
- */
+
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import pg from "pg";
@@ -24,6 +8,11 @@ import { SeedTariffsFromApi } from "../src/services/forecast/tariffIngestService
 import { loadDefaultEvStationCsvRows, SeedEvStationsFromCsv, SyncLocationStationSequences } from "./seed/seed-from-csv.js";
 import { SeedVehiclesFromCsv, SyncVehicleSequence } from "./seed/seed-vehicles-from-csv.js";
 import { upsertTariffDayNightForCalendarDayPg } from "./seed/tariffUpsertPg.js";
+import {
+  calendarDayFromDateKeyLocal,
+  readTariffSeedSnapshotFile,
+  resolveTariffSeedSnapshotPathForIO,
+} from "./seed/tariffSeedSnapshot.js";
 import {
   getSeedDemoBookingsCount,
   getSeedDemoBookingsDaysBack,
@@ -44,6 +33,7 @@ import {
   seedNowIso,
   seedWarn,
 } from "./seed/seedLog.js";
+import { exportTariffSeedSnapshotFromDbAfterSeed } from "./seed/exportTariffSeedSnapshotFromDb.js";
 
 const { Client } = pg;
 
@@ -147,6 +137,8 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
     }
 
     const days = getTariffSeedDays();
+    /** Одна «якірна» дата для кроку тарифів і для експорту снапшота після COMMIT (узгоджені діапазони). */
+    const tariffSeedRangeDate = new Date();
 
     seedLog("SEED_ALL_DATA:1", "SeedTariffsFromApi + upsert у транзакцію (перший крок після truncate)", {
       anchor: "end",
@@ -157,7 +149,7 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
       TARIFF_SEED_FETCH_CONCURRENCY:
         process.env.TARIFF_SEED_FETCH_CONCURRENCY ?? "(default 6)",
     });
-    const tariffResult = await SeedTariffsFromApi(days, new Date(), {
+    const tariffResult = await SeedTariffsFromApi(days, tariffSeedRangeDate, {
       anchor: "end",
       persistDayNight: async (cal, dayPrice, nightPrice) => {
         await upsertTariffDayNightForCalendarDayPg(
@@ -264,20 +256,61 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
     const sessionFromBookingShare = getSeedSessionFromBookingShare();
     const bookingsDaysBack = getSeedDemoBookingsDaysBack();
 
+    const { rows: tariffCountRows } = await client.query<{ c: string }>(
+      `SELECT COUNT(*)::text AS c FROM public.tariff`,
+    );
+    const tariffRowCount = Number(tariffCountRows[0]?.c ?? 0);
+    const minTariffRowsForDemo =
+      2 * Math.min(getSeedDemoBookingsDaysBack(), getTariffSeedDays()) + 4;
+    let tariffRowsUpsertedFromSnapshot = 0;
+    if (tariffRowCount < minTariffRowsForDemo) {
+      const snapPath = resolveTariffSeedSnapshotPathForIO();
+      const doc = await readTariffSeedSnapshotFile(snapPath);
+      const rows =
+        doc != null && typeof doc === "object" && "rows" in doc
+          ? (doc as { rows: unknown }).rows
+          : null;
+      if (Array.isArray(rows) && rows.length > 0) {
+        seedLog(
+          "SEED_ALL_DATA:5",
+          "перед демо-SQL: upsert тарифів з tariff_seed_snapshot.json у public.tariff (pg, мало рядків)",
+          {
+            tariff_rows_before: tariffRowCount,
+            min_expected_about: minTariffRowsForDemo,
+            snapshot_rows: rows.length,
+            snapshot_path: snapPath,
+          },
+        );
+        for (const item of rows) {
+          if (item == null || typeof item !== "object") continue;
+          const r = item as Record<string, unknown>;
+          const dateKey = r["date"];
+          const dayRaw = r["day"];
+          const nightRaw = r["night"];
+          if (typeof dateKey !== "string") continue;
+          const day = typeof dayRaw === "number" ? dayRaw : Number(dayRaw);
+          const night = typeof nightRaw === "number" ? nightRaw : Number(nightRaw);
+          if (!Number.isFinite(day) || !Number.isFinite(night)) continue;
+          const cal = calendarDayFromDateKeyLocal(dateKey);
+          await upsertTariffDayNightForCalendarDayPg(client, cal, day, night);
+          tariffRowsUpsertedFromSnapshot += 1;
+        }
+      }
+    }
+
     seedLog("SEED_ALL_DATA:5", "CALL SeedBookingsSessionsBills", {
       bookings: bookingCount,
       sessions: sessionTarget,
       from_booking_share: sessionFromBookingShare,
       bookings_days_back: bookingsDaysBack,
       sql_file: "db/Seed_demo_bookings_sessions_bills.sql",
+      tariff_calendar_days_upserted_from_snapshot: tariffRowsUpsertedFromSnapshot,
     });
     /** Без savepoint/«опційного пропуску»: інакше при помилці процедури транзакція все одно дійшла б до COMMIT з уже вставленими станціями. */
-    await client.query("CALL SeedBookingsSessionsBills($1, $2, $3, $4)", [
-      bookingCount,
-      sessionTarget,
-      sessionFromBookingShare,
-      bookingsDaysBack,
-    ]);
+    await client.query(
+      "CALL SeedBookingsSessionsBills($1::int, $2::int, $3::numeric, $4::int)",
+      [bookingCount, sessionTarget, sessionFromBookingShare, bookingsDaysBack],
+    );
     const demoCounts = await client.query<{
       b: string;
       s: string;
@@ -305,6 +338,22 @@ export async function SeedAllData(opts: SeedAllDataOptions = {}): Promise<void> 
       total_ms: timer.elapsedMs(),
       finished_at: seedNowIso(),
     });
+
+    try {
+      const snap = await exportTariffSeedSnapshotFromDbAfterSeed(client, {
+        days,
+        anchor: "end",
+        rangeDate: tariffSeedRangeDate,
+      });
+      seedLog("SEED_ALL_DATA", "tariff_seed_snapshot.json оновлено з таблиці tariff", {
+        path: snap.path,
+        rows: snap.rows,
+      });
+    } catch (e) {
+      seedWarn("SEED_ALL_DATA", "Не вдалося записати tariff_seed_snapshot.json після COMMIT (БД уже збережена).", {
+        error: e instanceof Error ? e.message : String(e),
+      });
+    }
   } catch (e) {
     await client.query("ROLLBACK").catch(() => {});
     seedError(
@@ -339,9 +388,9 @@ Env (див. scripts/seed/seedEnvConfig.ts та .env.example):
   ${SEED_ENV.TARIFF_SEED_DAYS} (default ${SEED_ENV_DEFAULTS.TARIFF_SEED_DAYS}, range 1–1200; тарифи з API)
   TARIFF_SEED_FETCH_CONCURRENCY — паралельні HTTP для ENTSO-E / TARIFF_API_PER_DAY (деф. 6)
   ENTSOE_SEED_SEQUENTIAL=true — старий послідовний ENTSO-E + ENTSOE_SEED_DELAY_MS
-  TARIFF_SEED_USE_SNAPSHOT_FIRST=true — якщо є валідний JSON-снапшот, без мережі (див. scripts/seed/data/)
+  TARIFF_SEED_USE_SNAPSHOT_FIRST=false — примусово з API; за замовчуванням (змінна не задана) спочатку JSON (strict або loose по датах)
   TARIFF_SEED_SNAPSHOT_PATH — шлях до JSON (інакше scripts/seed/data/tariff_seed_snapshot.json)
-  TARIFF_SEED_WRITE_SNAPSHOT=false — не перезаписувати снапшот після успішного збору з API
+  TARIFF_SEED_WRITE_SNAPSHOT=false — не перезаписувати снапшот під час збору з API (після COMMIT seed-all-data снапшот усе одно оновлюється з БД)
   ${SEED_ENV.OPTIONAL_SQL_PROCEDURES}=true — лише для SeedMassiveUsers: пропуск, якщо процедури немає. Помилка SeedBookingsSessionsBills завжди скасовує весь сид (ROLLBACK).`);
     process.exit(0);
   }

@@ -8,5 +8,4 @@ import dotenv from "dotenv";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const envPath = path.join(__dirname, "..", "..", ".env");
-// override: true — інакше порожні TARIFF_* з системного env не перезапишуться з server/.env
 dotenv.config({ path: envPath, override: true });

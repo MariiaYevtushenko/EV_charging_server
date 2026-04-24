@@ -79,7 +79,6 @@ enum PaymentStatus {
   PENDING
   SUCCESS
   FAILED
-  REFUNDED
 
   @@map("payment_status")
 }

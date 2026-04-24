@@ -199,6 +199,6 @@ export async function fetchEntsoeDayNightKwh(
     };
   }
   throw new Error(
-    `ENTSO-E HTTP 429 (rate limit): вичерпано ${maxRetries} спроб. Збільшіть ENTSOE_429_BACKOFF_MS або ENTSOE_SEED_DELAY_MS, зменшіть TARIFF_SEED_DAYS, ENTSOE_SEED_SEQUENTIAL=true, або TARIFF_SEED_USE_SNAPSHOT_FIRST=true (scripts/seed/data/tariff_seed_snapshot.json).`,
+    `ENTSO-E HTTP 429 (rate limit): вичерпано ${maxRetries} спроб. Збільшіть ENTSOE_429_BACKOFF_MS або ENTSOE_SEED_DELAY_MS, зменшіть TARIFF_SEED_DAYS, ENTSOE_SEED_SEQUENTIAL=true, або заповніть scripts/seed/data/tariff_seed_snapshot.json (за замовч. сид іде з нього першим).`,
   );
 }

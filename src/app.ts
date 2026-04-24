@@ -35,6 +35,10 @@ export function createApp() {
   app.use("/api/admin", adminRouter);
   app.use("/api/dev", devSeedRouter);
 
+  app.use((_req, res) => {
+    res.status(404).json({ error: "Not found", message: "Маршрут не знайдено." });
+  });
+
   app.use(errorMiddleware);
 
   return app;

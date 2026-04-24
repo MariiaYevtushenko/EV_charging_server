@@ -66,8 +66,5 @@ adminRouter.post(
   requireCronSecret,
   postIngestTariff
 );
-adminRouter.post(
-  "/forecast/run-model",
-  requireCronSecret,
-  postRunForecastModel
-);
+/** Запуск Python-моделі з UI глобального адміна (без cron-секрету). Ingest лишається під CRON_SECRET. */
+adminRouter.post("/forecast/run-model", postRunForecastModel);

@@ -1,6 +1,6 @@
 /**
- * JSON-снапшот тарифів для сиду: резерв, коли API недоступне (`TARIFF_SEED_USE_SNAPSHOT_FIRST`).
- * Записується після успішного збору цін (до persist у БД у `SeedTariffsFromApi`).
+ * JSON-снапшот тарифів: за замовчуванням сид спочатку з файлу (`TARIFF_SEED_USE_SNAPSHOT_FIRST` не false).
+ * Після збору з API — повний перезапис; після upsert у `tariff` — точкове доповнення рядка дня (див. `tariffSeedSnapshotMerge`).
  */
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -44,8 +44,15 @@ export function resolveTariffSeedSnapshotPathForIO(): string {
   return path.isAbsolute(raw) ? raw : path.resolve(process.cwd(), raw);
 }
 
+/**
+ * Якщо змінна не задана — **true**: спочатку брати рядки з `tariff_seed_snapshot.json` (strict або loose).
+ * Вимкнути мережевий пропуск JSON: `TARIFF_SEED_USE_SNAPSHOT_FIRST=false`.
+ */
 export function isTariffSeedUseSnapshotFirst(): boolean {
-  const v = String(process.env["TARIFF_SEED_USE_SNAPSHOT_FIRST"] ?? "").toLowerCase();
+  const raw = process.env["TARIFF_SEED_USE_SNAPSHOT_FIRST"];
+  if (raw === undefined || raw === "") return true;
+  const v = String(raw).toLowerCase();
+  if (v === "false" || v === "0") return false;
   return v === "true" || v === "1";
 }
 
@@ -72,11 +79,12 @@ export function calendarDayFromDateKeyLocal(dateKey: string): Date {
   return new Date(y, mo - 1, d, 12, 0, 0, 0);
 }
 
-function expectedDateKeys(
+/** Упорядковані ключі дат YYYY-MM-DD для діапазону сиду тарифів (узгоджено з `SeedTariffsFromApi`). */
+export function listExpectedTariffSeedDateKeys(
   days: number,
   anchor: TariffSeedRangeAnchor,
   rangeDate: Date,
-): { first: string; last: string } {
+): string[] {
   const rangeAnchorDate = localDateAtNoon(rangeDate);
   const rangeStartDate =
     anchor === "end"
@@ -90,19 +98,29 @@ function expectedDateKeys(
           0,
         )
       : rangeAnchorDate;
-  const lastDay = new Date(
-    rangeStartDate.getFullYear(),
-    rangeStartDate.getMonth(),
-    rangeStartDate.getDate() + (days - 1),
-    12,
-    0,
-    0,
-    0,
-  );
-  return {
-    first: dateKeyLocal(rangeStartDate),
-    last: dateKeyLocal(lastDay),
-  };
+  const keys: string[] = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date(
+      rangeStartDate.getFullYear(),
+      rangeStartDate.getMonth(),
+      rangeStartDate.getDate() + i,
+      12,
+      0,
+      0,
+      0,
+    );
+    keys.push(dateKeyLocal(d));
+  }
+  return keys;
+}
+
+function expectedDateKeys(
+  days: number,
+  anchor: TariffSeedRangeAnchor,
+  rangeDate: Date,
+): { first: string; last: string } {
+  const keys = listExpectedTariffSeedDateKeys(days, anchor, rangeDate);
+  return { first: keys[0]!, last: keys[keys.length - 1]! };
 }
 
 export function validateTariffSeedSnapshotFile(
@@ -136,6 +154,51 @@ export function validateTariffSeedSnapshotFile(
   const lastRow = rows[rows.length - 1] as Record<string, unknown>;
   if (firstRow["date"] !== first || lastRow["date"] !== last) return false;
   return true;
+}
+
+export type TariffSnapshotLooseRow = {
+  dateKey: string;
+  day: number;
+  night: number;
+};
+
+/**
+ * Зіставляє очікувані дати сиду з `rows` у JSON (ігнорує `days` / `rangeEndDate` у файлі).
+ * Відсутні дати — з `fallbackDay` / `fallbackNight`.
+ */
+export function buildTariffRowsForSeedFromSnapshotLoose(
+  raw: unknown,
+  expectedDateKeys: string[],
+  fallbackDay: number,
+  fallbackNight: number,
+): TariffSnapshotLooseRow[] | null {
+  if (raw === null || typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  if (o["version"] !== 1) return null;
+  const rowsRaw = o["rows"];
+  if (!Array.isArray(rowsRaw) || rowsRaw.length === 0) return null;
+  const map = new Map<string, { day: number; night: number }>();
+  for (const item of rowsRaw) {
+    if (item === null || typeof item !== "object") continue;
+    const r = item as Record<string, unknown>;
+    if (typeof r["date"] !== "string") continue;
+    const day = r["day"];
+    const night = r["night"];
+    if (typeof day !== "number" || typeof night !== "number") continue;
+    if (!Number.isFinite(day) || !Number.isFinite(night)) continue;
+    map.set(r["date"], { day, night });
+  }
+  if (map.size === 0) return null;
+  const out: TariffSnapshotLooseRow[] = [];
+  for (const dateKey of expectedDateKeys) {
+    const hit = map.get(dateKey);
+    out.push({
+      dateKey,
+      day: hit?.day ?? fallbackDay,
+      night: hit?.night ?? fallbackNight,
+    });
+  }
+  return out;
 }
 
 export async function readTariffSeedSnapshotFile(

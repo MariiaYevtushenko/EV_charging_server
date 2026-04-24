@@ -28,14 +28,16 @@ function formatYmdLocal(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
-/** Ключ YYYY-MM-DD для дати з БД (PostgreSQL date). */
+/**
+ * Ключ YYYY-MM-DD для дати з БД — той самий локальний календар, що й у `formatYmdLocal` для точок графіка.
+ * `toISOString().slice(0, 10)` давав зсув дня в не-UTC середовищах → прогноз «не підхоплювався» і графік лишався порожнім.
+ */
 function dateKeyFromDb(dt: Date): string {
-  return dt.toISOString().slice(0, 10);
+  return formatYmdLocal(dt);
 }
 
 export type ForecastPredictionPointDto = {
   date: string;
-  /** Прогноз SARIMA (tariff_prediction), грн/кВт·год */
   dayUah: number | null;
   nightUah: number | null;
 };

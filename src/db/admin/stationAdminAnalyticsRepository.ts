@@ -17,14 +17,14 @@ export function parseStationAdminAnalyticsPeriod(raw: string | undefined): Stati
 export type StationAdminViewsRequest = {
   period: StationAdminAnalyticsPeriod;
   topPeriod: StationAdminAnalyticsPeriod;
-  fewestPeriod: StationAdminAnalyticsPeriod;
-  peakPeriod: StationAdminAnalyticsPeriod;
   sessionStatsPage: number;
   sessionStatsPageSize: number;
   portStatsPage: number;
   portStatsPageSize: number;
   stationId?: number;
-  peakStationId?: number;
+  /** Whitelist-колонка для ORDER BY у таблиці станцій (VIEW); якщо немає — спадання: прибуток, сума kWh, сесії. */
+  sessionStatsSortBy?: string;
+  sessionStatsSortDir?: "asc" | "desc";
 };
 
 function clampInt(n: number | undefined, fallback: number, min: number, max: number): number {
@@ -32,43 +32,62 @@ function clampInt(n: number | undefined, fallback: number, min: number, max: num
   return Math.min(max, Math.max(min, Math.floor(n)));
 }
 
+const SESSION_STATS_SORT_SQL: Record<string, string> = {
+  station_id: "station_id",
+  station_name: "station_name",
+  total_sessions: "total_sessions",
+  avg_duration_minutes: "avg_duration_minutes",
+  avg_kwh: "avg_kwh",
+  total_kwh: "total_kwh",
+  total_revenue: "total_revenue",
+  avg_bill_amount: "avg_bill_amount",
+};
+
+/** Безпечний ORDER BY для пагінації VIEW (лише whitelist). За замовчуванням: прибуток → енергія → кількість сесій. */
+function buildSessionStatsViewOrderBy(sortBy?: string, sortDir?: string): string {
+  const dir: "ASC" | "DESC" = sortDir === "asc" ? "ASC" : "DESC";
+  const key = sortBy?.trim();
+  const col = key && SESSION_STATS_SORT_SQL[key] ? SESSION_STATS_SORT_SQL[key] : null;
+  const tieBreak = "total_revenue DESC NULLS LAST, total_kwh DESC NULLS LAST, total_sessions DESC NULLS LAST";
+  if (col) {
+    return `ORDER BY ${col} ${dir} NULLS LAST, ${tieBreak}`;
+  }
+  return `ORDER BY ${tieBreak}`;
+}
+
 export function normalizeStationAdminViewsRequest(
   raw?: Partial<{
     stationId?: number | null;
     period?: string;
     topPeriod?: string;
-    fewestPeriod?: string;
     sessionStatsPage?: number;
     sessionStatsPageSize?: number;
     portStatsPage?: number;
     portStatsPageSize?: number;
-    peakStationId?: number | null;
-    peakPeriod?: string;
+    sessionStatsSortBy?: string | null;
+    sessionStatsSortDir?: string | null;
   }>
 ): StationAdminViewsRequest {
   const period = parseStationAdminAnalyticsPeriod(raw?.period);
   const topPeriod = raw?.topPeriod != null ? parseStationAdminAnalyticsPeriod(String(raw.topPeriod)) : period;
-  const fewestPeriod =
-    raw?.fewestPeriod != null ? parseStationAdminAnalyticsPeriod(String(raw.fewestPeriod)) : period;
-  const peakPeriod =
-    raw?.peakPeriod != null ? parseStationAdminAnalyticsPeriod(String(raw.peakPeriod)) : period;
   const sid = raw?.stationId != null && Number.isFinite(raw.stationId) && raw.stationId > 0 ? raw.stationId : undefined;
-  const peakSid =
-    raw?.peakStationId != null && Number.isFinite(raw.peakStationId) && raw.peakStationId > 0
-      ? raw.peakStationId
-      : undefined;
+  const sortByRaw = raw?.sessionStatsSortBy != null ? String(raw.sessionStatsSortBy).trim() : "";
+  const sortBy =
+    sortByRaw !== "" && SESSION_STATS_SORT_SQL[sortByRaw] !== undefined ? sortByRaw : undefined;
+  const sortDirRaw = raw?.sessionStatsSortDir != null ? String(raw.sessionStatsSortDir).trim().toLowerCase() : "";
+  const sortDir: "asc" | "desc" | undefined =
+    sortDirRaw === "asc" ? "asc" : sortDirRaw === "desc" ? "desc" : undefined;
   const out: StationAdminViewsRequest = {
     period,
     topPeriod,
-    fewestPeriod,
-    peakPeriod,
     sessionStatsPage: clampInt(raw?.sessionStatsPage, 1, 1, 50_000),
     sessionStatsPageSize: clampInt(raw?.sessionStatsPageSize, 15, 1, 100),
     portStatsPage: clampInt(raw?.portStatsPage, 1, 1, 50_000),
     portStatsPageSize: clampInt(raw?.portStatsPageSize, 15, 1, 200),
   };
   if (sid !== undefined) out.stationId = sid;
-  if (peakSid !== undefined) out.peakStationId = peakSid;
+  if (sortBy !== undefined) out.sessionStatsSortBy = sortBy;
+  if (sortDir !== undefined) out.sessionStatsSortDir = sortDir;
   return out;
 }
 
@@ -134,14 +153,6 @@ export type PaginatedViewBlock = {
   pageSize: number;
 };
 
-export type StationAdminPeakBlock = {
-  stationId: number;
-  period: StationAdminAnalyticsPeriod;
-  periodFrom: string;
-  periodTo: string;
-  buckets: Record<string, unknown>[];
-};
-
 export type StationAdminStationDetail = {
   sessionStats: Record<string, unknown> | null;
   bookingStats: Record<string, unknown> | null;
@@ -158,19 +169,14 @@ export type StationAdminSnapshot = {
   topPeriod: StationAdminAnalyticsPeriod;
   topPeriodFrom: string;
   topPeriodTo: string;
-  fewestPeriod: StationAdminAnalyticsPeriod;
-  fewestPeriodFrom: string;
-  fewestPeriodTo: string;
   partial: boolean;
   overview: StationOverviewCounts | null;
   networkBookingKpis: Record<string, unknown> | null;
   /** GetStationAdminMonthComparison — уся мережа: поточний місяць (1–сьогодні) vs повний попередній. */
   networkMonthComparison: Record<string, unknown> | null;
   networkTopStations: Record<string, unknown>[];
-  networkBottomStations: Record<string, unknown>[];
   sessionStatsViewPage: PaginatedViewBlock;
   portStatsViewPage: PaginatedViewBlock;
-  peakForStation: StationAdminPeakBlock | null;
   stationId: number | null;
   stationDetail: StationAdminStationDetail | null;
 };
@@ -237,13 +243,12 @@ export async function queryStationAdminAnalyticsSnapshot(
     stationId?: number | null;
     period?: string;
     topPeriod?: string;
-    fewestPeriod?: string;
     sessionStatsPage?: number;
     sessionStatsPageSize?: number;
     portStatsPage?: number;
     portStatsPageSize?: number;
-    peakStationId?: number | null;
-    peakPeriod?: string;
+    sessionStatsSortBy?: string | null;
+    sessionStatsSortDir?: string | null;
   }>
 ): Promise<StationAdminSnapshot> {
   const req = normalizeStationAdminViewsRequest(rawReq);
@@ -254,8 +259,6 @@ export async function queryStationAdminAnalyticsSnapshot(
 
   const { from, to } = stationAdminAnalyticsWindows(req.period);
   const topWin = stationAdminAnalyticsWindows(req.topPeriod);
-  const fewWin = stationAdminAnalyticsWindows(req.fewestPeriod);
-  const peakWin = stationAdminAnalyticsWindows(req.peakPeriod);
 
   const periodDaysValue =
     req.period === "all" ? null : Math.max(1, Math.round((to.getTime() - from.getTime()) / 86400000));
@@ -263,6 +266,7 @@ export async function queryStationAdminAnalyticsSnapshot(
   const sessionPage = req.sessionStatsPage;
   const sessionSize = req.sessionStatsPageSize;
   const sessionOffset = (sessionPage - 1) * sessionSize;
+  const sessionOrderSql = buildSessionStatsViewOrderBy(req.sessionStatsSortBy, req.sessionStatsSortDir);
 
   const portPage = req.portStatsPage;
   const portSize = req.portStatsPageSize;
@@ -276,7 +280,6 @@ export async function queryStationAdminAnalyticsSnapshot(
     networkBookingKpis,
     networkMonthComparison,
     networkTopStations,
-    networkBottomStations,
     sessionCountRow,
     sessionPageRows,
     portCountRow,
@@ -309,17 +312,6 @@ export async function queryStationAdminAnalyticsSnapshot(
         ),
       mark
     ),
-    safeQuery(
-      "networkBottomStations",
-      () =>
-        db.$queryRawUnsafe<Record<string, unknown>[]>(
-          `SELECT * FROM getnetworkstationsfewestsessions($1::timestamptz, $2::timestamptz, $3::int)`,
-          fewWin.from,
-          fewWin.to,
-          RANK_LIMIT
-        ),
-      mark
-    ),
     safeQueryOne(
       "sessionViewCount",
       () =>
@@ -333,7 +325,7 @@ export async function queryStationAdminAnalyticsSnapshot(
       () =>
         db.$queryRawUnsafe<Record<string, unknown>[]>(
           `SELECT * FROM view_stationsessionstatslast30days
-           ORDER BY station_id
+           ${sessionOrderSql}
            LIMIT $1::int OFFSET $2::int`,
           sessionSize,
           sessionOffset
@@ -364,31 +356,6 @@ export async function queryStationAdminAnalyticsSnapshot(
 
   const sessionTotal = numCell(sessionCountRow?.c);
   const portTotal = numCell(portCountRow?.c);
-
-  let peakForStation: StationAdminPeakBlock | null = null;
-  if (req.peakStationId != null) {
-    const exists = await db.station.findFirst({ where: { id: req.peakStationId }, select: { id: true } });
-    if (exists) {
-      const buckets = await safeQuery(
-        "peakForStation",
-        () =>
-          db.$queryRawUnsafe<Record<string, unknown>[]>(
-            `SELECT * FROM getstationpeakhourbuckets($1::int, $2::timestamptz, $3::timestamptz)`,
-            req.peakStationId,
-            peakWin.from,
-            peakWin.to
-          ),
-        mark
-      );
-      peakForStation = {
-        stationId: req.peakStationId,
-        period: req.peakPeriod,
-        periodFrom: peakWin.from.toISOString(),
-        periodTo: peakWin.to.toISOString(),
-        buckets,
-      };
-    }
-  }
 
   let stationDetail: StationAdminStationDetail | null = null;
   let resolvedStationId: number | null = null;
@@ -477,15 +444,11 @@ export async function queryStationAdminAnalyticsSnapshot(
     topPeriod: req.topPeriod,
     topPeriodFrom: topWin.from.toISOString(),
     topPeriodTo: topWin.to.toISOString(),
-    fewestPeriod: req.fewestPeriod,
-    fewestPeriodFrom: fewWin.from.toISOString(),
-    fewestPeriodTo: fewWin.to.toISOString(),
     partial,
     overview,
     networkBookingKpis,
     networkMonthComparison,
     networkTopStations,
-    networkBottomStations,
     sessionStatsViewPage: {
       items: sessionPageRows,
       total: sessionTotal,
@@ -498,7 +461,6 @@ export async function queryStationAdminAnalyticsSnapshot(
       page: portPage,
       pageSize: portSize,
     },
-    peakForStation,
     stationId: resolvedStationId,
     stationDetail,
   };
